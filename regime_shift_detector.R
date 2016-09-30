@@ -46,9 +46,24 @@ rickerfit<-function (data){
   ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=0.5), data=data)
   #What outputs do we need from each run? AIC, r and k, and their resepective errors.
   #we'll want to create a vecor with this information in it so we can use this information later
-  output<-(stuff)
+  output<-c(AIC(ricker.model), #AIC
+            summary(ricker.model)$coefficients[1,1], # r
+            summary(ricker.model)$coefficients[1,2], # se for r
+            summary(ricker.model)$coefficients[2,1], # k
+            summary(ricker.model)$coefficients[2,2]) # se for k
   return(output)
 }
 
+#test to see if the fit function works
 
+testfit<-rickerfit(test1)
+#should spit out a vector of AIC, r, rse, k, kse.
+
+testfit
+
+#okay, seems to work! 
+
+#now we need to build a tool that will cut a time series up,
+#fit the model, and spit out relevant parameters
+summary(testfit)
 
