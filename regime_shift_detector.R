@@ -21,13 +21,16 @@ addNt1<-function(data){
   data<-data[which(data[,1]<max(data[,1])),]
   #add the vector of new values to the data fram
   data$Nt1<-Nt1
+  #rename columns in data set so that they're consistent no matter 
+  #what they're named before importing
+  names(data)<-c("year", "Nt", "Nt1")
   #spit out that new data frame
   return(data)
 }
 
 #test that our function does what we want it to do
 test1<-addNt1(test)
-view(test1)
+View(test1)
 
 #looks good! now we can begin building the model-fitting function
 
