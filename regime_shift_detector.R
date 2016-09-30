@@ -34,5 +34,21 @@ View(test1)
 
 #looks good! now we can begin building the model-fitting function
 
+#load minpack.lm
+#this is my prefered nonlinear package- fewer convergence issues.
+#we'll want to use its nlsLM function to fit the Ricker equation.
+library(minpack.lm)
 
 #create function that fits the ricker model
+
+rickerfit<-function (data){
+  #fit the model
+  ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=0.5), data=data)
+  #What outputs do we need from each run? AIC, r and k, and their resepective errors.
+  #we'll want to create a vecor with this information in it so we can use this information later
+  output<-(stuff)
+  return(output)
+}
+
+
+
