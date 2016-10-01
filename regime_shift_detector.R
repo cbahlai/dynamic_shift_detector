@@ -65,5 +65,35 @@ testfit
 
 #now we need to build a tool that will cut a time series up,
 #fit the model, and spit out relevant parameters
-summary(testfit)
 
+#we probably want to write a function for each break point combo
+#then smash them into a function that figures out what the best model is
+
+#so to make them comparable, we're going to want each function to output
+#numer of breaks, break1, break2, AIC. We can then go back and pull the coefficients
+#for the 
+
+#start with function for no breaks
+
+nobreaks<-function(data){
+  fit<-rickertest(data) #fit the model
+  out<-c(0, "none", "none", fit[1]) #output vector with no breaks
+  return(out)
+}
+
+#next, a function for 1 break
+onebreak<-function(data){
+  Break1<-min(data$year)+3 #create first breakpoint three years into the time series to avoid overfitting
+  while(Break1<(max(data$year)){
+    part1<-datahaxy[which(datahaxy$Year<Break1),] #create subsets at the breakpoint
+    part2<-datahaxy[which(datahaxy$Year>(Break1-1)),]
+    if(nrow(part1)>3 & nrow(part2)>3){
+      fit1<-rickertest(part1) #fit the model to part 1
+      fit2<-rickertest(part2)
+      out<-c(1, max(part1$year), "none", fit1[1]+fit2[1])#create output vector
+      out.frame<-rbind(out.frame, out) #bind it toprevious results
+    }
+    Break1<-Break1+1 #move the break to next year
+  }
+  return(out.frame)
+}
