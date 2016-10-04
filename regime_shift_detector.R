@@ -76,7 +76,7 @@ testfit
 #start with function for no breaks
 
 nobreaks<-function(data){
-  fit<-rickertest(data) #fit the model
+  fit<-rickerfit(data) #fit the model
   out<-c(0, "none", "none", fit[1]) #output vector with no breaks
   return(out)
 }
@@ -84,16 +84,19 @@ nobreaks<-function(data){
 #next, a function for 1 break
 onebreak<-function(data){
   Break1<-min(data$year)+3 #create first breakpoint three years into the time series to avoid overfitting
-  while(Break1<(max(data$year)){
-    part1<-datahaxy[which(datahaxy$Year<Break1),] #create subsets at the breakpoint
-    part2<-datahaxy[which(datahaxy$Year>(Break1-1)),]
+  out.frame<-data.frame(matrix(vector(), 0, 4,
+                               dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
+                        stringsAsFactors=F)#Create a place to put our data
+  while(Break1<(max(data$year))){
+    part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
+    part2<-data[which(data$year>(Break1-1)),]
     if(nrow(part1)>3 & nrow(part2)>3){
-      fit1<-rickertest(part1) #fit the model to part 1
-      fit2<-rickertest(part2)
+      fit1<-rickerfit(part1) #fit the model to part 1
+      fit2<-rickerfit(part2)
       out<-c(1, max(part1$year), "none", fit1[1]+fit2[1])#create output vector
       out.frame<-rbind(out.frame, out) #bind it toprevious results
     }
     Break1<-Break1+1 #move the break to next year
   }
-  return(out.frame)
+  return(out)
 }
