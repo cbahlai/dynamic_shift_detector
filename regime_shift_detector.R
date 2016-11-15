@@ -43,7 +43,7 @@ library(minpack.lm)
 
 rickerfit<-function (data){
   #fit the model
-  ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=0.5), data=data)
+  ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=7), data=data)
   #What outputs do we need from each run? AIC, r and k, and their resepective errors.
   #we'll want to create a vecor with this information in it so we can use this information later
   output<-c(AIC(ricker.model), #AIC
@@ -86,6 +86,7 @@ nobreaks(test1)
 
 #next, a function for 1 break
 onebreak<-function(data){
+  suppressWarnings(nls.lm)
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   out.frame<-data.frame(matrix(vector(), 0, 4,
                                dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
@@ -101,6 +102,8 @@ onebreak<-function(data){
     }
     Break1<-Break1+1 #move the break to next year
   }
+  #rename columns in output for some reason
+  colnames(out.frame)<- c("Number", "Break1", "Break2", "AIC")
   return(out.frame)
 }
 
