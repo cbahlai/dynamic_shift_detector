@@ -127,3 +127,24 @@ onebreak(test1, 2005, 0, 2)
 # break things up the same way as previously, but instead of calling sections 1 and 2
 # call them sections A and B. Run onebreak on section A, just fit and feed results to onebreak
 # from section B.
+
+twobreaks<-function(data){
+  Break2<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
+  out.frame<-data.frame(matrix(vector(), 0, 4,
+                               dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
+                        stringsAsFactors=F)#Create a place to put our data
+  while(Break1<(max(data$year))){
+    part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
+    part2<-data[which(data$year>(Break1-1)),]
+    if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
+      fit1<-rickerfit(part1) #fit the model to part 1
+      fit2<-rickerfit(part2)
+      out<-c(breaks, max(part1$year), Break2, fit1[1]+fit2[1]+fit3)#create output vector
+      out.frame<-rbind(out.frame, out) #bind it to previous results
+    }
+    Break1<-Break1+1 #move the break to next year
+  }
+  #rename columns in output for some reason
+  colnames(out.frame)<- c("Number", "Break1", "Break2", "AIC")
+  return(out.frame)
+}
