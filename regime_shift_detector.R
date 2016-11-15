@@ -84,10 +84,16 @@ nobreaks<-function(data){
 #test it to see if it's spitting out the right stuff
 nobreaks(test1)
 
-#next, a function for 1 break, with a dummy variable in it so we can use it for the 2 break model
-onebreak<-function(data, Break2){
-  if(missing(Break2)){ #if no value for Break2 is provided, export it as NA
+#next, a function for 1 break, with dummy variables in it so we can use it for the 2 break model
+onebreak<-function(data, Break2, fit3, breaks){
+  if(missing(Break2)){ #if no value for Break2 is provided, it is NA
     Break2 <- NA  
+  }
+  if(missing(fit3)){ #if no value for fit3 is provided,it is 0
+    fit3<-0  
+  }
+  if(missing(breaks)){ #if no value for breaks is provided,it is 1
+    breaks<-1  
   }
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   out.frame<-data.frame(matrix(vector(), 0, 4,
@@ -99,7 +105,7 @@ onebreak<-function(data, Break2){
     if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2)
-      out<-c(1, max(part1$year), Break2, fit1[1]+fit2[1])#create output vector
+      out<-c(breaks, max(part1$year), Break2, fit1[1]+fit2[1]+fit3)#create output vector
       out.frame<-rbind(out.frame, out) #bind it to previous results
     }
     Break1<-Break1+1 #move the break to next year
@@ -111,4 +117,10 @@ onebreak<-function(data, Break2){
 
 #test it to see if it's spitting out the right stuff
 onebreak(test1)
+#does maniputlating the second break point carry correctly?
+onebreak(test1, 2005, 0, 2)
+#cool.
 
+#okay, now we need to build another function that does this same analysis for two break points
+# we'll break the time series into two, use the onebreak function on the first part
+# and then feed the break point and AIC from that section into the one break model
