@@ -129,10 +129,12 @@ onebreak(test1, 2005, 0, 2)
 # from section B.
 
 twobreaks<-function(data){
-  Break2<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
+  Break1<-min(data$year)+2 #create first breakpoint two years into the time series to avoid overfitting
+  Break2<-Break1+2 #make breakpoint two start later
   out.frame<-data.frame(matrix(vector(), 0, 4,
                                dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
                         stringsAsFactors=F)#Create a place to put our data
+  
   while(Break1<(max(data$year))){
     part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
     part2<-data[which(data$year>(Break1-1)),]
