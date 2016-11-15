@@ -2,7 +2,7 @@
 
 #import test data for calibrating functions
 test<-read.csv(file="test.csv", header=TRUE)
-
+plot(test)
 
 #assume data is in form of data frame where first column is year, second is abundance (Nt)
 
@@ -84,9 +84,11 @@ nobreaks<-function(data){
 #test it to see if it's spitting out the right stuff
 nobreaks(test1)
 
-#next, a function for 1 break
-onebreak<-function(data){
-  suppressWarnings(nls.lm)
+#next, a function for 1 break, with a dummy variable in it so we can use it for the 2 break model
+onebreak<-function(data, Break2){
+  if(missing(Break2)){ #if no value for Break2 is provided, export it as NA
+    Break2 <- NA  
+  }
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   out.frame<-data.frame(matrix(vector(), 0, 4,
                                dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
@@ -97,7 +99,7 @@ onebreak<-function(data){
     if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2)
-      out<-c(1, max(part1$year), NA, fit1[1]+fit2[1])#create output vector
+      out<-c(1, max(part1$year), Break2, fit1[1]+fit2[1])#create output vector
       out.frame<-rbind(out.frame, out) #bind it to previous results
     }
     Break1<-Break1+1 #move the break to next year
@@ -109,3 +111,4 @@ onebreak<-function(data){
 
 #test it to see if it's spitting out the right stuff
 onebreak(test1)
+
