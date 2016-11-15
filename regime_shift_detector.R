@@ -70,20 +70,23 @@ testfit
 #then smash them into a function that figures out what the best model is
 
 #so to make them comparable, we're going to want each function to output
-#numer of breaks, break1, break2, AIC. We can then go back and pull the coefficients
+#number of breaks, break1, break2, AIC. We can then go back and pull the coefficients
 #for the 
 
 #start with function for no breaks
 
 nobreaks<-function(data){
   fit<-rickerfit(data) #fit the model
-  out<-c(0, "none", "none", fit[1]) #output vector with no breaks
+  out<-c(0, NA, NA, fit[1]) #output vector with no breaks
   return(out)
 }
 
+#test it to see if it's spitting out the right stuff
+nobreaks(test1)
+
 #next, a function for 1 break
 onebreak<-function(data){
-  Break1<-min(data$year)+3 #create first breakpoint three years into the time series to avoid overfitting
+  Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   out.frame<-data.frame(matrix(vector(), 0, 4,
                                dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
                         stringsAsFactors=F)#Create a place to put our data
@@ -93,10 +96,13 @@ onebreak<-function(data){
     if(nrow(part1)>3 & nrow(part2)>3){
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2)
-      out<-c(1, max(part1$year), "none", fit1[1]+fit2[1])#create output vector
-      out.frame<-rbind(out.frame, out) #bind it toprevious results
+      out<-c(1, max(part1$year), NA, fit1[1]+fit2[1])#create output vector
+      out.frame<-rbind(out.frame, out) #bind it to previous results
     }
     Break1<-Break1+1 #move the break to next year
   }
-  return(out)
+  return(out.frame)
 }
+
+#test it to see if it's spitting out the right stuff
+onebreak(test1)
