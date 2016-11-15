@@ -124,3 +124,6 @@ onebreak(test1, 2005, 0, 2)
 #okay, now we need to build another function that does this same analysis for two break points
 # we'll break the time series into two, use the onebreak function on the first part
 # and then feed the break point and AIC from that section into the one break model
+# break things up the same way as previously, but instead of calling sections 1 and 2
+# call them sections A and B. Run onebreak on section A, just fit and feed results to onebreak
+# from section B.
