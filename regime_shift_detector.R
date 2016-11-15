@@ -104,7 +104,7 @@ onebreak<-function(data, Break2, fit3, breaks){
     part2<-data[which(data$year>(Break1-1)),]
     if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
-      fit2<-rickerfit(part2)
+      fit2<-rickerfit(part2) #fit the model to part 2
       out<-c(breaks, max(part1$year), Break2, fit1[1]+fit2[1]+fit3)#create output vector
       out.frame<-rbind(out.frame, out) #bind it to previous results
     }
@@ -135,13 +135,14 @@ twobreaks<-function(data){
                                dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
                         stringsAsFactors=F)#Create a place to put our data
   
-  while(Break1<(max(data$year))){
-    part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
-    part2<-data[which(data$year>(Break1-1)),]
-    if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
-      fit1<-rickerfit(part1) #fit the model to part 1
-      fit2<-rickerfit(part2)
-      out<-c(breaks, max(part1$year), Break2, fit1[1]+fit2[1]+fit3)#create output vector
+  while(Break2<(max(data$year))){
+    partA<-data[which(data$year<Break2),] #create subsets at the breakpoint
+    partB<-data[which(data$year>(Break2-1)),]
+    if(nrow(partA)>2 & nrow(partB)>2){ #constrain model to run only when 3 or more points are present
+      fitB<-rickerfit(partB) #fit the model to part B so we have the parameters to feed in
+      fitA<-onebreak(partA, Break2, fitB[1], 2) #do onebreak with the AIC from part B's fit
+      
+      #start here with debugging
       out.frame<-rbind(out.frame, out) #bind it to previous results
     }
     Break1<-Break1+1 #move the break to next year
