@@ -93,7 +93,7 @@ onebreak<-function(data){
   while(Break1<(max(data$year))){
     part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
     part2<-data[which(data$year>(Break1-1)),]
-    if(nrow(part1)>3 & nrow(part2)>3){
+    if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2)
       out<-c(1, max(part1$year), NA, fit1[1]+fit2[1])#create output vector
