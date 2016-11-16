@@ -34,6 +34,7 @@ View(test1)
 
 #looks good! now we can begin building the model-fitting function
 
+
 #load minpack.lm
 #this is my prefered nonlinear package- fewer convergence issues.
 #we'll want to use its nlsLM function to fit the Ricker equation.
@@ -42,8 +43,10 @@ library(minpack.lm)
 #create function that fits the ricker model
 
 rickerfit<-function (data){
+  #create an initial estimate of k to aide model convergence
+  kest<-mean(data$Nt)
   #fit the model
-  ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=7), data=data)
+  ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=kest), data=data)
   #What outputs do we need from each run? AIC, r and k, and their resepective errors.
   #we'll want to create a vecor with this information in it so we can use this information later
   output<-c(AIC(ricker.model), #AIC
@@ -179,9 +182,16 @@ equivalentfit<-function(data){
   breakset<-breakfit(data) #generate matrix of fits by breakpoints
   AICbest<-min(breakset$AIC) #find best AIC in the set
   deltaAIC<-AICbest+2 # create rule for equivalent models
-  out.frame<-breakset[which(breakset$AIC<deltaAIC),]
+  out.frame<-breakset[which(breakset$AIC<deltaAIC),] #cut out all data but equivalent models
   return(out.frame)
 }
 
 #and test that
-eqivalentfit(test1)
+equivalentfit(test1)
+
+#but equivalent fit is one thing- if there's equivalent fit and one of the model set has
+# fewer parameters, we obviously want to go with that. create a function that does that
+
+bestfit<-function(data){
+  breakset<-equivalentfit(data)#
+}
