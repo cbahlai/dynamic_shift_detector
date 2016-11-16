@@ -153,3 +153,35 @@ twobreaks<-function(data){
 
 #and let's gve that a try
 twobreaks(test1)
+
+#looks like we got it! 
+
+#Now we need to put these functions together into a break point finder function. 
+#Let's first create a function that builds a data frame of AICs for all possible 
+#fits from all break point combinations
+
+breakfit<-function(data){
+  no.breaks<-nobreaks(data) #fit no break model
+  one.break<-onebreak(data) #fit one break model set
+  two.breaks<-twobreaks(data) #fit two breaks model set
+  out.frame<-rbind(two.breaks, one.break, no.breaks) #stick the results together
+  out.frame<-out.frame[order(out.frame$Number, out.frame$Break1, out.frame$Break2),] #sort output
+  return(out.frame)
+}
+
+#give that a test
+breakfit(test1)
+
+#okay, next, a function that pulls out the set of equivalent performance best models
+# remember that delta AIC <2 is considered equivalent and lowest AIC is best
+
+equivalentfit<-function(data){
+  breakset<-breakfit(data) #generate matrix of fits by breakpoints
+  AICbest<-min(breakset$AIC) #find best AIC in the set
+  deltaAIC<-AICbest+2 # create rule for equivalent models
+  out.frame<-breakset[which(breakset$AIC<deltaAIC),]
+  return(out.frame)
+}
+
+#and test that
+eqivalentfit(test1)
