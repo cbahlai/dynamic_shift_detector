@@ -141,13 +141,15 @@ twobreaks<-function(data){
     if(nrow(partA)>2 & nrow(partB)>2){ #constrain model to run only when 3 or more points are present
       fitB<-rickerfit(partB) #fit the model to part B so we have the parameters to feed in
       fitA<-onebreak(partA, Break2, fitB[1], 2) #do onebreak with the AIC from part B's fit
-      
-      #start here with debugging
-      out.frame<-rbind(out.frame, out) #bind it to previous results
+      out.frame<-rbind(out.frame, fitA)
     }
-    Break1<-Break1+1 #move the break to next year
+    Break2<-Break2+1 #move the break to next year
   }
   #rename columns in output for some reason
   colnames(out.frame)<- c("Number", "Break1", "Break2", "AIC")
   return(out.frame)
 }
+
+
+#and let's gve that a try
+twobreaks(test1)
