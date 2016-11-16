@@ -32,7 +32,21 @@ addNt1<-function(data){
 test1<-addNt1(test)
 View(test1)
 
-#looks good! now we can begin building the model-fitting function
+#looks good!
+
+#lets also create a function that will calculate an AICc correction factor
+#which can be added to the AIC values we compute- because we have small sample
+#sizes we need to more heavily penalize models with more parameters
+
+AICcorrection<-function(data, breaks){
+  a<-2*(breaks+1) # a is the number of parameters estimated each fit (r, k)
+  correction<-(2*a*(a+1))/(length(data$year)-a-1)
+  return(correction)
+}
+
+AICcorrection(test1, 0)
+
+#now we can begin building the model-fitting function
 
 
 #load minpack.lm
@@ -80,7 +94,8 @@ testfit
 
 nobreaks<-function(data){
   fit<-rickerfit(data) #fit the model
-  out<-c(0, NA, NA, fit[1]) #output vector with no breaks
+  correction<-AICcorrection(data, 0) #calculate AICc correction
+  out<-c(0, NA, NA, fit[1]+correction) #output vector with no breaks
   return(out)
 }
 
@@ -98,6 +113,7 @@ onebreak<-function(data, Break2, fit3, breaks){
   if(missing(breaks)){ #if no value for breaks is provided,it is 1
     breaks<-1  
   }
+  
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   out.frame<-data.frame(matrix(vector(), 0, 4,
                                dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
@@ -109,6 +125,12 @@ onebreak<-function(data, Break2, fit3, breaks){
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2) #fit the model to part 2
       out<-c(breaks, max(part1$year), Break2, fit1[1]+fit2[1]+fit3)#create output vector
+      if (breaks==1){
+        out[4]<-out[4]+AICcorrection(data, 1)
+      }
+      if (breaks==2){
+        out[4]<-out[4]+AICcorrection(data, 1)
+      }
       out.frame<-rbind(out.frame, out) #bind it to previous results
     }
     Break1<-Break1+1 #move the break to next year
@@ -121,7 +143,7 @@ onebreak<-function(data, Break2, fit3, breaks){
 #test it to see if it's spitting out the right stuff
 onebreak(test1)
 #does maniputlating the second break point carry correctly?
-onebreak(test1, 2005, 0, 2)
+onebreak(test1, 2005, 5, 2)
 #cool.
 
 #okay, now we need to build another function that does this same analysis for two break points
@@ -139,11 +161,11 @@ twobreaks<-function(data){
                         stringsAsFactors=F)#Create a place to put our data
   
   while(Break2<(max(data$year))){
-    partA<-data[which(data$year<Break2),] #create subsets at the breakpoint
-    partB<-data[which(data$year>(Break2-1)),]
+    partA<-data[which(data$year<Break2)+1,] #create subsets at the breakpoint
+    partB<-data[which(data$year>(Break2)),]
     if(nrow(partA)>2 & nrow(partB)>2){ #constrain model to run only when 3 or more points are present
       fitB<-rickerfit(partB) #fit the model to part B so we have the parameters to feed in
-      fitA<-onebreak(partA, Break2, fitB[1], 2) #do onebreak with the AIC from part B's fit
+      fitA<-onebreak(partA, max(partA$year), fitB[1], 2) #do onebreak with the AIC from part B's fit
       out.frame<-rbind(out.frame, fitA)
     }
     Break2<-Break2+1 #move the break to next year
