@@ -157,7 +157,7 @@ twobreaks<-function(data){
   Break1<-min(data$year)+2 #create first breakpoint two years into the time series to avoid overfitting
   Break2<-Break1+2 #make breakpoint two start later
   out.frame<-data.frame(matrix(vector(), 0, 4,
-                               dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
+                               dimnames=list(c(), c("Number", "Break1", "Break2", "AICc"))),
                         stringsAsFactors=F)#Create a place to put our data
   
   while(Break2<(max(data$year))){
@@ -171,7 +171,7 @@ twobreaks<-function(data){
     Break2<-Break2+1 #move the break to next year
   }
   #rename columns in output for some reason
-  colnames(out.frame)<- c("Number", "Break1", "Break2", "AIC")
+  colnames(out.frame)<- c("Number", "Break1", "Break2", "AICc")
   return(out.frame)
 }
 
@@ -272,3 +272,26 @@ bestmodel<-function(data){
 
 #and test it
 bestmodel(test1)
+
+#finally let's write a function that feeds data through the relevant functions and gives
+#us a report of the relevant things
+
+rsdetector<-function(data){
+  #plot the data
+  plot(data)
+  #give an output of all possible break point combinations tested
+  writeLines(paste("Here are the break points for all models tested"))
+  print(breakfit(data))
+  #output models with equivalent performance
+  writeLines(paste("Here is the set of best performing models"))
+  print(equivalentfit(data))
+  #output model with best performance
+  writeLines(paste("Here is the best model- the one with the fewest parameters and/or lowest AICc"))
+  print(bestfit(data))
+  # output regression parameters of best model
+  writeLines(paste("Here is the set of regression parameters"))
+  writeLines(paste("Note AIC is used here, decisions based on AICc"))
+  print(bestmodel(data))
+}
+
+rsdetector(test1)
