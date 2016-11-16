@@ -231,6 +231,16 @@ bestmodel<-function(data){
     out.frame<-rbind(out.frame, output1, output2)#put outputs for each segment in a data frame
     
   } else if (modelspecs$Number[1]==2){
+    part1<-data[which(data$year<modelspecs$Break1[1]+1),] #create subsets at the breakpoint
+    part2<-data[which(data$year>(modelspecs$Break1[1])& data$year<modelspecs$Break2[1]+1),]
+    part3<-data[which(data$year>(modelspecs$Break2[1])),]
+    fit1<-rickerfit(part1) #fit first segment
+    output1<-c(min(part1$year), max(part1$year), fit1)
+    fit2<-rickerfit(part2) #fit second segment
+    output2<-c(min(part2$year), max(part2$year), fit2)
+    fit3<-rickerfit(part3) #fit third segment
+    output3<-c(min(part3$year), max(part3$year), fit3)
+    out.frame<-rbind(out.frame, output1, output2, output3)#put outputs for each segment in a data frame
     
   }
   colnames(out.frame)<- c("Year1", "Year2", "AIC", "r", "rse", "k", "kse")
