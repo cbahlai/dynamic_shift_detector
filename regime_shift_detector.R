@@ -193,5 +193,50 @@ equivalentfit(test1)
 # fewer parameters, we obviously want to go with that. create a function that does that
 
 bestfit<-function(data){
-  breakset<-equivalentfit(data)#
+  breakset<-equivalentfit(data) #get set of eqivalent models
+  fewest.parameters<-min(breakset$Number) #choose model with fewest break points
+  out.frame<-breakset[which(breakset$Number==fewest.parameters),] #pull models with fewest parameters
+  if(length(out.frame$Number>1)){ #if there is more than one model with the same # of parameters
+    AICbest<-min(out.frame$AIC) #find best AIC in the set
+    out.frame<-out.frame[which(out.frame$AIC==AICbest),] #only bring forward the model with the best AIC
+  }
+  return(out.frame)
 }
+
+#and give that one a go
+bestfit(test1)
+
+#and now let's calculate the particulars of the model with the best fit
+# we need a function that can handle all cases 
+
+bestmodel<-function(data){
+  modelspecs<-bestfit(data) #get the particulars of the best model
+  out.frame<-data.frame(matrix(vector(), 0, 7,
+                               dimnames=list(c(), 
+                                             c("Year1", "Year2", "AIC", "r", "rse", "k", "kse"))),
+                        stringsAsFactors=F)#Create a place to put our data
+  
+  if (modelspecs$Number[1]==0){ #if there's no breaks
+    fit<-rickerfit(data)
+    output<-c(min(data$Year), max(data$Year), fit) #fit whole data series + output results
+    out.frame<-rbind(out.frame, output)
+    
+  } else if (modelspecs$Number[1]==1){
+    part1<-data[which(data$year<modelspecs$Break1[1]+1),] #create subsets at the breakpoint
+    part2<-data[which(data$year>(modelspecs$Break1[1])),]
+    fit1<-rickerfit(part1) #fit first segment
+    output1<-c(min(part1$year), max(part1$year), fit1)
+    fit2<-rickerfit(part2) #fit second segment
+    output2<-c(min(part2$year), max(part2$year), fit2)
+    out.frame<-rbind(out.frame, output1, output2)#put outputs for each segment in a data frame
+    
+  } else if (modelspecs$Number[1]==2){
+    
+  }
+  colnames(out.frame)<- c("Year1", "Year2", "AIC", "r", "rse", "k", "kse")
+  return(out.frame)
+}
+
+
+#and test it
+bestmodel(test1)
