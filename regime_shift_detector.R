@@ -296,3 +296,43 @@ rsdetector<-function(data){ #use raw time series data
 }
 
 rsdetector(test)
+#looks good!! Now it's time to try this in the wild
+
+#I'm also wondering what would happen if we solved for r while holding k constant
+# and vice versa. This would provide an 'instantaneous' r and k  that we could also
+# look at to see if there's support for changes
+# if the Ricker model takes the form Nt1~ Nt*exp(r*(1- Nt/k)), let's solve for each
+# r and k, then use the k or r values for the no break model to create a vector for 
+# each parameter over time
+
+r.est<-function(data){
+  k<-rickerfit(data)[4]# fit model without breakpints to get the estimated overall k
+  r<- (log(data$Nt1/data$Nt))/(1-(data$Nt/k)) #solve for r
+  return(r)
+}
+
+test2<-test1
+test2$r<-r.est(test2)
+
+k.est<-function(data){
+  r<-rickerfit(data)[2]# fit model without breakpints to get the estimated overall k
+  k<- data$Nt/(1-(log(data$Nt1/data$Nt)/r)) #solve for k
+  return (k)
+}
+
+test2$k<-k.est(test2)
+
+################################################################
+
+#bring in Monarch overwintering data
+
+monarch<-read.csv(file="C:/Users/cbahl/Dropbox/Zipkin/monarchOW.csv", header=T)
+
+#data requires some light cleaning. We want year to be a continuous variable
+#and data starts in 1994- take the earlier year in the range given- replace
+
+monarch$Year<-1994:2013
+
+#okay, let's see if it'll work
+
+rsdetector(monarch)
