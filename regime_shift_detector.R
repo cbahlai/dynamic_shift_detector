@@ -342,3 +342,13 @@ monarch1<-addNt1(monarch)
 
 monarch1$r<-r.est(monarch1)
 monarch1$k<-k.est(monarch1)
+
+#so what I'm seeing in these data is it looks like the assumtion that k is constant 
+#is a really bad one. the regime shift model seems to suggest that r is even going up as 
+# k drops dramatically. Not to speculate or anything, but this is what we'd expect in
+# a case where habitat destruction is limiting breeding habitat, but that in turn is reducing 
+#competition, so individuals are putting more offspring out there. 
+
+#that's interesting. So we haven't considered a case where there's a linear decline in k. 
+# we asumed brupt transitions, but this may not be the case. Let's see what happens when 
+#we look at the data this way. 
