@@ -1,4 +1,4 @@
-#script to analyse time series data to etermine break points
+#script to analyse time series data to determine break points
 
 #import test data for calibrating functions
 test<-read.csv(file="test.csv", header=TRUE)
