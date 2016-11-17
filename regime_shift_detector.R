@@ -116,7 +116,7 @@ onebreak<-function(data, Break2, fit3, breaks){
   
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   out.frame<-data.frame(matrix(vector(), 0, 4,
-                               dimnames=list(c(), c("Number", "Break1", "Break2", "AIC"))),
+                               dimnames=list(c(), c("Number", "Break1", "Break2", "AICc"))),
                         stringsAsFactors=F)#Create a place to put our data
   while(Break1<(max(data$year))){
     part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
@@ -136,7 +136,7 @@ onebreak<-function(data, Break2, fit3, breaks){
     Break1<-Break1+1 #move the break to next year
   }
   #rename columns in output for some reason
-  colnames(out.frame)<- c("Number", "Break1", "Break2", "AIC")
+  colnames(out.frame)<- c("Number", "Break1", "Break2", "AICc")
   return(out.frame)
 }
 
@@ -352,3 +352,21 @@ monarch1$k<-k.est(monarch1)
 #that's interesting. So we haven't considered a case where there's a linear decline in k. 
 # we asumed brupt transitions, but this may not be the case. Let's see what happens when 
 #we look at the data this way. 
+
+# a good guess for the form of a linear decline in k, if it's occuring, would be a simple 
+# linear regression of Nt over years. So let's get that out:
+
+monarch.regression<-lm(Nt~year, data=monarch1)
+summary(monarch.regression)
+
+#extract slope and intercept
+intercept.k<-summary(monarch.regression)$coefficients[1,1]
+slope.k<-summary(monarch.regression)$coefficients[2,1]
+
+#predict k over time
+monarch1$k.linear<-intercept.k+slope.k*monarch1$year
+
+#now see what r looks like, using this fixed vector for k
+monarch1$r.linear.k<- (log(monarch1$Nt1/monarch1$Nt))/(1-(monarch1$Nt/k.linear))
+
+#hmm! Hmm! Interesting!! it's not really a linear decline in k, for sure, either.
