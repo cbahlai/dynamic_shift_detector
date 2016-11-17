@@ -336,3 +336,9 @@ monarch$Year<-1994:2013
 #okay, let's see if it'll work
 
 rsdetector(monarch)
+
+#let's also look at our instantaneous r and k values
+monarch1<-addNt1(monarch)
+
+monarch1$r<-r.est(monarch1)
+monarch1$k<-k.est(monarch1)
