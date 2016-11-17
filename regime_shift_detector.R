@@ -276,22 +276,23 @@ bestmodel(test1)
 #finally let's write a function that feeds data through the relevant functions and gives
 #us a report of the relevant things
 
-rsdetector<-function(data){
+rsdetector<-function(data){ #use raw time series data
   #plot the data
   plot(data)
+  data1<-addNt1(data)
   #give an output of all possible break point combinations tested
   writeLines(paste("Here are the break points for all models tested"))
-  print(breakfit(data))
+  print(breakfit(data1))
   #output models with equivalent performance
   writeLines(paste("Here is the set of best performing models"))
-  print(equivalentfit(data))
+  print(equivalentfit(data1))
   #output model with best performance
   writeLines(paste("Here is the best model- the one with the fewest parameters and/or lowest AICc"))
-  print(bestfit(data))
+  print(bestfit(data1))
   # output regression parameters of best model
   writeLines(paste("Here is the set of regression parameters"))
-  writeLines(paste("Note AIC is used here, decisions based on AICc"))
-  print(bestmodel(data))
+  writeLines(paste("Note AIC is used here for individual segments,\n decisions based on AICc for whole model"))
+  print(bestmodel(data1))
 }
 
-rsdetector(test1)
+rsdetector(test)
