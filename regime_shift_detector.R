@@ -322,6 +322,14 @@ k.est<-function(data){
 
 test2$k<-k.est(test2)
 
+
+#to-do list from lab meeting
+#generalize model to handle N break point cases
+#create simulations to test robustness of picking up regime shifts at different break point spacings
+#Create simulations to test robustness of picking up regime shifts of different sizes
+#create simulations to test robustness of picking up regime shifts in different noise scenarios
+
+
 ################################################################
 
 #bring in Monarch overwintering data
