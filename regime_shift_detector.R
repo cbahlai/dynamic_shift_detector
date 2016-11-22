@@ -334,6 +334,43 @@ test2$k<-k.est(test2)
 #resultant AICc as columns, respectively.
 
 
+nbreaks<-function(data){
+  Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
+  out.frame<-data.frame(matrix(vector(), 0, 3,
+                               dimnames=list(c(), c("Number", "Breaks", "AICc"))),
+                        stringsAsFactors=F)#Create a place to put our data
+
+  while(Break1<(max(data$year))){
+    breaks<-c() #create empty vector for storing breaks
+    fit<-c() #create empty vector for storing associated AICs
+    part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
+    part2<-data[which(data$year>(Break1-1)),]
+    if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
+      fit1<-rickerfit(part1) #fit the model to part 1
+      fit2<-rickerfit(part2) #fit the model to part 2
+      out<-c(breaks, max(part1$year), Break2, fit1[1]+fit2[1]+fit3)#create output vector
+      if (breaks==1){
+        out[4]<-out[4]+AICcorrection(data, 1)
+      }
+      if (breaks==2){
+        out[4]<-out[4]+AICcorrection(data, 1)
+      }
+      out.frame<-rbind(out.frame, out) #bind it to previous results
+    }
+    Break1<-Break1+1 #move the break to next year
+  }
+  #rename columns in output for some reason
+  colnames(out.frame)<- c("Number", "Breaks", "AICc")
+  return(out.frame)
+}
+
+
+
+
+
+
+
+
 
 
 #to-do list from lab meeting
