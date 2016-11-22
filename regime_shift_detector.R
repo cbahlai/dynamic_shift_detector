@@ -343,7 +343,7 @@ out.frame<-data.frame(matrix(vector(), 0, 2,
 splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for breaks and fit to re-feed into this function
   #first fit no break model, put it in the data frame
   fit<-rickerfit(data) #fit the model
-  out<-c(max(data$year), fit[1]) #output vector with no breaks
+  out<-cbind(list(max(data$year)), list(fit[1])) #output vector with no breaks
   out.frame<-rbind(out.frame, out)
   
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
@@ -355,7 +355,7 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
       fit2<-rickerfit(part2) #fit the model to part 2
       breaks.1<-c(breaks, max(part1$year), max(part2$year)) #breaks for one break
       fit.1<-c(fit, fit1[1], fit2[1]) #fit for one break
-      out<-c(I(breaks.1), I(fit.1))#create output vector of two lists
+      out<-cbind(breaks.1, fit.1)#create output vector of two lists
       out.frame<-rbind(out.frame, out) #bind it to previous results
       if(length(part2$year)>5){ #if part 2 of the data has more than 5 rows, check for another break
         breaks<-c(breaks, max(part1$year))
