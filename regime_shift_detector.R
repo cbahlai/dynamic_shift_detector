@@ -334,13 +334,18 @@ test2$k<-k.est(test2)
 #resultant AICc as columns, respectively.
 
 
-breaks<-c() #create empty vector for storing breaks
-fit<-c() #create empty vector for storing associated AICs
+breaks<-list() #create empty vector for storing breaks
+fit<-list() #create empty vector for storing associated AICs
 out.frame<-data.frame(matrix(vector(), 0, 2,
                                   dimnames=list(c(), c("Breaks", "AICs"))),
                            stringsAsFactors=F)
 
 splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for breaks and fit to re-feed into this function
+  #first fit no break model, put it in the data frame
+  fit<-rickerfit(data) #fit the model
+  out<-c(max(data$year), fit[1]) #output vector with no breaks
+  out.frame<-rbind(out.frame, out)
+  
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   while(Break1<(max(data$year))){
     part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
@@ -350,7 +355,7 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
       fit2<-rickerfit(part2) #fit the model to part 2
       breaks.1<-c(breaks, max(part1$year), max(part2$year)) #breaks for one break
       fit.1<-c(fit, fit1[1], fit2[1]) #fit for one break
-      out<-list(I(breaks.1), I(fit.1))#create output vector of two lists
+      out<-c(I(breaks.1), I(fit.1))#create output vector of two lists
       out.frame<-rbind(out.frame, out) #bind it to previous results
       if(length(part2$year)>5){ #if part 2 of the data has more than 5 rows, check for another break
         breaks<-c(breaks, max(part1$year))
@@ -361,13 +366,13 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
     Break1<-Break1+1 #move the break to next year
   }
   #rename columns in output for some reason
-  colnames(out.frame)<- c("Breaks", "AIC")
+  colnames(out.frame)<- c("Breaks", "AICs")
   return(out.frame)
 }
 
-splitnfit(test1, breaks, fit, out.frame)
+test3d<-splitnfit(test1, breaks, fit, out.frame)
 
-
+test3d
 
 
 
