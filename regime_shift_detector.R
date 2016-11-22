@@ -323,6 +323,19 @@ k.est<-function(data){
 test2$k<-k.est(test2)
 
 
+# Okay, so now we want to generalize this so it can handle N break point cases
+# this is a bit more complex because it'll require some recursion from within the function
+# and because there will be N break cases, we won't be able to plan a 2 dimensional data frame 
+# that can have columns for all break cases. I think the best way to do this is by creating a 
+# list of break points and an associated list of AICs for the fit, and then use the sum function
+# for the AICs when including them in the output, but include the break point list as a single
+#element in the output data frame
+# so we want a 3 column data frame with number of breaks, a list of the breaks, and the 
+#resultant AICc as columns, respectively.
+
+
+
+
 #to-do list from lab meeting
 #generalize model to handle N break point cases
 #create simulations to test robustness of picking up regime shifts at different break point spacings
