@@ -334,37 +334,38 @@ test2$k<-k.est(test2)
 #resultant AICc as columns, respectively.
 
 
-nbreaks<-function(data){
-  Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
-  out.frame<-data.frame(matrix(vector(), 0, 3,
-                               dimnames=list(c(), c("Number", "Breaks", "AICc"))),
-                        stringsAsFactors=F)#Create a place to put our data
+breaks<-c() #create empty vector for storing breaks
+fit<-c() #create empty vector for storing associated AICs
+out.frame<-data.frame(matrix(vector(), 0, 2,
+                                  dimnames=list(c(), c("Breaks", "AICs"))),
+                           stringsAsFactors=F)
 
+splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for breaks and fit to re-feed into this function
+  Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
   while(Break1<(max(data$year))){
-    breaks<-c() #create empty vector for storing breaks
-    fit<-c() #create empty vector for storing associated AICs
     part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
     part2<-data[which(data$year>(Break1-1)),]
     if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2) #fit the model to part 2
-      out<-c(breaks, max(part1$year), Break2, fit1[1]+fit2[1]+fit3)#create output vector
-      if (breaks==1){
-        out[4]<-out[4]+AICcorrection(data, 1)
-      }
-      if (breaks==2){
-        out[4]<-out[4]+AICcorrection(data, 1)
-      }
+      breaks.1<-c(breaks, max(part1$year), max(part2$year)) #breaks for one break
+      fit.1<-c(fit, fit1[1], fit2[1]) #fit for one break
+      out<-list(I(breaks.1), I(fit.1))#create output vector of two lists
       out.frame<-rbind(out.frame, out) #bind it to previous results
+      if(length(part2$year)>5){ #if part 2 of the data has more than 5 rows, check for another break
+        breaks<-c(breaks, max(part1$year))
+        fit<-c(fit, fit1[1])
+        splitnfit(part2, breaks, fit, out.frame) #recursion
+      }
     }
     Break1<-Break1+1 #move the break to next year
   }
   #rename columns in output for some reason
-  colnames(out.frame)<- c("Number", "Breaks", "AICc")
+  colnames(out.frame)<- c("Breaks", "AIC")
   return(out.frame)
 }
 
-
+splitnfit(test1, breaks, fit, out.frame)
 
 
 
