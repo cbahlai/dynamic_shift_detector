@@ -343,7 +343,7 @@ out.frame<-data.frame(matrix(vector(), 0, 2,
 splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for breaks and fit to re-feed into this function
   #first fit no break model, put it in the data frame
   fit.0<-rickerfit(data) #fit the model
-  
+
   out<-cbind(list(max(data$year)), list(fit.0[1])) #output vector with no breaks
   out.frame<-rbind(out.frame, out)
   
@@ -360,36 +360,25 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
       out[2]<-list(fit.1)
       out.frame<-rbind(out.frame, out) #bind it to previous results
 
-      if(nrow(part2)<6){
+      if(nrow(part2)<6){ #if there is no room for more breaks
         breaks<-list() #empty out break list for next iteration
         fit<-list() #empty out fit list for next iteration
       }
-      # else if(nrow(part2)>5){ #if part 2 of the data has more than 5 rows, check for another break
-      #       breaks<-list(breaks, max(part1$year)) #record results from previous fits
-      #        fit<-list(fit, fit1[1])
-      #   create frame to put recursion results in
-      #   recursion.result<-data.frame(matrix(vector(), 0, 2,
-      #                                       dimnames=list(c(), c("Breaks", "AICs"))),
-      #                                stringsAsFactors=F)
-      # 
-      #   out.iter<-splitnfit(part2, breaks, fit, recursion.result) #recursion
-      # 
-      #   out.frame<-rbind(out.frame, out.iter) #bind it to previous results
-      # }
 
     }
     Break1<-Break1+1 #move the break to next year
   }
   #rename columns in output for some reason
   colnames(out.frame)<- c("Breaks", "AICs")
-  return(out.frame)
+  return(result)
 }
 
 test3d<-splitnfit(test1, breaks, fit, out.frame)
 
 test3d
 
-
+#doing the recursion within this function is falling apart due to the fact that the output
+#is complex (a data frame of lists of varying lengths)
 
 
 
