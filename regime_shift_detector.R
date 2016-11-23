@@ -354,8 +354,8 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
     if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2) #fit the model to part 2
-      breaks.1<-list(breaks, max(part1$year), max(part2$year)) #breaks for one break
-      fit.1<-list(fit, fit1[1], fit2[1]) #fit for one break
+      breaks.1<-c(breaks, max(part1$year), max(part2$year)) #breaks for one break
+      fit.1<-c(fit, fit1[1], fit2[1]) #fit for one break
       out[1]<-list(breaks.1)#create output vector of two lists
       out[2]<-list(fit.1)
       out.frame<-rbind(out.frame, out) #bind it to previous results
@@ -370,7 +370,7 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
   }
   #rename columns in output for some reason
   colnames(out.frame)<- c("Breaks", "AICs")
-  return(result)
+  return(out.frame)
 }
 
 test3d<-splitnfit(test1, breaks, fit, out.frame)
@@ -379,6 +379,32 @@ test3d
 
 #doing the recursion within this function is falling apart due to the fact that the output
 #is complex (a data frame of lists of varying lengths)
+
+#lets take our results frame from splitnfit and test each break combinaton for the
+# the ability to be broken up more. This situation will occur when the last two years
+# in the breaks list are more than 5 years apart
+
+findbreakable<-function(data){ #create a function that finds if the last subset of the data is still breakable
+  breakable<-c() #create vector to put results in
+  for (i in 1:nrow(data)){ #for each row in the data frame
+    if (length(unlist(data$Breaks[i]))>1){ #if the data has been subset
+      breakvector<-unlist(data$Breaks[i]) #create a vector of the breaks
+      L<-length(breakvector) # find out how long breakvector is
+      difference<-breakvector[L]-breakvector[L-1] #find out how big the last subset is
+      if(difference>5){ #we can break it down more if the last subset has more than 5 points in it
+        breakable.i<-TRUE
+      }else{
+        breakable.i<-FALSE #don't break more if the subset is 5 or smaller
+      }
+    }else{
+      breakable.i<-FALSE # don't break it down more if the data is frm the zero breaks model
+    }
+    breakable<-c(breakable, breakable.i)
+  }
+  return(breakable)
+
+}
+findbreakable(test3d)
 
 
 
