@@ -353,14 +353,16 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
     if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2) #fit the model to part 2
-      breaks.1<-c(breaks, max(part1$year), max(part2$year)) #breaks for one break
-      fit.1<-c(fit, fit1[1], fit2[1]) #fit for one break
-      out<-cbind(breaks.1, fit.1)#create output vector of two lists
+      breaks.1<-list(breaks, max(part1$year), max(part2$year)) #breaks for one break
+      fit.1<-list(fit, fit1[1], fit2[1]) #fit for one break
+      out[1]<-list(breaks.1)#create output vector of two lists
+      out[2]<-list(fit.1)
       out.frame<-rbind(out.frame, out) #bind it to previous results
       if(length(part2$year)>5){ #if part 2 of the data has more than 5 rows, check for another break
         breaks<-c(breaks, max(part1$year))
         fit<-c(fit, fit1[1])
-        splitnfit(part2, breaks, fit, out.frame) #recursion
+        out<-splitnfit(part2, breaks, fit, out.frame) #recursion
+        out.frame<-rbind(out.frame, out) #bind it to previous results
       }
     }
     Break1<-Break1+1 #move the break to next year
