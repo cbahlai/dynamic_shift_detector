@@ -406,7 +406,27 @@ findbreakable<-function(data){ #create a function that finds if the last subset 
 }
 findbreakable(test3d)
 
+#create a function that uses findbreakable to apply splitntfit to the datasets that are still breakble
 
+subsequentsplit<-function(fitdata, rawdata){ 
+  keepers<-findbreakable(fitdata) #find subsets that are still breakable
+  newfitdata<-fitdata[which(keepers==TRUE),] #create new data frame with only these data in it
+  breaklist<-newfitdata$Breaks #pull out our two operational objects out of data frame
+  fitlist<-newfitdata$AICs
+  
+  for(i in 1:nrow(newfitdata)){ #for each row in the new frame we need to break down
+    breakvector<-unlist(breaklist[i]) #turn the list element back into a vector
+    fitvector<-unlist(fitlist[i])
+    breakvector<-breakvector[-length(breakvector)]#remove the last element from each
+    fitvector<-fitvector[-length(fitvector)]
+    cullpoint<-max(breakvector) #find point of last break
+    testdata<-rawdata[which(rawdata$year>cullpoint),]
+    out<-test3d<-splitnfit(testdata, breakvector, fit, out.frame)
+  }
+  
+  return(out)
+}
+subsequentsplit(test3d, test1)
 
 
 #to-do list from lab meeting
