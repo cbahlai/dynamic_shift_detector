@@ -334,16 +334,16 @@ test2$k<-k.est(test2)
 #resultant AICc as columns, respectively.
 
 
-breaks<-list() #create empty vector for storing breaks
-fit<-list() #create empty vector for storing associated AICs
+breaks<-list() #create empty LIST for storing breaks
+fit<-list() #create empty LIST for storing associated AICs
 out.frame<-data.frame(matrix(vector(), 0, 2,
                                   dimnames=list(c(), c("Breaks", "AICs"))),
                            stringsAsFactors=F)
 
 splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for breaks and fit to re-feed into this function
   #first fit no break model, put it in the data frame
-  fit<-rickerfit(data) #fit the model
-  out<-cbind(list(max(data$year)), list(fit[1])) #output vector with no breaks
+  fit.0<-rickerfit(data) #fit the model
+  out<-cbind(list(max(data$year)), list(fit.0[1])) #output vector with no breaks
   out.frame<-rbind(out.frame, out)
   
   Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
