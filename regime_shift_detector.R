@@ -276,7 +276,7 @@ bestmodel(test1)
 #finally let's write a function that feeds data through the relevant functions and gives
 #us a report of the relevant things
 
-rsdetector<-function(data){ #use raw time series data
+twobreakdetector<-function(data){ #use raw time series data
   #plot the data
   plot(data)
   data1<-addNt1(data)
@@ -295,7 +295,7 @@ rsdetector<-function(data){ #use raw time series data
   print(bestmodel(data1))
 }
 
-rsdetector(test)
+twobreakdetector(test)
 #looks good!! Now it's time to try this in the wild
 
 #I'm also wondering what would happen if we solved for r while holding k constant
@@ -367,12 +367,15 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
   return(out.frame)
 }
 
+#test to see if we can make a 3d data frame (ie where elements/cells have length)
+
 test3d<-splitnfit(test1, breaks, fit, out.frame)
 
 test3d
 
 #doing the recursion within this function is falling apart due to the fact that the output
 #is complex (a data frame of lists of varying lengths)
+
 
 #lets take our results frame from splitnfit and test each break combinaton for the
 # the ability to be broken up more. This situation will occur when the last two years
@@ -440,6 +443,41 @@ fivebreak<-subsequentsplit(fourbreak, test1)
 fivebreak
 #see if the data frames can be merged without problems
 mergeit<-rbind(threebreak,fourbreak, fivebreak)
+
+
+#okay, now let's put this all together into a function that will fit all the breaks
+
+nbreaker<-function(data){
+  breaks<-list() #create empty LIST for storing breaks
+  fit<-list() #create empty LIST for storing associated AICs
+  out.frame<-data.frame(matrix(vector(), 0, 2,
+                               dimnames=list(c(), c("Breaks", "AICs"))),
+                        stringsAsFactors=F)
+  onebreak<-splitnfit(data, breaks, fit, out.frame)#get fits for zero and one break
+  feed<-onebreak #create derrived data to feed into the fit
+  out<-onebreak #prepare these data to be output
+  
+  keepers<-findbreakable(onebreak) #find subsets that are still breakable
+  newfitdata<-onebreak[which(keepers==TRUE),] #create new data frame with only these data in it
+  stillbreakable<-nrow(newfitdata)
+  while(stillbreakable>0){ #if there is data that can still be broken up
+    feed<-subsequentsplit(feed, data) #fit the subsequent split using data fed from last breaks
+    out<-rbind(out, feed) #attach this break iteration to the data frame
+    #see if there's more breaks to be had
+    keepers<-findbreakable(feed) #find subsets that are still breakable
+    newfitdata<-feed[which(keepers==TRUE),] #create new data frame with only these data in it
+    stillbreakable<-nrow(newfitdata)
+    
+  }
+  return(out)
+}
+
+#test this bad boy out
+nbreaker(test1)
+
+#victory! now we need to extract the data we've produced from this data frame, sum up AICs and add
+# the corrections, and identify the best models
+
 
 #to-do list from lab meeting
 #generalize model to handle N break point cases
