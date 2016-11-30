@@ -359,12 +359,6 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
       out[1]<-list(breaks.1)#create output vector of two lists
       out[2]<-list(fit.1)
       out.frame<-rbind(out.frame, out) #bind it to previous results
-
-      if(nrow(part2)<6){ #if there is no room for more breaks
-        breaks<-list() #empty out break list for next iteration
-        fit<-list() #empty out fit list for next iteration
-      }
-
     }
     Break1<-Break1+1 #move the break to next year
   }
@@ -407,12 +401,18 @@ findbreakable<-function(data){ #create a function that finds if the last subset 
 findbreakable(test3d)
 
 #create a function that uses findbreakable to apply splitntfit to the datasets that are still breakble
+out.frame<-data.frame(matrix(vector(), 0, 2,
+                             dimnames=list(c(), c("Breaks", "AICs"))),
+                      stringsAsFactors=F)
 
 subsequentsplit<-function(fitdata, rawdata){ 
   keepers<-findbreakable(fitdata) #find subsets that are still breakable
   newfitdata<-fitdata[which(keepers==TRUE),] #create new data frame with only these data in it
   breaklist<-newfitdata$Breaks #pull out our two operational objects out of data frame
   fitlist<-newfitdata$AICs
+  result<-data.frame(matrix(vector(), 0, 2,
+                               dimnames=list(c(), c("Breaks", "AICs"))),
+                        stringsAsFactors=F)
   
   for(i in 1:nrow(newfitdata)){ #for each row in the new frame we need to break down
     breakvector<-unlist(breaklist[i]) #turn the list element back into a vector
@@ -421,10 +421,12 @@ subsequentsplit<-function(fitdata, rawdata){
     fitvector<-fitvector[-length(fitvector)]
     cullpoint<-max(breakvector) #find point of last break
     testdata<-rawdata[which(rawdata$year>cullpoint),]
-    out<-test3d<-splitnfit(testdata, breakvector, fit, out.frame)
+    out<-test3d<-splitnfit(testdata, breakvector, fitvector, out.frame)
+    out<-out[-1,] #remove the no-break fit, we don't need that
+    result<-rbind(result, out)
   }
   
-  return(out)
+  return(result)
 }
 subsequentsplit(test3d, test1)
 
