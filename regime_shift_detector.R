@@ -413,23 +413,33 @@ subsequentsplit<-function(fitdata, rawdata){
   result<-data.frame(matrix(vector(), 0, 2,
                                dimnames=list(c(), c("Breaks", "AICs"))),
                         stringsAsFactors=F)
-  
-  for(i in 1:nrow(newfitdata)){ #for each row in the new frame we need to break down
-    breakvector<-unlist(breaklist[i]) #turn the list element back into a vector
-    fitvector<-unlist(fitlist[i])
-    breakvector<-breakvector[-length(breakvector)]#remove the last element from each
-    fitvector<-fitvector[-length(fitvector)]
-    cullpoint<-max(breakvector) #find point of last break
-    testdata<-rawdata[which(rawdata$year>cullpoint),]
-    out<-test3d<-splitnfit(testdata, breakvector, fitvector, out.frame)
-    out<-out[-1,] #remove the no-break fit, we don't need that
-    result<-rbind(result, out)
-  }
-  
+  if(nrow(newfitdata)>0){ #if there are subsets with still breakable data
+    for(i in 1:nrow(newfitdata)){ #for each row in the new frame we need to break down
+      breakvector<-unlist(breaklist[i]) #turn the list element back into a vector
+      fitvector<-unlist(fitlist[i])
+      breakvector<-breakvector[-length(breakvector)]#remove the last element from each
+      fitvector<-fitvector[-length(fitvector)]
+      cullpoint<-max(breakvector) #find point of last break
+      testdata<-rawdata[which(rawdata$year>cullpoint),]
+      out<-test3d<-splitnfit(testdata, breakvector, fitvector, out.frame)
+      out<-out[-1,] #remove the no-break fit, we don't need that
+      result<-rbind(result, out)
+      }
+    }else{ #if there is no more room for breaks in any of the fits
+    result<-result #leave result empty
+    }
   return(result)
 }
-subsequentsplit(test3d, test1)
 
+#test this
+threebreak<-subsequentsplit(test3d, test1)
+threebreak
+fourbreak<-subsequentsplit(threebreak, test1)
+fourbreak
+fivebreak<-subsequentsplit(fourbreak, test1)
+fivebreak
+#see if the data frames can be merged without problems
+mergeit<-rbind(threebreak,fourbreak, fivebreak)
 
 #to-do list from lab meeting
 #generalize model to handle N break point cases
