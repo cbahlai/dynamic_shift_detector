@@ -394,10 +394,8 @@ RSdetector(test)
 test2<-read.csv(file="test2.csv", header=TRUE)
 RSdetector(test2)
 
-#to-do list from lab meeting
+#we have a working function!!
 
-#create simulations to test robustness of picking up regime shifts at different break point spacings
-#Create simulations to test robustness of picking up regime shifts of different sizes
-#create simulations to test robustness of picking up regime shifts in different noise scenarios
+
 
 
