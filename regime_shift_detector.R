@@ -112,14 +112,14 @@ k.est<-function(data){
 test2$k<-k.est(test2)
 
 
-# Okay, so now we want to generalize this so it can handle N break point cases
+# Okay, so now we want a generalized model so it can handle N break point cases
 # this is a bit more complex because it'll require some recursion from within the function
 # and because there will be N break cases, we won't be able to plan a 2 dimensional data frame 
-# that can have columns for all break cases. I think the best way to do this is by creating a 
+# that can have columns for all break cases, as I'd originally hoped. I think the best way to do this is by creating a 
 # list of break points and an associated list of AICs for the fit, and then use the sum function
 # for the AICs when including them in the output, but include the break point list as a single
 #element in the output data frame
-# so we want a 3 column data frame with number of breaks, a list of the breaks, and the 
+# so we want a 2 column data frame with a list of the breaks, and the 
 #resultant AICc as columns, respectively.
 
 
@@ -162,9 +162,6 @@ test3d<-splitnfit(test1, breaks, fit, out.frame)
 
 test3d
 
-#doing the recursion within this function is falling apart due to the fact that the output
-#is complex (a data frame of lists of varying lengths)
-
 
 #lets take our results frame from splitnfit and test each break combinaton for the
 # the ability to be broken up more. This situation will occur when the last two years
@@ -193,7 +190,7 @@ findbreakable<-function(data){ #create a function that finds if the last subset 
 findbreakable(test3d)
 
 #create a function that uses findbreakable to apply splitntfit to the datasets that are still breakble
-out.frame<-data.frame(matrix(vector(), 0, 2,
+out.frame<-data.frame(matrix(vector(), 0, 2, #create an empty data frame we can add to later
                              dimnames=list(c(), c("Breaks", "AICs"))),
                       stringsAsFactors=F)
 
@@ -291,9 +288,9 @@ AICtally<-function(data){ #create a function that adds up the AICs in the list
 }
 AICtally(test1)
 
-#see if they'll stick together
+#see if AICtally outputs will stic to nbreaker outputs- and create a function that does this
 allfits<-function(data){
-  out<-as.data.frame(cbind(nbreaker(data), AICtally(data)))
+  out<-as.data.frame(cbind(nbreaker(data), AICtally(data))) #stick outputf from two functions into a df
   return(out)
 }
 
@@ -303,7 +300,7 @@ allfits(test1)
 
 #create a function that finds equivalent fits in n breakpoint data
 
-equivalentfit.n<-function(data){
+equivalentfit<-function(data){
   breakset<-allfits(data) #generate matrix of fits by breakpoints
   AICbest<-min(breakset$AICc) #find best AIC in the set
   deltaAIC<-AICbest+2 # create rule for equivalent models
@@ -312,13 +309,13 @@ equivalentfit.n<-function(data){
 }
 
 #and test that
-equivalentfit.n(test1)
+equivalentfit(test1)
 
 #but equivalent fit is one thing- if there's equivalent fit and one of the model set has
 # fewer parameters, we obviously want to go with that. create a function that does that but this time for n breaks
 
-bestfit.n<-function(data){
-  breakset<-equivalentfit.n(data) #get set of eqivalent models
+bestfit<-function(data){
+  breakset<-equivalentfit(data) #get set of eqivalent models
   fewest.parameters<-min(breakset$Nbreaks) #choose model with fewest break points
   out.frame<-breakset[which(breakset$Nbreaks==fewest.parameters),] #pull models with fewest parameters
   if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
@@ -327,12 +324,12 @@ bestfit.n<-function(data){
   }
   return(out.frame)
 }
-bestfit.n(test1)
+bestfit(test1)
 
 #cool. looks like we can now adapt the model fitting function for these n breakpoint data
 
-bestmodel.n<-function(data){
-  modelspecs<-bestfit.n(data) #get the particulars of the best model
+bestmodel<-function(data){
+  modelspecs<-bestfit(data) #get the particulars of the best model
   out.frame<-data.frame(matrix(vector(), 0, 7,
                                dimnames=list(c(), 
                                              c("Year1", "Year2", "AIC", "r", "rse", "k", "kse"))),
@@ -361,7 +358,7 @@ bestmodel.n<-function(data){
 
 
 #and test it
-bestmodel.n(test1)
+bestmodel(test1)
 
 #looks like that works! Okay! put it all together like we did for the 2 break model
 
@@ -375,14 +372,14 @@ RSdetector<-function(data){ #use raw time series data
   print(allfits(data1))
   #output models with equivalent performance
   writeLines(paste("Here is the set of best performing models"))
-  print(equivalentfit.n(data1))
+  print(equivalentfit(data1))
   #output model with best performance
   writeLines(paste("Here is the best model- the one with the fewest parameters and/or lowest AICc"))
-  print(bestfit.n(data1))
+  print(bestfit(data1))
   # output regression parameters of best model
   writeLines(paste("Here is the set of regression parameters"))
   writeLines(paste("Note AIC is used here for individual segments,\n decisions based on AICc for whole model"))
-  print(bestmodel.n(data1))
+  print(bestmodel(data1))
 }
 
 RSdetector(test)

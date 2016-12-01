@@ -11,7 +11,8 @@ monarch$Year<-1994:2013
 
 #okay, let's see if it'll work
 
-rsdetector(monarch)
+RSdetector(monarch)
+
 
 #let's also look at our instantaneous r and k values
 monarch1<-addNt1(monarch)
