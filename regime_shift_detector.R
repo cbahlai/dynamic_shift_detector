@@ -503,14 +503,19 @@ AICtally<-function(data){ #create a function that adds up the AICs in the list
 AICtally(test1)
 
 #see if they'll stick together
-allfits<-cbind(nbreaker(test1), AICtally(test1))
-allfits
+allfits<-function(data){
+  out<-as.data.frame(cbind(nbreaker(data), AICtally(data)))
+  return(out)
+}
+
+
+allfits(test1)
 
 
 #create a function that finds equivalent fits in n breakpoint data
 
 equivalentfit.n<-function(data){
-  breakset<-cbind(nbreaker(data), AICtally(data)) #generate matrix of fits by breakpoints
+  breakset<-allfits(data) #generate matrix of fits by breakpoints
   AICbest<-min(breakset$AICc) #find best AIC in the set
   deltaAIC<-AICbest+2 # create rule for equivalent models
   out.frame<-breakset[which(breakset$AICc<deltaAIC),] #cut out all data but equivalent models
@@ -534,6 +539,64 @@ bestfit.n<-function(data){
   return(out.frame)
 }
 bestfit.n(test1)
+
+#cool. looks like we can now adapt the model fitting function for these n breakpoint data
+
+bestmodel.n<-function(data){
+  modelspecs<-bestfit.n(data) #get the particulars of the best model
+  out.frame<-data.frame(matrix(vector(), 0, 7,
+                               dimnames=list(c(), 
+                                             c("Year1", "Year2", "AIC", "r", "rse", "k", "kse"))),
+                        stringsAsFactors=F)#Create a place to put our data
+  breakvector<-unlist(modelspecs$Breaks[1])#pull out a vector of the max year in each fit
+  
+  if (modelspecs$Nbreaks[1]==0){ #if there's no breaks
+    fit<-rickerfit(data)
+    output<-c(min(data$Year), max(data$Year), fit) #fit whole data series + output results
+    out.frame<-rbind(out.frame, output)
+    
+  } else {
+    for (i in 1:(length(breakvector))){ #for all breakpoints, including the end of the time series, in order
+      part1<-data[which(data$year<breakvector[i]+1),] #create subsets at the breakpoint
+      part2<-data[which(data$year>breakvector[i]),]
+      fit1<-rickerfit(part1) #fit first segment
+      output<-c(min(part1$year), max(part1$year), fit1)#save results of fitting segment in vector
+      out.frame<-rbind(out.frame, output)#put output for segment in a data frame
+      data<-part2 #update data to cull out already fitted segments 
+    }
+  
+  } 
+  colnames(out.frame)<- c("Year1", "Year2", "AIC", "r", "rse", "k", "kse")
+  return(out.frame)
+}
+
+
+#and test it
+bestmodel.n(test1)
+
+#looks like that works! Okay! put it all together like we did for the 2 break model
+
+RSdetector<-function(data){ #use raw time series data
+  #plot the data
+  plot(data)
+  data1<-addNt1(data)
+  plot(data1$Nt, data1$Nt1)
+  #give an output of all possible break point combinations tested
+  writeLines(paste("Here are the break points for all models tested"))
+  print(allfits(data1))
+  #output models with equivalent performance
+  writeLines(paste("Here is the set of best performing models"))
+  print(equivalentfit.n(data1))
+  #output model with best performance
+  writeLines(paste("Here is the best model- the one with the fewest parameters and/or lowest AICc"))
+  print(bestfit.n(data1))
+  # output regression parameters of best model
+  writeLines(paste("Here is the set of regression parameters"))
+  writeLines(paste("Note AIC is used here for individual segments,\n decisions based on AICc for whole model"))
+  print(bestmodel.n(data1))
+}
+
+RSdetector(test)
 
 #to-do list from lab meeting
 #generalize model to handle N break point cases
