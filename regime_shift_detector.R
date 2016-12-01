@@ -40,7 +40,7 @@ View(test1)
 
 AICcorrection<-function(data, breaks){
   a<-2*(breaks+1) # a is the number of parameters estimated each fit (r, k)
-  correction<-(2*a*(a+1))/(length(data$year)-a-1)
+  correction<-(2*a*(a+1))/(nrow(data)-a-1)
   return(correction)
 }
 
@@ -478,6 +478,28 @@ nbreaker(test1)
 #victory! now we need to extract the data we've produced from this data frame, sum up AICs and add
 # the corrections, and identify the best models
 
+#function to tally up AICs
+AICtally<-function(data){ #create a function that adds up the AICs in the list
+  fitdata<-nbreaker(data)
+  AICtots<-c() #create vector to put results in
+  N_AIC<-c() #create a vector to put counts of AICs in
+  for (i in 1:nrow(fitdata)){ #for each row in the data frame
+    AICsvector<-unlist(fitdata$AICs[i]) #create a vector of the AICs for the fit
+    total<-sum(AICsvector)#add up the AICs
+    N<-length(AICsvector)#count the AICs
+    AICtots<-c(AICtots, total)# add the total for each cell to the vector
+    N_AIC<-c(N_AIC, N) #add the count of AICs
+  }
+  out<-as.data.frame(cbind(AICtots, N_AIC)) #bind the outputs into a data frame
+  colnames(out)<- c("AICtot", "Nfits") #name the columns
+  
+  #now we want to calculate the AICc correction for each
+  out$AICc<-out$AICtot+AICcorrection(data, out$Nfits) #n breaks = n fits-1, add correction to AIC
+  
+  return(out)
+  
+}
+AICtally(test1)
 
 #to-do list from lab meeting
 #generalize model to handle N break point cases
