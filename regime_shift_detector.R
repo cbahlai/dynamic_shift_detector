@@ -501,6 +501,10 @@ AICtally<-function(data){ #create a function that adds up the AICs in the list
 }
 AICtally(test1)
 
+#see if they'll stick together
+allfits<-cbind(nbreaker(test1), AICtally(test1))
+allfits
+
 #to-do list from lab meeting
 #generalize model to handle N break point cases
 #create simulations to test robustness of picking up regime shifts at different break point spacings
