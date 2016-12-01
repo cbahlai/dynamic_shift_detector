@@ -494,7 +494,8 @@ AICtally<-function(data){ #create a function that adds up the AICs in the list
   colnames(out)<- c("AICtot", "Nfits") #name the columns
   
   #now we want to calculate the AICc correction for each
-  out$AICc<-out$AICtot+AICcorrection(data, out$Nfits) #n breaks = n fits-1, add correction to AIC
+  out$Nbreaks<-out$Nfits-1
+  out$AICc<-out$AICtot+AICcorrection(data, out$Nbreaks) #n breaks = n fits-1, add correction to AIC
   
   return(out)
   
@@ -504,6 +505,35 @@ AICtally(test1)
 #see if they'll stick together
 allfits<-cbind(nbreaker(test1), AICtally(test1))
 allfits
+
+
+#create a function that finds equivalent fits in n breakpoint data
+
+equivalentfit.n<-function(data){
+  breakset<-cbind(nbreaker(data), AICtally(data)) #generate matrix of fits by breakpoints
+  AICbest<-min(breakset$AICc) #find best AIC in the set
+  deltaAIC<-AICbest+2 # create rule for equivalent models
+  out.frame<-breakset[which(breakset$AICc<deltaAIC),] #cut out all data but equivalent models
+  return(out.frame)
+}
+
+#and test that
+equivalentfit.n(test1)
+
+#but equivalent fit is one thing- if there's equivalent fit and one of the model set has
+# fewer parameters, we obviously want to go with that. create a function that does that but this time for n breaks
+
+bestfit.n<-function(data){
+  breakset<-equivalentfit.n(data) #get set of eqivalent models
+  fewest.parameters<-min(breakset$Nbreaks) #choose model with fewest break points
+  out.frame<-breakset[which(breakset$Nbreaks==fewest.parameters),] #pull models with fewest parameters
+  if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
+    AICbest<-min(out.frame$AICc) #find best AIC in the set
+    out.frame<-out.frame[which(out.frame$AICc==AICbest),] #only bring forward the model with the best AIC
+  }
+  return(out.frame)
+}
+bestfit.n(test1)
 
 #to-do list from lab meeting
 #generalize model to handle N break point cases
