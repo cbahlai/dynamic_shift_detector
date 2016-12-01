@@ -59,6 +59,8 @@ library(minpack.lm)
 rickerfit<-function (data){
   #create an initial estimate of k to aide model convergence
   kest<-mean(data$Nt)
+  #supress warnings about failed convergence in odball fits- these models won't be favoured by AIC anyway
+  options(warn=-1)
   #fit the model
   ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=kest), data=data)
   #What outputs do we need from each run? AIC, r and k, and their resepective errors.
@@ -68,6 +70,7 @@ rickerfit<-function (data){
             summary(ricker.model)$coefficients[1,2], # se for r
             summary(ricker.model)$coefficients[2,1], # k
             summary(ricker.model)$coefficients[2,2]) # se for k
+  options(warn=0)#turn warnings back on
   return(output)
 }
 
@@ -384,8 +387,15 @@ RSdetector<-function(data){ #use raw time series data
 
 RSdetector(test)
 
+#looks like we have a working model! Boom!
+
+#try with one more dataset:
+
+test2<-read.csv(file="test2.csv", header=TRUE)
+RSdetector(test2)
+
 #to-do list from lab meeting
-#generalize model to handle N break point cases
+
 #create simulations to test robustness of picking up regime shifts at different break point spacings
 #Create simulations to test robustness of picking up regime shifts of different sizes
 #create simulations to test robustness of picking up regime shifts in different noise scenarios
