@@ -23,17 +23,17 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   year<-startyear:(startyear+Nyears-1) #-1 because time range is inclusive of year 0
   lastyear<-max(year)-1 # max is second last year because we don't have Nt1 for last year
   
-  if(is.null(startPop)){
+  if(is.null(startPop)){#let's make popualtion size default to 1000
     startPop<-1000
   }
-  if(is.null(noise)){
+  if(is.null(noise)){#no noise by default
     noise<-0
   }
   if(is.null(startK)){ #so start population can grow by default
     startK<-1500
   }
   if(is.null(startR)){
-    startR<-0.5
+    startR<-1.5
   }
   if(is.null(breaks)){
     breaks<-list(lastyear)#no break model, break occurs at end of time series
@@ -44,7 +44,7 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   if(is.null(changeR)){ #same with r
     changeR<-0
   }
-  Nt<-c(startpop) #create population vector with starting population as entry 1
+  
   
   #create a vector for noise for each year- it will be random, in the range of % given
   noisevector<-C()# make an empty vector
@@ -54,9 +54,14 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   }
   
   #create a vector of changes to k
+  k<-c(startK)# initiate vector with start value at k
+  
+  
   #create a vector of changes to r
   
-  for(i in 1:years){
+  #calculate Nt vector
+  Nt<-c(startpop) #create population vector with starting population as entry 1
+  for(i in 2:years){
     Nt1<-Nt[i]*exp(r[i]*(1- Nt[i]/k[i]))*noisevector[i]
     Nt<-c(Nt, Nt1)
     
