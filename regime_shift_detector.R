@@ -139,11 +139,11 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
   out<-cbind(list(max(data$year)), list(fit.0[1])) #output vector with no breaks
   out.frame<-rbind(out.frame, out)
   
-  Break1<-min(data$year)+2 #create first breakpoint three years into the time series to avoid overfitting
+  Break1<-min(data$year)+3 #create first breakpoint four years into the time series to avoid overfitting
   while(Break1<(max(data$year))){
     part1<-data[which(data$year<Break1),] #create subsets at the breakpoint
     part2<-data[which(data$year>(Break1-1)),]
-    if(nrow(part1)>2 & nrow(part2)>2){ #constrain model to run only when 3 or more points are present
+    if(nrow(part1)>3 & nrow(part2)>3){ #constrain model to run only when 4 or more points are present
       fit1<-rickerfit(part1) #fit the model to part 1
       fit2<-rickerfit(part2) #fit the model to part 2
       breaks.1<-c(breaks, max(part1$year), max(part2$year)) #breaks for one break
