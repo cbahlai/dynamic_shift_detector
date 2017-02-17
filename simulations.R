@@ -21,7 +21,7 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   #in order to set the default breaks, I need to know what the last year in the time range is
   #so let's create a vector of years going into the time series now
   year<-seq(startyear, (startyear+Nyears-1)) #-1 because time range is inclusive of year 0
-  lastyear<-max(year)-1 # max is second last year because we don't have Nt1 for last year
+  lastyear<-max(year)-1# max is second last year because we don't have Nt1 for last year
   
   if(missing(startPop)){#let's make popultion size default to 1000
     startPop<-1000
@@ -53,17 +53,26 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   }
   
   #create a vector of changes
-  
-  #create a vector of changes to k
-  k<-c(startK)# initiate vector with start value at k
+  change<-c()# make an empty vector
   for (i in 1:length(year)){
-    if (year[i+1] %in% breaks){
-      nextk<-k[i]*sample(100-changeK, 100+changeK)/100 #randomly chose an increase or decrease in % change
-    } else{
-      nextk<-k[i] # or if it's not a break year, don't change k
+    if(year[i] %in% breaks){
+      switch<-TRUE
+    }else{
+      switch<-FALSE
     }
-    k<-c(k, nextk)
+    
+    change<-c(change, switch) #add that to the vector
   }
+  # #create a vector of changes to k
+  # k<-c(startK)# initiate vector with start value at k
+  # for (i in 1:length(year)){
+  #   if (year[i+1] %in% breaks){
+  #     nextk<-k[i]*sample(100-changeK, 100+changeK)/100 #randomly chose an increase or decrease in % change
+  #   } else{
+  #     nextk<-k[i] # or if it's not a break year, don't change k
+  #   }
+  #   k<-c(k, nextk)
+  # }
 
   # #create a vector of changes to r
   # r<-c(startR)# initiate vector with start value at r
@@ -83,7 +92,7 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   #   Nt<-c(Nt, Nt1)
   #   
   # }
-  return(k)
+  return(change)
 }
 
 
