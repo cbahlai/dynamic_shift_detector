@@ -10,6 +10,7 @@ monarch<-read.csv(file="C:/Users/cbahl/Dropbox/Zipkin/monarchOW.csv", header=T)
 monarch$Year<-1994:2015
 
 #okay, let's see if it'll work
+source("regime_shift_detector.R")
 
 RSdetector(monarch)
 
