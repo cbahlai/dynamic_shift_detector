@@ -36,7 +36,7 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
     startR<-1.5
   }
   if(missing(breaks)){
-    breaks<-list(lastyear)#no break model, break occurs at end of time series
+    breaks<-list()#no break model, null list
   }
   if(missing(changeK)){ # by default, don't change K after a break
     changeK<-0
@@ -47,15 +47,15 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   
   #create a vector for noise for each year- it will be random, in the range of % given
   noisevector<-c()# make an empty vector
-  for (i in 1:length(year)){
+  for (i in 1:(length(year)-1)){
     instant.buzz<-1+runif(1, -noise, noise)/100 #generate an instantaneous buzz :)
     noisevector<-c(noisevector, instant.buzz) #add that to the vector
   }
   
   #create a vector of changes
-  change<-c()# make an empty vector
-  for (i in 1:length(year)){
-    if(year[i] %in% breaks){
+  change<-c(FALSE)# make a vector with first value false
+  for (i in 2:(length(year)-1)){
+    if(year[i-1] %in% breaks){
       switch<-TRUE
     }else{
       switch<-FALSE
@@ -63,16 +63,17 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
     
     change<-c(change, switch) #add that to the vector
   }
-  # #create a vector of changes to k
-  # k<-c(startK)# initiate vector with start value at k
-  # for (i in 1:length(year)){
-  #   if (year[i+1] %in% breaks){
-  #     nextk<-k[i]*sample(100-changeK, 100+changeK)/100 #randomly chose an increase or decrease in % change
-  #   } else{
-  #     nextk<-k[i] # or if it's not a break year, don't change k
-  #   }
-  #   k<-c(k, nextk)
-  # }
+  
+  #create a vector of changes to k
+  k<-c(startK)# initiate vector with start value at k
+  for (i in 1:length(year)){
+    if (change[i]){
+      nextk<-k[i]*runif(1, 100-changeK, 100+changeK)/100 #randomly chose an increase or decrease in % change
+    } else{
+      nextk<-k[i] # or if it's not a break year, don't change k
+    }
+    k<-c(k, nextk)
+  }
 
   # #create a vector of changes to r
   # r<-c(startR)# initiate vector with start value at r
@@ -92,19 +93,12 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   #   Nt<-c(Nt, Nt1)
   #   
   # }
-  return(change)
+  return(k)
 }
 
 
 
-
-
-
-
-
-
-
-
+fakedata(changeK=5, breaks=list("1905", "1910"))
 
 
 
