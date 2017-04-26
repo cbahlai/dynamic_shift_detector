@@ -23,7 +23,7 @@ addNt1<-function(data){
   data$Nt1<-Nt1
   #rename columns in data set so that they're consistent no matter 
   #what they're named before importing
-  names(data)<-c("year", "Nt", "Nt1")
+  names(data)[1:2]<-c("year", "Nt")
   #spit out that new data frame
   return(data)
 }
