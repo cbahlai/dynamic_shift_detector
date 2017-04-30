@@ -11,7 +11,7 @@ monarch<-read.csv(file="C:/Users/cbahl/Dropbox/Zipkin/monarchOW.csv", header=T)
 #data requires some light cleaning. We want year to be a continuous variable
 #and data starts in 1994- take the earlier year in the range given- replace
 
-monarch$Year<-1994:2015
+monarch$Year<-1994:2016
 colnames(monarch)[1]<-"year"
 colnames(monarch)[2]<-"Nt"
 
@@ -103,7 +103,7 @@ monarch1<-addNt1(monarch)
 ######################################
 phase.a<-function(x){x*exp(0.92*(1- x/10.13))}
 phase.b<-function(x){x*exp(1.57*(1- x/5.65))}
-phase.c<-function(x){x*exp(1.54*(1- x/2.83))}
+phase.c<-function(x){x*exp(1.49*(1- x/2.94))}
 
 
 

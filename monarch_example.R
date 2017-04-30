@@ -7,7 +7,7 @@ monarch<-read.csv(file="C:/Users/cbahl/Dropbox/Zipkin/monarchOW.csv", header=T)
 #data requires some light cleaning. We want year to be a continuous variable
 #and data starts in 1994- take the earlier year in the range given- replace
 
-monarch$Year<-1994:2015
+monarch$Year<-1994:2016
 
 #okay, let's see if it'll work
 source("regime_shift_detector.R")
