@@ -1,5 +1,9 @@
 #script to analyse time series data to determine break points
 
+#import test data for calibrating functions
+test<-read.csv(file="test.csv", header=TRUE)
+plot(test)
+
 #assume data is in form of data frame where first column is year, second is abundance (Nt)
 
 #create function that makes an additional response variable Nt1
@@ -24,6 +28,11 @@ addNt1<-function(data){
   return(data)
 }
 
+#test that our function does what we want it to do
+test1<-addNt1(test)
+View(test1)
+
+#looks good!
 
 #lets also create a function that will calculate an AICc correction factor
 #which can be added to the AIC values we compute- because we have small sample
@@ -34,6 +43,10 @@ AICcorrection<-function(data, breaks){
   correction<-(2*a*(a+1))/(nrow(data)-a-1)
   return(correction)
 }
+
+AICcorrection(test1, 0)
+
+#now we can begin building the model-fitting function
 
 
 #load minpack.lm
@@ -61,7 +74,14 @@ rickerfit<-function (data){
   return(output)
 }
 
+#test to see if the fit function works
 
+testfit<-rickerfit(test1)
+#should spit out a vector of AIC, r, rse, k, kse.
+
+testfit
+
+#okay, seems to work! 
 
 #now we need to build a tool that will cut a time series up,
 #fit the model, and spit out relevant parameters
@@ -83,12 +103,16 @@ r.est<-function(data){
   return(r)
 }
 
+test2<-test1
+test2$r<-r.est(test2)
 
 k.est<-function(data){
   r<-rickerfit(data)[2]# fit model without breakpints to get the estimated overall r
   k<- data$Nt/(1-(log(data$Nt1/data$Nt)/r)) #solve for k
   return (k)
 }
+
+test2$k<-k.est(test2)
 
 
 # Okay, so now we want a generalized model so it can handle N break point cases
@@ -135,6 +159,12 @@ splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for 
   return(out.frame)
 }
 
+#test to see if we can make a 3d data frame (ie where elements/cells have length)
+
+test3d<-splitnfit(test1, breaks, fit, out.frame)
+
+test3d
+
 
 #lets take our results frame from splitnfit and test each break combinaton for the
 # the ability to be broken up more. This situation will occur when the last two years
@@ -160,7 +190,7 @@ findbreakable<-function(data){ #create a function that finds if the last subset 
   return(breakable)
 
 }
-
+findbreakable(test3d)
 
 #create a function that uses findbreakable to apply splitntfit to the datasets that are still breakble
 out.frame<-data.frame(matrix(vector(), 0, 2, #create an empty data frame we can add to later
@@ -193,6 +223,16 @@ subsequentsplit<-function(fitdata, rawdata){
   return(result)
 }
 
+#test this
+threebreak<-subsequentsplit(test3d, test1)
+threebreak
+fourbreak<-subsequentsplit(threebreak, test1)
+fourbreak
+fivebreak<-subsequentsplit(fourbreak, test1)
+fivebreak
+#see if the data frames can be merged without problems
+mergeit<-rbind(threebreak,fourbreak, fivebreak)
+
 
 #okay, now let's put this all together into a function that will fit all the breaks
 
@@ -221,6 +261,8 @@ nbreaker<-function(data){
   return(out)
 }
 
+#test this bad boy out
+nbreaker(test1)
 
 #victory! now we need to extract the data we've produced from this data frame, sum up AICs and add
 # the corrections, and identify the best models
@@ -247,7 +289,7 @@ AICtally<-function(data){ #create a function that adds up the AICs in the list
   return(out)
   
 }
-
+AICtally(test1)
 
 #see if AICtally outputs will stic to nbreaker outputs- and create a function that does this
 allfits<-function(data){
@@ -256,6 +298,7 @@ allfits<-function(data){
 }
 
 
+allfits(test1)
 
 
 #create a function that finds equivalent fits in n breakpoint data
@@ -268,7 +311,8 @@ equivalentfit<-function(data){
   return(out.frame)
 }
 
-
+#and test that
+equivalentfit(test1)
 
 #but equivalent fit is one thing- if there's equivalent fit and one of the model set has
 # fewer parameters, we obviously want to go with that. create a function that does that but this time for n breaks
@@ -283,7 +327,7 @@ bestfit<-function(data){
   }
   return(out.frame)
 }
-
+bestfit(test1)
 
 #cool. looks like we can now adapt the model fitting function for these n breakpoint data
 
@@ -316,7 +360,8 @@ bestmodel<-function(data){
 }
 
 
-
+#and test it
+bestmodel(test1)
 
 #looks like that works! Okay! put it all together like we did for the 2 break model
 
@@ -340,11 +385,16 @@ RSdetector<-function(data){ #use raw time series data
   print(bestmodel(data1))
 }
 
-
+RSdetector(test)
 
 #looks like we have a working model! Boom!
 
-!
+#try with one more dataset:
+
+test2<-read.csv(file="test2.csv", header=TRUE)
+RSdetector(test2)
+
+#we have a working function!!
 
 
 
