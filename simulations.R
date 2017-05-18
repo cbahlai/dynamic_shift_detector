@@ -55,7 +55,7 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   #create a vector of when regime shifts will occur
   change<-c(FALSE)# make a vector with first value false- cannot have a change in first year
   for (i in 1:(length(year)-1)){
-    if(any(breaks==year[i+1])){
+    if(any(breaks==year[i])){
       switch<-TRUE
     }else{
       switch<-FALSE
@@ -67,7 +67,8 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   k<-c(startK)# initiate vector with start value at k
   for (i in 1:length(year)-1){
     if (change[i+1]){
-      nextk<-k[i]*runif(1, 100-changeK, 100+changeK)/100 #randomly chose an increase or decrease in % change
+      changesetK<-c(changeK, -changeK)
+      nextk<-k[i]*(100+(sample(changesetK, 1)))/100 #randomly chose an increase or decrease in % change
     } else{
       nextk<-k[i] # or if it's not a break year, don't change k
     }
@@ -78,7 +79,8 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   r<-c(startR)# initiate vector with start value at r
   for (i in 1:length(year)-1){
     if (change[i+1]){
-      nextr<-r[i]*runif(1, 100-changeR, 100+changeR)/100 #randomly chose an increase or decrease in % change
+      changesetR<-c(changeR, -changeR)
+      nextr<-r[i]*(100+(sample(changesetR, 1)))/100 #randomly chose an increase or decrease in % change
     } else{
       nextr<-r[i] # or if it's not a break year, don't change r
     }
@@ -99,9 +101,24 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   
   return(simdata)
 }
+fakedata(noise=5, changeK=50, changeR=10, breaks=list("1905", "1910"))
+
+#now we need to create a function that will take the simulated data, find the best break combination
+#and comare the ones it finds to the ones the data was built with
+
+#we need the functions from the regime shift detector file
+source("regime_shift_detector.R")
+
+breaks=list("1904", "1910")
+test<-fakedata(noise=5, changeK=55, changeR=40, breaks=breaks)
+plot(test)
+breaksfound<-unlist(bestmodel(addNt1(test))[2])
+endbreak<-as.numeric(length(breaksfound))-1
+breaksfound<-breaksfound[1:endbreak]
+breaksfound==breaks
 
 
+fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
 
-fakedata(noise=5, changeK=5, changeR=2, breaks=list("1905", "1910"))
 
 
