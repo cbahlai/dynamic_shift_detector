@@ -47,27 +47,26 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   
   #create a vector for noise for each year- it will be random, in the range of % given
   noisevector<-c()# make an empty vector
-  for (i in 1:(length(year)-1)){
+  for (i in 1:(length(year))){
     instant.buzz<-1+runif(1, -noise, noise)/100 #generate an instantaneous buzz :)
     noisevector<-c(noisevector, instant.buzz) #add that to the vector
   }
   
-  #create a vector of changes
-  change<-c(FALSE)# make a vector with first value false
+  #create a vector of when regime shifts will occur
+  change<-c(FALSE)# make a vector with first value false- cannot have a change in first year
   for (i in 1:(length(year)-1)){
     if(any(breaks==year[i+1])){
       switch<-TRUE
     }else{
       switch<-FALSE
     }
-    
-    change<-c(change, switch) #add that to the vector
+        change<-c(change, switch) #add that to the vector
   }
   
-  #create a vector of changes to k
+  #create a vector of changes to k 
   k<-c(startK)# initiate vector with start value at k
-  for (i in 1:length(year)){
-    if (change[i]){
+  for (i in 1:length(year)-1){
+    if (change[i+1]){
       nextk<-k[i]*runif(1, 100-changeK, 100+changeK)/100 #randomly chose an increase or decrease in % change
     } else{
       nextk<-k[i] # or if it's not a break year, don't change k
@@ -76,36 +75,33 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   }
 
   # #create a vector of changes to r
-  # r<-c(startR)# initiate vector with start value at r
-  # for (i in 2:year){
-  #   if (year[i] %in% breaks){
-  #     nextr<-r[i-1]*sample(100-changeR, 100+changeR)/100 #randomly chose an increase or decrease in % change
-  #   } else{
-  #     nextr<-r[i-1] # or if it's not a break year, don't change k
-  #   }
-  #   r<-c(r, nextr)
-  # }
-  # 
-  # #calculate Nt vector
-  # Nt<-c(startpop) #create population vector with starting population as entry 1
-  # for(i in 2:year){
-  #   Nt1<-Nt[i]*exp(r[i]*(1- Nt[i]/k[i]))*noisevector[i]
-  #   Nt<-c(Nt, Nt1)
-  #   
-  # }
-  return(change)
+  r<-c(startR)# initiate vector with start value at r
+  for (i in 1:length(year)-1){
+    if (change[i+1]){
+      nextr<-r[i]*runif(1, 100-changeR, 100+changeR)/100 #randomly chose an increase or decrease in % change
+    } else{
+      nextr<-r[i] # or if it's not a break year, don't change r
+    }
+    r<-c(r, nextr)
+  }
+  #calculate Nt vector
+  Nt<-c(startPop) #create population vector with starting population as entry 1
+  for(i in 1:length(year)){
+    Nt1<-Nt[i]*exp(r[i]*(1- Nt[i]/k[i]))*noisevector[i]
+    Nt<-c(Nt, Nt1)
+
+  }
+  #now we need to make the simulated data into a data frame which would look like
+  #one fed into the analysis
+  addyear<-max(year)+1
+  year<-c(year, addyear)
+  simdata<-as.data.frame(cbind(year, Nt))
+  
+  return(simdata)
 }
 
 
 
-fakedata(changeK=5, breaks=list("1905", "1910"))
+fakedata(noise=5, changeK=5, changeR=2, breaks=list("1905", "1910"))
 
 
-
-
-
-
-
-
-
-ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=kest), data=data)
