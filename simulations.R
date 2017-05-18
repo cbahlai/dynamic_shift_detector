@@ -54,8 +54,8 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   
   #create a vector of changes
   change<-c(FALSE)# make a vector with first value false
-  for (i in 2:(length(year)-1)){
-    if(year[i-1] %in% breaks){
+  for (i in 1:(length(year)-1)){
+    if(any(breaks==year[i+1])){
       switch<-TRUE
     }else{
       switch<-FALSE
@@ -93,7 +93,7 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   #   Nt<-c(Nt, Nt1)
   #   
   # }
-  return(k)
+  return(change)
 }
 
 
