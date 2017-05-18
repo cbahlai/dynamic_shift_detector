@@ -110,12 +110,19 @@ fakedata(noise=5, changeK=50, changeR=10, breaks=list("1905", "1910"))
 source("regime_shift_detector.R")
 
 breaks=list(1904, 1910)
+#create simulated data based on input parameters
 test<-fakedata(noise=5, changeK=55, changeR=40, breaks=breaks)
-plot(test)
+#run the data thtrough the script that finds the best model
+#and pull out a list of the breaks it found
 breaksfound<-unlist(bestmodel(addNt1(test))[2])
+#cull out the 'break' at the end of the data
 endbreak<-as.numeric(length(breaksfound))-1
 breaksfound<-breaksfound[1:endbreak]
-breaksfound==breaks
+
+#need to test if same number of breaks are found
+samebreaks<-length(breaksfound)==length(breaks)
+#then need to test if same breaks are found
+samebreaks<-all(breaksfound==breaks)
 
 
 fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
