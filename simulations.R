@@ -109,7 +109,7 @@ fakedata(noise=5, changeK=50, changeR=10, breaks=list("1905", "1910"))
 #we need the functions from the regime shift detector file
 source("regime_shift_detector.R")
 
-breaks=list("1904", "1910")
+breaks=list(1904, 1910)
 test<-fakedata(noise=5, changeK=55, changeR=40, breaks=breaks)
 plot(test)
 breaksfound<-unlist(bestmodel(addNt1(test))[2])
