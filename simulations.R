@@ -104,10 +104,38 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
 fakedata(noise=5, changeK=50, changeR=10, breaks=list("1905", "1910"))
 
 #now we need to create a function that will take the simulated data, find the best break combination
-#and comare the ones it finds to the ones the data was built with
+#and compare the ones it finds to the ones the data was built with
 
 #we need the functions from the regime shift detector file
 source("regime_shift_detector.R")
+
+
+detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR){
+  #create simulated data based on input parameters
+  test<-fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
+  #run the data thtrough the script that finds the best model
+  #and pull out a list of the breaks it found
+  breaksfound<-unlist(bestmodel(addNt1(test))[2])
+  #cull out the 'break' at the end of the data
+  endbreak<-as.numeric(length(breaksfound))-1
+  breaksfound<-breaksfound[1:endbreak]
+  # test if we found the right breaks
+  if(length(breaksfound)==length(breaks)){
+    if(all(breaksfound==breaks)){
+      victory<-1
+    }else{
+      victory<-0
+    }
+  }else{
+    victory<-0
+  }
+  return(victory)
+  
+}
+
+detect.fake.shifts(startyear=1900, Nyears=20, startPop=1500, 
+                   noise=5, startK=1000, startR=2, breaks=list(1904,1910), changeK=50, changeR=20)
+
 
 breaks=list(1904, 1910)
 #create simulated data based on input parameters
