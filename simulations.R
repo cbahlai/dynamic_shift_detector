@@ -129,12 +129,13 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   }else{
     victory<-0
   }
-  return(victory)
+  testconditions<-unlist(c(Nyears, startPop, noise, startK, startR, changeK, changeR, victory))
+  return(testconditions)
   
 }
 
 detect.fake.shifts(startyear=1900, Nyears=20, startPop=1500, 
-                   noise=5, startK=1000, startR=2, breaks=list(1904,1910), changeK=50, changeR=20)
+                   noise=15, startK=2000, startR=1.5, breaks=list(1904,1910), changeK=50, changeR=5)
 
 
 breaks=list(1904, 1910)
