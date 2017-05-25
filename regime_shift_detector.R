@@ -49,14 +49,19 @@ rickerfit<-function (data){
   #supress warnings about failed convergence in odball fits- these models won't be favoured by AIC anyway
   options(warn=-1)
   #fit the model
-  ricker.model<-nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=kest), data=data)
+  ricker.model<-tryCatch(nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=kest), data=data), error=function(e) NULL)
   #What outputs do we need from each run? AIC, r and k, and their resepective errors.
   #we'll want to create a vecor with this information in it so we can use this information later
-  output<-c(AIC(ricker.model), #AIC
-            summary(ricker.model)$coefficients[1,1], # r
-            summary(ricker.model)$coefficients[1,2], # se for r
-            summary(ricker.model)$coefficients[2,1], # k
-            summary(ricker.model)$coefficients[2,2]) # se for k
+  if(is.list(ricker.model)){
+    output<-c(AIC(ricker.model), #AIC
+              summary(ricker.model)$coefficients[1,1], # r
+              summary(ricker.model)$coefficients[1,2], # se for r
+              summary(ricker.model)$coefficients[2,1], # k
+              summary(ricker.model)$coefficients[2,2]) # se for k
+  }else{
+    output<-NULL
+  }
+  
   options(warn=0)#turn warnings back on
   return(output)
 }
@@ -344,7 +349,6 @@ RSdetector<-function(data){ #use raw time series data
 
 #looks like we have a working model! Boom!
 
-!
 
 
 
