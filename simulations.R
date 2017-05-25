@@ -8,6 +8,9 @@
 #create simulations to test robustness of picking up regime shifts in different noise scenarios
 #and while we're at it, simulations to test how this all works given different lengths of time series
 
+#get the regime shift detector functions into memory
+source("regime_shift_detector.R")
+
 #create a function that will make fake data based on specified parameters
 #assume change, noise is given in percent (0-100) scale, as is change to r, k
 
@@ -106,9 +109,6 @@ fakedata(noise=5, changeK=50, changeR=10, breaks=list("1905", "1910"))
 #now we need to create a function that will take the simulated data, find the best break combination
 #and compare the ones it finds to the ones the data was built with
 
-#we need the functions from the regime shift detector file
-source("regime_shift_detector.R")
-
 
 detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR){
   #create simulated data based on input parameters
@@ -129,13 +129,47 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   }else{
     victory<-0
   }
-  testconditions<-unlist(c(Nyears, startPop, noise, startK, startR, changeK, changeR, victory))
+  #also want to output number of breaks input
+  nbreaks<-length(breaks)
+  #output needed information
+  testconditions<-unlist(c(Nyears, startPop, noise, nbreaks, startK, startR, changeK, changeR, victory))
   return(testconditions)
   
 }
 
+#create a function that compiles sucesses and failures for iterations of fitting the model
+# on simulated data produced under given conditions
+
+break.it.down<-function(startyear, Nyears, startPop, noise, 
+                        startK, startR, breaks, changeK, changeR, nIter){
+  out.frame<-data.frame(matrix(vector(), 0, 9,
+                               dimnames=list(c(), 
+                                             c("Nyears", "startPop", "noise", "nbreaks",
+                                               "startK", "startR", "changeK", "changeR", "victory"))),
+                        stringsAsFactors=F)#Create a place to put our data
+  for (i in 1:nIter){
+    test<-detect.fake.shifts(startyear, Nyears, startPop, noise, startK, 
+                             startR, breaks, changeK, changeR)
+    out.frame<-rbind(out.frame, test)#put output for segment in a data frame
+  }
+  colnames(out.frame)<- c("Nyears", "startPop", "noise", "nbreaks",
+                          "startK", "startR", "changeK", "changeR", "victory")
+  return(out.frame)
+  
+}
+
+
+
+
+
+
+
 detect.fake.shifts(startyear=1900, Nyears=20, startPop=1500, 
                    noise=15, startK=2000, startR=1.5, breaks=list(1904,1910), changeK=50, changeR=5)
+
+break.it.down(startyear=1900, Nyears=20, startPop=1500, 
+                   noise=15, startK=2000, startR=1.5, 
+              breaks=list(1904,1910), changeK=50, changeR=5, nIter=50)
 
 
 breaks=list(1904, 1910)
