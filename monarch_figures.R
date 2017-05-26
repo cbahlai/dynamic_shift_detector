@@ -18,10 +18,6 @@ colnames(monarch)[2]<-"Nt"
 # lets use some already built functions to do our data manipulation
 source("regime_shift_detector.R")
 
-
-
-
-
 library(reshape)
 library(ggplot2)
 library(gridExtra)
