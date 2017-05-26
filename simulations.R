@@ -171,24 +171,29 @@ break.it.down(startyear=1900, Nyears=20, startPop=1500,
                    noise=15, startK=2000, startR=1.5, 
               breaks=list(1904,1910), changeK=50, changeR=5, nIter=50)
 
+#okay, now that we've got it all working, it's time to build out the tests. To prevent the permutations
+# of possible tests from going to infinity, let's create a 'base scenario' that we modify one parameter
+# at a time, and let's choose 1,2,3 break point scenarios in which to test these
 
-breaks=list(1904, 1910)
-#create simulated data based on input parameters
-test<-fakedata(noise=5, changeK=55, changeR=40, breaks=breaks)
-#run the data thtrough the script that finds the best model
-#and pull out a list of the breaks it found
-breaksfound<-unlist(bestmodel(addNt1(test))[2])
-#cull out the 'break' at the end of the data
-endbreak<-as.numeric(length(breaksfound))-1
-breaksfound<-breaksfound[1:endbreak]
+#choose base parameters
 
-#need to test if same number of breaks are found
-samebreaks<-length(breaksfound)==length(breaks)
-#then need to test if same breaks are found
-samebreaks<-all(breaksfound==breaks)
+startyear<-1 #should not affect output at all
+Nyears<-20 #processing time goes up considerably with length of time series, so make this the base scenario
+startPop<-1500 # arbtrary start point, but r, K need to be chosen in reasonable scale with this
+noise<-5 #base scenario should have very little %noise, but needs some so  there's a wee bit of error in the fit 
+startK<-2000 #seems reasonable for a startpop of 1500
+startR<-1.5 #also reasonable r
+changeK<-50 # start with big, easily detected shifts
+changeR<-50 # as with changeK
+nIter<-5 # keep this low while we build the code
 
+# create some script that randomly chooses the breaks, given certain rules
+# recall that the model assumes breaks cannot occur less than three years apart 
+# or from the start or end of the time series because of overfitting issues
 
-fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
+#minumum break must be three years in or later
+minbreak<-startyear+3
+#maximum break must be three years prior to the end of the series or before
+maxbreak<-startyear+Nyears-3
 
-
-
+breaks1=list(1904,1910)
