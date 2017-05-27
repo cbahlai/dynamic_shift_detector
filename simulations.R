@@ -124,7 +124,7 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
     if(breaksfound==breaks){
       victory<-1
     }else{
-      victory<-"almost"
+      victory<-0
     }
   }else{
     victory<-0
