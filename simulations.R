@@ -121,10 +121,10 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   breaksfound<-breaksfound[1:endbreak]
   # test if we found the right breaks
   if(length(breaksfound)==length(breaks)){
-    if(all(breaksfound==breaks)){
+    if(breaksfound==breaks){
       victory<-1
     }else{
-      victory<-0
+      victory<-"almost"
     }
   }else{
     victory<-0
@@ -167,23 +167,23 @@ break.it.down<-function(startyear, Nyears, startPop, noise,
 #choose base parameters
 
 startyear<-1 #should not affect output at all
-Nyears<-22 #processing time goes up considerably with length of time series, so make this the base scenario
+Nyears<-20 #processing time goes up considerably with length of time series, so make this the base scenario
 startPop<-3000 # arbtrary start point, but r, K need to be chosen in reasonable scale with this
 noise<-1 #base scenario should have very little %noise, but needs some so  there's a wee bit of error in the fit 
 startK<-2000 #seems reasonable for a startpop of 1500
-startR<-1.5 #also reasonable r
+startR<-2 #also reasonable r
 changeK<-50# start with big, easily detected shifts
-changeR<-70 # as with changeK
+changeR<-0 # as with changeK
 nIter<-5 # keep this low while we build the code
 
 # create some script that randomly chooses the breaks, given certain rules
 # recall that the model assumes breaks cannot occur less than three years apart 
 # or from the start or end of the time series because of overfitting issues
 
-#minumum break must be three years in or later
-minbreak<-startyear+3
-#maximum break must be three years prior to the end of the series or before, plus we lose the last year
-maxbreak<-startyear+Nyears-4
+#minumum break must be four years in or later
+minbreak<-startyear+4
+#maximum break must be four years prior to the end of the series or before, plus we lose the last year
+maxbreak<-startyear+Nyears-5
 
 #create a sequence of all posible breaks
 possibleBreaks<-seq(minbreak, maxbreak)
@@ -198,12 +198,12 @@ breaklist<-function(possibleBreaks, howmany){ #we'll cap it at 3 breaks for the 
     howmany<-1
   }
   firstbreak<-sample(possibleBreaks, 1)
-  eliminatedSecondBreaks<-seq(firstbreak-3, firstbreak+3)
+  eliminatedSecondBreaks<-seq(firstbreak-4, firstbreak+4)
   possibleSecondBreaks<-possibleBreaks[!is.element(possibleBreaks, eliminatedSecondBreaks)]
   secondbreak<-sample(possibleSecondBreaks, 1)
-  eliminatedThirdBreaks<-seq(secondbreak-3, secondbreak+3)
-  possibleThirdBreaks<-possibleSecondBreaks[!is.element(possibleSecondBreaks, eliminatedThirdBreaks)]
-  thirdbreak<-sample(possibleThirdBreaks, 1)
+  #eliminatedThirdBreaks<-seq(secondbreak-3, secondbreak+3)
+  #possibleThirdBreaks<-possibleSecondBreaks[!is.element(possibleSecondBreaks, eliminatedThirdBreaks)]
+  #thirdbreak<-sample(possibleThirdBreaks, 1)
 
   if (howmany==1){
     #for one break, this is simple
@@ -231,7 +231,7 @@ while (numLoops>0){
   #we want to test each scenario with  1-3 breaks
   breaks1<-breaklist(possibleBreaks, 1)
   breaks2<-breaklist(possibleBreaks, 2)
-  breaks3<-breaklist(possibleBreaks, 3)
+  #breaks3<-breaklist(possibleBreaks, 3)
  
   
   result.matrix1<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
@@ -240,10 +240,15 @@ while (numLoops>0){
   result.matrix2<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
                                 noise=noise, startK=startK, startR=startR, 
                                 breaks=breaks2, changeK=changeK, changeR=changeR, nIter=nIter)
-  result.matrix3<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
-                                noise=noise, startK=startK, startR=startR, 
-                                breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter)
+  #result.matrix3<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
+  #                              noise=noise, startK=startK, startR=startR, 
+  #                              breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter)
 
-  results.matrix<-rbind(results.matrix, result.matrix1, result.matrix2, result.matrix3)
+  results.matrix<-rbind(results.matrix, result.matrix1, result.matrix2)
   numLoops<-numLoops-1
 }
+
+#best performing scenario so far
+break.it.down(startyear=startyear, Nyears=Nyears, startPop=3000, 
+              +               noise=noise, startK=2000, startR=2, 
+              +               breaks=breaks1, changeK=40, changeR=0, nIter=20)
