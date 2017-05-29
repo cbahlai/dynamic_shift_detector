@@ -304,6 +304,10 @@ startPop<-3000
 nIter<-1
 numLoops<-2
 
+#we also want to keep track of how long this takes to run, so
+# Start the clock!
+ptm <- proc.time()
+
 ##############
 #base scenario
 #variables with = should be altered to see how results change
@@ -451,13 +455,14 @@ test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=
 #add these results to the data frame
 simulation.results<-rbind(simulation.results, test.iter)
 
+#note that changeR =90 sometimes throws errors. This means that it probably generates impossible values for r 
 test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
                                changeK=40, changeR=90, nIter, numLoops)
 #add these results to the data frame
 simulation.results<-rbind(simulation.results, test.iter)
 
 ##############
-#Next, let's vary Nyears up to 40, in increments of 5. This gets more computationally intense
+#Next, let's vary Nyears up to 35, in increments of 5. This gets more computationally intense
 #so if you're pressed for time, don't run this part
 #shorter series will cause errors because the 3 break points can't reliably fit in 25 years
 
@@ -471,13 +476,12 @@ test.iter<-iterate.breakitdown(startyear, Nyears=35, startPop, noise=10, startK=
 #add these results to the data frame
 simulation.results<-rbind(simulation.results, test.iter)
 
-test.iter<-iterate.breakitdown(startyear, Nyears=40, startPop, noise=10, startK=2000, startR=2, 
-                               changeK=40, changeR=20, nIter, numLoops)
-#add these results to the data frame
-simulation.results<-rbind(simulation.results, test.iter)
+
+# Stop the clock
+proc.time() - ptm
 
 #Encoding results
-#All scripted breaks found
+#All scripted breaks found =1
 #extra breaks found = 2
 #missing breaks (when more than one break in sim data) =3
 #right number of breaks but not all match =4
