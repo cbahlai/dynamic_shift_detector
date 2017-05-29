@@ -121,28 +121,38 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   #need to deal with the case that no breaks are found
   #model will find a 'break' at the end of the sequence, leading to a of length 1
   if (length(breaksfound)==1){
-  #first, if we found no breaks, we can't have a match, because the data by definition has breaks in it
-    victory<-"fail"
-    nbreaksout<-0
+  #first, if we found no breaks
+    if (nbreaksin == 0){  #if there's no breaks in the sim data, great!
+      victory<-1
+      nbreaksout<-0
+    }else{ #if we found no breaks, but there was breaks to find
+      victory<-0
+      nbreaksout<-0
+    }
+    
   }else{ # test if we found the right breaks
     #cull out the 'break' at the end of the data
     breaksfound<-breaksfound[-length(breaksfound)]
     #and for output purposes
     nbreaksout<-length(breaksfound)
     #obviously- if the breaks are all found, bam, the breaks are all found
-    if(length(breaksfound)==length(breaks) & all(breaksfound==breaks)){
-      victory<-"match"
+    if(all(breaksfound %in% breaks)){
+      victory<-1
     }else{
       if(any(breaksfound %in% breaks)){ #if we find some breaks
+        #to deal with a data type issue, encode partial matches numerically
+        #extra breaks found = 2
+        #missing breaks (when more than one break in sim data) =3
+        #right number of breaks but not all match =4
         if(length(breaksfound)>length(breaks)){
-          victory<-"extra"
+          victory<-2 
         }else if(length(breaksfound)<length(breaks)){
-          victory<-"missed"
+          victory<-3
         }else if(length(breaksfound)==length(breaks)){
-          victory<-"partial"
+          victory<-4
         }
       }else{
-        victory<-"fail"
+        victory<-0
       }
     }
   }
@@ -183,7 +193,7 @@ break.it.down<-function(startyear, Nyears, startPop, noise,
 #choose base parameters
 
 startyear<-1 #should not affect output at all
-Nyears<-20 #processing time goes up considerably with length of time series, so make this the base scenario
+Nyears<-25 #processing time goes up considerably with length of time series, so make this the base scenario
 startPop<-3000 # arbtrary start point, but r, K need to be chosen in reasonable scale with this
 noise<-1 #base scenario should have very little %noise, but needs some so  there's a wee bit of error in the fit 
 startK<-2000 #seems reasonable for a startpop of 1500
@@ -217,9 +227,9 @@ breaklist<-function(possibleBreaks, howmany){ #we'll cap it at 3 breaks for the 
   eliminatedSecondBreaks<-seq(firstbreak-4, firstbreak+4)
   possibleSecondBreaks<-possibleBreaks[!is.element(possibleBreaks, eliminatedSecondBreaks)]
   secondbreak<-sample(possibleSecondBreaks, 1)
-  #eliminatedThirdBreaks<-seq(secondbreak-3, secondbreak+3)
-  #possibleThirdBreaks<-possibleSecondBreaks[!is.element(possibleSecondBreaks, eliminatedThirdBreaks)]
-  #thirdbreak<-sample(possibleThirdBreaks, 1)
+  eliminatedThirdBreaks<-seq(secondbreak-3, secondbreak+3)
+  possibleThirdBreaks<-possibleSecondBreaks[!is.element(possibleSecondBreaks, eliminatedThirdBreaks)]
+  thirdbreak<-sample(possibleThirdBreaks, 1)
 
   if (howmany==1){
     #for one break, this is simple
@@ -244,25 +254,34 @@ results.matrix<-data.frame(matrix(vector(), 0, 10,
 #base scenario
 
 while (numLoops>0){
-  #we want to test each scenario with  1-3 breaks
+  #we want to test each scenario with  0-3 breaks
+  breaks0<-list() #empty list for no break scenario
   breaks1<-breaklist(possibleBreaks, 1)
   breaks2<-breaklist(possibleBreaks, 2)
-  #breaks3<-breaklist(possibleBreaks, 3)
- 
-  
+  breaks3<-breaklist(possibleBreaks, 3)
+  result.matrix0<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
+                                 noise=noise, startK=startK, startR=startR, 
+                                 breaks=breaks0, changeK=changeK, changeR=changeR, nIter=nIter)
   result.matrix1<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
                                 noise=noise, startK=startK, startR=startR, 
                                 breaks=breaks1, changeK=changeK, changeR=changeR, nIter=nIter)
   result.matrix2<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
                                 noise=noise, startK=startK, startR=startR, 
                                 breaks=breaks2, changeK=changeK, changeR=changeR, nIter=nIter)
-  #result.matrix3<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
-  #                              noise=noise, startK=startK, startR=startR, 
-  #                              breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter)
+  result.matrix3<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
+                                noise=noise, startK=startK, startR=startR, 
+                                breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter)
 
-  results.matrix<-rbind(results.matrix, result.matrix1, result.matrix2)
+  results.matrix<-rbind(results.matrix, result.matrix0, result.matrix1, result.matrix2, result.matrix3)
   numLoops<-numLoops-1
 }
+
+#Encoding results
+#All scripted breaks found
+#extra breaks found = 2
+#missing breaks (when more than one break in sim data) =3
+#right number of breaks but not all match =4
+# total failure to find correct breaks =0 
 
 #best performing scenario so far
 break.it.down(startyear=startyear, Nyears=Nyears, startPop=3000,
