@@ -206,13 +206,6 @@ nIter<-5 # keep this low while we build the code
 # recall that the model assumes breaks cannot occur less than three years apart 
 # or from the start or end of the time series because of overfitting issues
 
-#minumum break must be four years in or later
-minbreak<-startyear+4
-#maximum break must be four years prior to the end of the series or before, plus we lose the last year
-maxbreak<-startyear+Nyears-5
-
-#create a sequence of all posible breaks
-possibleBreaks<-seq(minbreak, maxbreak)
 
 #create a function that generates a list of breaks randomly from the available set of breaks
 
@@ -244,37 +237,244 @@ breaklist<-function(possibleBreaks, howmany){ #we'll cap it at 3 breaks for the 
   return(breaks)
 }
 
-numLoops<-2 #how many times to we want to iterate through new break point choice set
-results.matrix<-data.frame(matrix(vector(), 0, 10, 
+
+#create a function that uses break.it.down to test the function in four break point scenarios
+
+iterate.breakitdown<-function(startyear, Nyears, startPop, 
+                              noise, startK, startR, 
+                              changeK, changeR, nIter, numLoops){
+  #figure out possible breaks
+  #minumum break must be four years in or later
+  minbreak<-startyear+4
+  #maximum break must be four years prior to the end of the series or before, plus we lose the last year
+  maxbreak<-startyear+Nyears-5
+  #create a sequence of all posible breaks
+  possibleBreaks<-seq(minbreak, maxbreak)
+  #Create a place to put our data
+  results.matrix<-data.frame(matrix(vector(), 0, 10, 
+                                    dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
+                                                         "startK", "startR", "changeK", "changeR", 
+                                                         "victory"))),
+                             stringsAsFactors=F)
+  
+   while (numLoops>0){
+    #we want to test each scenario with  0-3 breaks
+    breaks0<-list() #empty list for no break scenario
+    breaks1<-breaklist(possibleBreaks, 1)
+    breaks2<-breaklist(possibleBreaks, 2)
+    breaks3<-breaklist(possibleBreaks, 3)
+    result.matrix0<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
+                                  noise=noise, startK=startK, startR=startR, 
+                                  breaks=breaks0, changeK=changeK, changeR=changeR, nIter=nIter)
+    result.matrix1<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
+                                  noise=noise, startK=startK, startR=startR, 
+                                  breaks=breaks1, changeK=changeK, changeR=changeR, nIter=nIter)
+    result.matrix2<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
+                                  noise=noise, startK=startK, startR=startR, 
+                                  breaks=breaks2, changeK=changeK, changeR=changeR, nIter=nIter)
+    result.matrix3<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
+                                  noise=noise, startK=startK, startR=startR, 
+                                  breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter)
+    
+    results.matrix<-rbind(results.matrix, result.matrix0, result.matrix1, result.matrix2, result.matrix3)
+    numLoops<-numLoops-1
+   }
+  return(results.matrix)
+}
+
+
+
+
+##########################################################
+
+#Okay, now we're ready to generate some data on how well the RS detector works
+#rerun from this point and alter parts here to fiddle with simulations
+
+#first, create a frame to put the data in as we change the scenarios
+simulation.results<-data.frame(matrix(vector(), 0, 10, 
                                   dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
                                                        "startK", "startR", "changeK", "changeR", 
                                                        "victory"))),
                            stringsAsFactors=F)#Create a place to put our data
 
+#create base simulation
+#we will be holding these values completely constant for comparisons' sake 
+startyear<-1
+startPop<-3000
+nIter<-1
+numLoops<-2
+
+##############
 #base scenario
+#variables with = should be altered to see how results change
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
 
-while (numLoops>0){
-  #we want to test each scenario with  0-3 breaks
-  breaks0<-list() #empty list for no break scenario
-  breaks1<-breaklist(possibleBreaks, 1)
-  breaks2<-breaklist(possibleBreaks, 2)
-  breaks3<-breaklist(possibleBreaks, 3)
-  result.matrix0<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
-                                 noise=noise, startK=startK, startR=startR, 
-                                 breaks=breaks0, changeK=changeK, changeR=changeR, nIter=nIter)
-  result.matrix1<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
-                                noise=noise, startK=startK, startR=startR, 
-                                breaks=breaks1, changeK=changeK, changeR=changeR, nIter=nIter)
-  result.matrix2<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
-                                noise=noise, startK=startK, startR=startR, 
-                                breaks=breaks2, changeK=changeK, changeR=changeR, nIter=nIter)
-  result.matrix3<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
-                                noise=noise, startK=startK, startR=startR, 
-                                breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter)
 
-  results.matrix<-rbind(results.matrix, result.matrix0, result.matrix1, result.matrix2, result.matrix3)
-  numLoops<-numLoops-1
-}
+##############
+#let's start by varying noise. We'll do it in 10% increments (note 0% noise causes error, we'll use 1%)
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=1, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=20, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=30, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=40, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=50, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=60, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=70, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=80, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=90, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+##############
+#Next, let's vary changeK by increments of 10% (base scenario is 40, so skip that value)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=0, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=10, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=20, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=30, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=50, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=60, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=70, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=80, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=90, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+##############
+#Next, let's vary changeR by increments of 10% (base scenario is 20, so skip that value)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=0, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=10, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=30, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=40, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=50, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=60, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=70, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=80, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=25, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=90, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+##############
+#Next, let's vary Nyears up to 40, in increments of 5. This gets more computationally intense
+#so if you're pressed for time, don't run this part
+#shorter series will cause errors because the 3 break points can't reliably fit in 25 years
+
+test.iter<-iterate.breakitdown(startyear, Nyears=30, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=35, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
+
+test.iter<-iterate.breakitdown(startyear, Nyears=40, startPop, noise=10, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
 
 #Encoding results
 #All scripted breaks found
@@ -283,7 +483,16 @@ while (numLoops>0){
 #right number of breaks but not all match =4
 # total failure to find correct breaks =0 
 
-#best performing scenario so far
-break.it.down(startyear=startyear, Nyears=Nyears, startPop=3000,
-              noise=20, startK=2000, startR=2,
-              breaks=breaks2, changeK=40, changeR=0, nIter=20)
+
+
+
+
+
+
+
+
+
+
+
+
+
