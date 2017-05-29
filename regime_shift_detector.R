@@ -302,7 +302,7 @@ bestmodel<-function(data){
   
   if (modelspecs$Nbreaks[1]==0){ #if there's no breaks
     fit<-rickerfit(data)
-    output<-c(min(data$Year), max(data$Year), fit) #fit whole data series + output results
+    output<-c(min(data$year), max(data$year), fit) #fit whole data series + output results
     out.frame<-rbind(out.frame, output)
     
   } else {
