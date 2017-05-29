@@ -115,24 +115,40 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   test<-fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
   #run the data thtrough the script that finds the best model
   #and pull out a list of the breaks it found
-  breaksfound<-unlist(bestmodel(addNt1(test))[2])
-  #cull out the 'break' at the end of the data
-  endbreak<-as.numeric(length(breaksfound))-1
-  breaksfound<-breaksfound[1:endbreak]
-  # test if we found the right breaks
-  if(length(breaksfound)==length(breaks)){
-    if(breaksfound==breaks){
-      victory<-1
+  breaksfound<-bestmodel(addNt1(test))$Year2
+  #also want to output number of breaks input (deal with output in conditionals)
+  nbreaksin<-length(breaks)
+  #need to deal with the case that no breaks are found
+  #model will find a 'break' at the end of the sequence, leading to a of length 1
+  if (length(breaksfound)==1){
+  #first, if we found no breaks, we can't have a match, because the data by definition has breaks in it
+    victory<-"fail"
+    nbreaksout<-0
+  }else{ # test if we found the right breaks
+    #cull out the 'break' at the end of the data
+    breaksfound<-breaksfound[-length(breaksfound)]
+    #and for output purposes
+    nbreaksout<-length(breaksfound)
+    #obviously- if the breaks are all found, bam, the breaks are all found
+    if(length(breaksfound)==length(breaks) & all(breaksfound==breaks)){
+      victory<-"match"
     }else{
-      victory<-0
+      if(any(breaksfound %in% breaks)){ #if we find some breaks
+        if(length(breaksfound)>length(breaks)){
+          victory<-"extra"
+        }else if(length(breaksfound)<length(breaks)){
+          victory<-"missed"
+        }else if(length(breaksfound)==length(breaks)){
+          victory<-"partial"
+        }
+      }else{
+        victory<-"fail"
+      }
     }
-  }else{
-    victory<-0
   }
-  #also want to output number of breaks input
-  nbreaks<-length(breaks)
+  
   #output needed information
-  testconditions<-unlist(c(Nyears, startPop, noise, nbreaks, startK, startR, changeK, changeR, victory))
+  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory))
   return(testconditions)
   
 }
@@ -142,17 +158,17 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
 
 break.it.down<-function(startyear, Nyears, startPop, noise, 
                         startK, startR, breaks, changeK, changeR, nIter){
-  out.frame<-data.frame(matrix(vector(), 0, 9,
+  out.frame<-data.frame(matrix(vector(), 0, 10,
                                dimnames=list(c(), 
-                                             c("Nyears", "startPop", "noise", "nbreaks",
+                                             c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
                                                "startK", "startR", "changeK", "changeR", "victory"))),
-                        stringsAsFactors=F)#Create a place to put our data
+                        stringsAsFactors=FALSE)#Create a place to put our data
   for (i in 1:nIter){
     test<-detect.fake.shifts(startyear, Nyears, startPop, noise, startK, 
                              startR, breaks, changeK, changeR)
     out.frame<-rbind(out.frame, test)#put output for segment in a data frame
   }
-  colnames(out.frame)<- c("Nyears", "startPop", "noise", "nbreaks",
+  colnames(out.frame)<- c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
                           "startK", "startR", "changeK", "changeR", "victory")
   return(out.frame)
   
@@ -219,8 +235,8 @@ breaklist<-function(possibleBreaks, howmany){ #we'll cap it at 3 breaks for the 
 }
 
 numLoops<-2 #how many times to we want to iterate through new break point choice set
-results.matrix<-data.frame(matrix(vector(), 0, 9, 
-                                  dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaks",
+results.matrix<-data.frame(matrix(vector(), 0, 10, 
+                                  dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
                                                        "startK", "startR", "changeK", "changeR", 
                                                        "victory"))),
                            stringsAsFactors=F)#Create a place to put our data
@@ -249,6 +265,6 @@ while (numLoops>0){
 }
 
 #best performing scenario so far
-break.it.down(startyear=startyear, Nyears=Nyears, startPop=3000, 
-              +               noise=noise, startK=2000, startR=2, 
-              +               breaks=breaks1, changeK=40, changeR=0, nIter=20)
+break.it.down(startyear=startyear, Nyears=Nyears, startPop=3000,
+              noise=20, startK=2000, startR=2,
+              breaks=breaks2, changeK=40, changeR=0, nIter=20)
