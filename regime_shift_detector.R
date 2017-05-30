@@ -30,7 +30,7 @@ addNt1<-function(data){
 #sizes we need to more heavily penalize models with more parameters
 
 AICcorrection<-function(data, breaks){
-  a<-2*(breaks+1) # a is the number of parameters estimated each fit (r, k)
+  a<-3*(breaks+1) # a is the number of parameters estimated each fit (r, k, error)
   correction<-(2*a*(a+1))/(nrow(data)-a-1)
   return(correction)
 }
