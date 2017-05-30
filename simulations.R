@@ -554,17 +554,18 @@ pal.notwo<-c("#e31a1c")
 noise.experiment.correct<-summarize.results[which(summarize.results$changeK==40 & 
                                                     summarize.results$changeR==20 &
                                             summarize.results$victory==1),]
-noiseplot<-ggplot(noise.experiment.correct, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="loess", se=TRUE)+
-  geom_point(colour="black", pch=21, size=4)+
-  theme_bw(base_size = 20)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("% noise")+
-  ylab("proportion of outcomes")
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.1,1)
 
-noiseplot
+noiseplot.correct
 
 #next do partial sucesses
 # case 2 is extra breaks found
@@ -576,12 +577,13 @@ noise.experiment.extra<-summarize.results[which(summarize.results$changeK==40 &
 noiseplot.extra<-ggplot(noise.experiment.extra, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
   geom_smooth(method="loess", se=TRUE)+
-  geom_point(colour="black", pch=21, size=4)+
-  theme_bw(base_size = 20)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("% noise")+
-  ylab("proportion of outcomes")
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.1,1)
 
 noiseplot.extra
 
@@ -594,12 +596,13 @@ noise.experiment.missing<-summarize.results[which(summarize.results$changeK==40 
 noiseplot.missing<-ggplot(noise.experiment.missing, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
   geom_smooth(method="loess", se=TRUE)+
-  geom_point(colour="black", pch=21, size=4)+
-  theme_bw(base_size = 20)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("% noise")+
-  ylab("proportion of outcomes")
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.1,1)
 
 noiseplot.missing
 
@@ -612,12 +615,13 @@ noise.experiment.mismatch<-summarize.results[which(summarize.results$changeK==40
 noiseplot.mismatch<-ggplot(noise.experiment.mismatch, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
   geom_smooth(method="loess", se=TRUE)+
-  geom_point(colour="black", pch=21, size=4)+
-  theme_bw(base_size = 20)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("% noise")+
-  ylab("proportion of outcomes")
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.1,1)
 
 noiseplot.mismatch
 
@@ -630,13 +634,59 @@ noise.experiment.fail<-summarize.results[which(summarize.results$changeK==40 &
 noiseplot.fail<-ggplot(noise.experiment.fail, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="loess", se=TRUE)+
-  geom_point(colour="black", pch=21, size=4)+
-  theme_bw(base_size = 20)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("% noise")+
-  ylab("proportion of outcomes")
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.1,1)
 
 noiseplot.fail
 
+#stack plots together
+library(gridExtra)
+library(grid)
+
+noiseplot.correct1<-noiseplot.correct+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=90)+
+  annotate("text", x=75, y=0.8, label="A", size=7)
+
+noiseplot.extra1<-noiseplot.extra+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=90)+
+  annotate("text", x=75, y=0.8, label="B", size=7)
+
+noiseplot.missing1<-noiseplot.missing+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=90)+
+  annotate("text", x=75, y=0.8, label="C", size=7)
+
+noiseplot.mismatch1<-noiseplot.mismatch+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=90)+
+  annotate("text", x=75, y=0.8, label="D", size=7)
+  
+noiseplot.fail1<-noiseplot.fail+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=90)+
+  annotate("text", x=75, y=0.8, label="E", size=7)
+
+grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=2), 
+                         arrangeGrob(noiseplot.missing1, noiseplot.mismatch1, ncol=2),
+                         arrangeGrob(noiseplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                         gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("% noise", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
 
