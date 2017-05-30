@@ -488,6 +488,10 @@ simulation.results<-rbind(simulation.results, test.iter)
 # Stop the clock
 proc.time() - ptm
 
+#save the simulation results in case we screw something up in the 
+#data manipulation stage
+write.csv(simulation.results, file="simulation.results.csv")
+
 #Encoding results
 #All scripted breaks found =1
 #extra breaks found = 2
@@ -495,7 +499,40 @@ proc.time() - ptm
 #right number of breaks but not all match =4
 # total failure to find correct breaks =0 
 
+#because our function was throwing an error about results as factors, we encoded 
+#them numerically as above. But before we do any operations on it we should 
+#at least convert the outcome integers to factors so we don't accidentally 
+#do any numeric operations on them. 
 
+#note the other columns of the data frame are also basically ordinal/catagorical, but
+#we want to retain their order for plotting purposes, so we'll just proceed
+#with caution there
+
+
+simulation.results$victory<-as.factor(simulation.results$victory)
+
+
+#now we need to take th data produced and summarize it for plotting
+library(plyr)
+
+
+#count number of times a unique observation was recorded
+summarize.results<-count(simulation.results,
+                          c("Nyears", "startPop", "noise", "nbreaksin",
+                            "startK", "startR", "changeK", "changeR", "victory"))
+
+#count the number of times a unique scenario was attemped (should be pretty uniform but 
+# there are someetimes cases where the fit failed) (for a denominator!)
+
+tot.tests<-count(simulation.results,
+                 c("Nyears", "startPop", "noise", "nbreaksin",
+                   "startK", "startR", "changeK", "changeR"))
+#rename the freq column so we don't have naming issues with a merge
+colnames(tot.tests)[colnames(tot.tests) == 'freq']<-'total.tests'
+
+summarize.results<-merge(summarize.results, tot.tests)
+
+summarize.results$proportion<-summarize.results$freq/summarize.results$total
 
 
 
