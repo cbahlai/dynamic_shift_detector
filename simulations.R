@@ -534,14 +534,109 @@ summarize.results<-merge(summarize.results, tot.tests)
 
 summarize.results$proportion<-summarize.results$freq/summarize.results$total
 
+#all right, let's get plotting!
+library(ggplot2)
 
 
+#choose a color palette
+pal<-c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")
+pal.nozero<-c("#fecc5c", "#fd8d3c", "#e31a1c") #for cases where no zero break scenarios are plotted
+pal.noone<-c("#fd8d3c", "#e31a1c")
+pal.notwo<-c("#e31a1c")
 
+#we need to subset the data by factor we're varying.
 
+###############
+# Noise experiment
 
+#start with sucesses
 
+noise.experiment.correct<-summarize.results[which(summarize.results$changeK==40 & 
+                                                    summarize.results$changeR==20 &
+                                            summarize.results$victory==1),]
+noiseplot<-ggplot(noise.experiment.correct, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")
 
+noiseplot
 
+#next do partial sucesses
+# case 2 is extra breaks found
 
+noise.experiment.extra<-summarize.results[which(summarize.results$changeK==40 & 
+                                                    summarize.results$changeR==20 &
+                                                    summarize.results$victory==2),]
+
+noiseplot.extra<-ggplot(noise.experiment.extra, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.nozero)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")
+
+noiseplot.extra
+
+#missing breaks in output
+
+noise.experiment.missing<-summarize.results[which(summarize.results$changeK==40 & 
+                                                  summarize.results$changeR==20 &
+                                                  summarize.results$victory==3),]
+
+noiseplot.missing<-ggplot(noise.experiment.missing, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.notwo)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")
+
+noiseplot.missing
+
+#mismatched breaks in output
+
+noise.experiment.mismatch<-summarize.results[which(summarize.results$changeK==40 & 
+                                                    summarize.results$changeR==20 &
+                                                    summarize.results$victory==4),]
+
+noiseplot.mismatch<-ggplot(noise.experiment.mismatch, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.noone)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")
+
+noiseplot.mismatch
+
+#complete failure to find breaks in output
+
+noise.experiment.fail<-summarize.results[which(summarize.results$changeK==40 & 
+                                                     summarize.results$changeR==20 &
+                                                     summarize.results$victory==0),]
+
+noiseplot.fail<-ggplot(noise.experiment.fail, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=4)+
+  theme_bw(base_size = 20)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")
+
+noiseplot.fail
 
 
