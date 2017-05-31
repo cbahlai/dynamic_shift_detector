@@ -1019,4 +1019,160 @@ grid.arrange(arrangeGrob(arrangeGrob(changeRplot.correct1, changeRplot.extra1, n
                                       gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
 dev.off()
 
+###############
+# Time series length experiment
+
+#start with successes
+
+Nyears.experiment.correct<-summarize.results[which(summarize.results$noise==5 & 
+                                                     summarize.results$changeK==40 & summarize.results$changeR==20 &
+                                                     summarize.results$victory==1),]
+Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("Series length")+
+  ylab("proportion of outcomes")+
+  xlim(22,33)+ylim(-0.2,1.1)
+
+Nyearsplot.correct
+
+#next do partial successes
+# case 2 is extra breaks found
+
+Nyears.experiment.extra<-summarize.results[which(summarize.results$noise==5 & 
+                                                   summarize.results$changeK==40 & summarize.results$changeR==20 &
+                                                   summarize.results$victory==2),]
+
+Nyearsplot.extra<-ggplot(Nyears.experiment.extra, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.nozero)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("Series length ")+
+  ylab("proportion of outcomes")+
+  xlim(22,33)+ylim(-0.2,1.1)
+
+Nyearsplot.extra
+
+#missing breaks in output
+
+Nyears.experiment.missing<-summarize.results[which(summarize.results$noise==5 & 
+                                                     summarize.results$changeK==40 & summarize.results$changeR==20 &
+                                                     summarize.results$victory==3),]
+
+Nyearsplot.missing<-ggplot(Nyears.experiment.missing, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.notwo)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("Series length")+
+  ylab("proportion of outcomes")+
+  xlim(22,33)+ylim(-0.2,1.1)
+
+Nyearsplot.missing
+
+#mismatched breaks in output
+
+Nyears.experiment.mismatch<-summarize.results[which(summarize.results$noise==5 & 
+                                                      summarize.results$changeK==40 & summarize.results$changeR==20 &
+                                                      summarize.results$victory==4),]
+
+Nyearsplot.mismatch<-ggplot(Nyears.experiment.mismatch, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.noone)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("Series length ")+
+  ylab("proportion of outcomes")+
+  xlim(22,33)+ylim(-0.2,1.1)
+
+Nyearsplot.mismatch
+
+#complete failure to find breaks in output
+
+Nyears.experiment.fail<-summarize.results[which(summarize.results$noise==5 & 
+                                                  summarize.results$changeK==40 & summarize.results$changeR==20 &
+                                                  summarize.results$victory==0),]
+
+Nyearsplot.fail<-ggplot(Nyears.experiment.fail, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("Series length ")+
+  ylab("proportion of outcomes")+
+  xlim(22,33)+ylim(-0.2,1.1)
+
+Nyearsplot.fail
+
+#stack plots together
+library(gridExtra)
+library(grid)
+
+Nyearsplot.correct1<-Nyearsplot.correct+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=10)+
+  annotate("text", x=32.2, y=1.03, label="A", size=5)
+
+Nyearsplot.extra1<-Nyearsplot.extra+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=10)+
+  annotate("text", x=32.2, y=1.03, label="B", size=5)
+
+Nyearsplot.missing1<-Nyearsplot.missing+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=10)+
+  annotate("text", x=32.2, y=1.03, label="C", size=5)
+
+Nyearsplot.mismatch1<-Nyearsplot.mismatch+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=10)+
+  annotate("text", x=32.2, y=1.03, label="D", size=5)
+
+Nyearsplot.fail1<-Nyearsplot.fail+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=10)+
+  annotate("text", x=32.2, y=1.03, label="E", size=5)
+
+
+grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, ncol=2), 
+                         arrangeGrob(Nyearsplot.missing1, Nyearsplot.mismatch1, ncol=2),
+                         arrangeGrob(Nyearsplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("Series length ", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+
+
+
+pdf("Nyears_simulation_outcomes.pdf", height=10, width=5)
+grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, ncol=2), 
+                         arrangeGrob(Nyearsplot.missing1, Nyearsplot.mismatch1, ncol=2),
+                         arrangeGrob(Nyearsplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("Series length ", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+dev.off()
 
