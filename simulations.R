@@ -861,3 +861,162 @@ grid.arrange(arrangeGrob(arrangeGrob(changeKplot.correct1, changeKplot.extra1, n
                                       gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
 dev.off()
 
+
+###############
+# r experiment
+
+#start with successes
+
+changeR.experiment.correct<-summarize.results[which(summarize.results$noise==5 & 
+                                                      summarize.results$changeK==40 &
+                                                      summarize.results$victory==1),]
+changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% change in r")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+changeRplot.correct
+
+#next do partial successes
+# case 2 is extra breaks found
+
+changeR.experiment.extra<-summarize.results[which(summarize.results$noise==5 & 
+                                                    summarize.results$changeK==40 &
+                                                    summarize.results$victory==2),]
+
+changeRplot.extra<-ggplot(changeR.experiment.extra, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.nozero)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% change in r ")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+changeRplot.extra
+
+#missing breaks in output
+
+changeR.experiment.missing<-summarize.results[which(summarize.results$noise==5 & 
+                                                      summarize.results$changeK==40 &
+                                                      summarize.results$victory==3),]
+
+changeRplot.missing<-ggplot(changeR.experiment.missing, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.notwo)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% change in r")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+changeRplot.missing
+
+#mismatched breaks in output
+
+changeR.experiment.mismatch<-summarize.results[which(summarize.results$noise==5 & 
+                                                       summarize.results$changeK==40 &
+                                                       summarize.results$victory==4),]
+
+changeRplot.mismatch<-ggplot(changeR.experiment.mismatch, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal.noone)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% change in r ")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+changeRplot.mismatch
+
+#complete failure to find breaks in output
+
+changeR.experiment.fail<-summarize.results[which(summarize.results$noise==5 & 
+                                                   summarize.results$changeK==40 &
+                                                   summarize.results$victory==0),]
+
+changeRplot.fail<-ggplot(changeR.experiment.fail, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="loess", se=TRUE)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% change in r ")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+changeRplot.fail
+
+#stack plots together
+library(gridExtra)
+library(grid)
+
+changeRplot.correct1<-changeRplot.correct+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="A", size=5)
+
+changeRplot.extra1<-changeRplot.extra+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="B", size=5)
+
+changeRplot.missing1<-changeRplot.missing+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="C", size=5)
+
+changeRplot.mismatch1<-changeRplot.mismatch+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="D", size=5)
+
+changeRplot.fail1<-changeRplot.fail+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="E", size=5)
+
+
+grid.arrange(arrangeGrob(arrangeGrob(changeRplot.correct1, changeRplot.extra1, ncol=2), 
+                         arrangeGrob(changeRplot.missing1, changeRplot.mismatch1, ncol=2),
+                         arrangeGrob(changeRplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("% change in r ", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+
+
+
+pdf("changeR_simulation_outcomes.pdf", height=10, width=5)
+grid.arrange(arrangeGrob(arrangeGrob(changeRplot.correct1, changeRplot.extra1, ncol=2), 
+                         arrangeGrob(changeRplot.missing1, changeRplot.mismatch1, ncol=2),
+                         arrangeGrob(changeRplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("% change in r ", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+dev.off()
+
+
