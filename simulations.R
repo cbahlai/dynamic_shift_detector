@@ -553,7 +553,8 @@ pal.notwo<-c("#e31a1c")
 
 noise.experiment.correct<-summarize.results[which(summarize.results$changeK==40 & 
                                                     summarize.results$changeR==20 &
-                                            summarize.results$victory==1),]
+                                            summarize.results$victory==1 &
+                                              summarize.results$Nyears==25),]
 noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="loess", se=TRUE)+
@@ -572,7 +573,8 @@ noiseplot.correct
 
 noise.experiment.extra<-summarize.results[which(summarize.results$changeK==40 & 
                                                     summarize.results$changeR==20 &
-                                                    summarize.results$victory==2),]
+                                                    summarize.results$victory==2 &
+                                            summarize.results$Nyears==25),]
 
 noiseplot.extra<-ggplot(noise.experiment.extra, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
@@ -591,7 +593,8 @@ noiseplot.extra
 
 noise.experiment.missing<-summarize.results[which(summarize.results$changeK==40 & 
                                                   summarize.results$changeR==20 &
-                                                  summarize.results$victory==3),]
+                                                  summarize.results$victory==3 &
+                                              summarize.results$Nyears==25),]
 
 noiseplot.missing<-ggplot(noise.experiment.missing, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
@@ -610,7 +613,8 @@ noiseplot.missing
 
 noise.experiment.mismatch<-summarize.results[which(summarize.results$changeK==40 & 
                                                     summarize.results$changeR==20 &
-                                                    summarize.results$victory==4),]
+                                                    summarize.results$victory==4 &
+                                               summarize.results$Nyears==25),]
 
 noiseplot.mismatch<-ggplot(noise.experiment.mismatch, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
@@ -629,7 +633,8 @@ noiseplot.mismatch
 
 noise.experiment.fail<-summarize.results[which(summarize.results$changeK==40 & 
                                                      summarize.results$changeR==20 &
-                                                     summarize.results$victory==0),]
+                                                     summarize.results$victory==0 &
+                                           summarize.results$Nyears==25),]
 
 noiseplot.fail<-ggplot(noise.experiment.fail, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
@@ -711,7 +716,8 @@ dev.off()
 
 changeK.experiment.correct<-summarize.results[which(summarize.results$noise==5 & 
                                                       summarize.results$changeR==20 &
-                                                      summarize.results$victory==1),]
+                                                      summarize.results$victory==1 &
+                                                summarize.results$Nyears==25),]
 changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="loess", se=TRUE)+
@@ -730,7 +736,8 @@ changeKplot.correct
 
 changeK.experiment.extra<-summarize.results[which(summarize.results$noise==5 & 
                                                     summarize.results$changeR==20 &
-                                                    summarize.results$victory==2),]
+                                                    summarize.results$victory==2 &
+                                              summarize.results$Nyears==25),]
 
 changeKplot.extra<-ggplot(changeK.experiment.extra, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
@@ -749,7 +756,8 @@ changeKplot.extra
 
 changeK.experiment.missing<-summarize.results[which(summarize.results$noise==5 & 
                                                       summarize.results$changeR==20 &
-                                                      summarize.results$victory==3),]
+                                                      summarize.results$victory==3 &
+                                                summarize.results$Nyears==25),]
 
 changeKplot.missing<-ggplot(changeK.experiment.missing, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
@@ -768,7 +776,8 @@ changeKplot.missing
 
 changeK.experiment.mismatch<-summarize.results[which(summarize.results$noise==5 & 
                                                        summarize.results$changeR==20 &
-                                                       summarize.results$victory==4),]
+                                                       summarize.results$victory==4 &
+                                                 summarize.results$Nyears==25),]
 
 changeKplot.mismatch<-ggplot(changeK.experiment.mismatch, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
@@ -787,7 +796,8 @@ changeKplot.mismatch
 
 changeK.experiment.fail<-summarize.results[which(summarize.results$noise==5 & 
                                                    summarize.results$changeR==20 &
-                                                   summarize.results$victory==0),]
+                                                   summarize.results$victory==0 &
+                                             summarize.results$Nyears==25),]
 
 changeKplot.fail<-ggplot(changeK.experiment.fail, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
@@ -869,7 +879,8 @@ dev.off()
 
 changeR.experiment.correct<-summarize.results[which(summarize.results$noise==5 & 
                                                       summarize.results$changeK==40 &
-                                                      summarize.results$victory==1),]
+                                                      summarize.results$victory==1 &
+                                                summarize.results$Nyears==25),]
 changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="loess", se=TRUE)+
@@ -888,7 +899,8 @@ changeRplot.correct
 
 changeR.experiment.extra<-summarize.results[which(summarize.results$noise==5 & 
                                                     summarize.results$changeK==40 &
-                                                    summarize.results$victory==2),]
+                                                    summarize.results$victory==2 &
+                                              summarize.results$Nyears==25),]
 
 changeRplot.extra<-ggplot(changeR.experiment.extra, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
@@ -907,7 +919,8 @@ changeRplot.extra
 
 changeR.experiment.missing<-summarize.results[which(summarize.results$noise==5 & 
                                                       summarize.results$changeK==40 &
-                                                      summarize.results$victory==3),]
+                                                      summarize.results$victory==3 &
+                                                summarize.results$Nyears==25),]
 
 changeRplot.missing<-ggplot(changeR.experiment.missing, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
@@ -926,7 +939,8 @@ changeRplot.missing
 
 changeR.experiment.mismatch<-summarize.results[which(summarize.results$noise==5 & 
                                                        summarize.results$changeK==40 &
-                                                       summarize.results$victory==4),]
+                                                       summarize.results$victory==4 &
+                                                 summarize.results$Nyears==25),]
 
 changeRplot.mismatch<-ggplot(changeR.experiment.mismatch, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
@@ -945,7 +959,8 @@ changeRplot.mismatch
 
 changeR.experiment.fail<-summarize.results[which(summarize.results$noise==5 & 
                                                    summarize.results$changeK==40 &
-                                                   summarize.results$victory==0),]
+                                                   summarize.results$victory==0 &
+                                             summarize.results$Nyears==25),]
 
 changeRplot.fail<-ggplot(changeR.experiment.fail, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
