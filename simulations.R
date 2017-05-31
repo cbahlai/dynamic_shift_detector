@@ -563,7 +563,7 @@ noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, proportion, fill=
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("proportion of outcomes")+
-  xlim(0,90)+ylim(-0.1,1)
+  xlim(0,90)+ylim(-0.2,1.1)
 
 noiseplot.correct
 
@@ -583,7 +583,7 @@ noiseplot.extra<-ggplot(noise.experiment.extra, aes(noise, proportion, fill=as.f
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("proportion of outcomes")+
-  xlim(0,90)+ylim(-0.1,1)
+  xlim(0,90)+ylim(-0.2,1.1)
 
 noiseplot.extra
 
@@ -602,7 +602,7 @@ noiseplot.missing<-ggplot(noise.experiment.missing, aes(noise, proportion, fill=
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("proportion of outcomes")+
-  xlim(0,90)+ylim(-0.1,1)
+  xlim(0,90)+ylim(-0.2,1.1)
 
 noiseplot.missing
 
@@ -621,7 +621,7 @@ noiseplot.mismatch<-ggplot(noise.experiment.mismatch, aes(noise, proportion, fil
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("proportion of outcomes")+
-  xlim(0,90)+ylim(-0.1,1)
+  xlim(0,90)+ylim(-0.2,1.1)
 
 noiseplot.mismatch
 
@@ -640,7 +640,7 @@ noiseplot.fail<-ggplot(noise.experiment.fail, aes(noise, proportion, fill=as.fac
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("proportion of outcomes")+
-  xlim(0,90)+ylim(-0.1,1)
+  xlim(0,90)+ylim(-0.2,1.1)
 
 noiseplot.fail
 
@@ -652,35 +652,36 @@ noiseplot.correct1<-noiseplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
-  coord_fixed(ratio=90)+
-  annotate("text", x=75, y=0.8, label="A", size=7)
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="A", size=5)
 
 noiseplot.extra1<-noiseplot.extra+
   guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
-  coord_fixed(ratio=90)+
-  annotate("text", x=75, y=0.8, label="B", size=7)
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="B", size=5)
 
 noiseplot.missing1<-noiseplot.missing+
   guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
-  coord_fixed(ratio=90)+
-  annotate("text", x=75, y=0.8, label="C", size=7)
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="C", size=5)
 
 noiseplot.mismatch1<-noiseplot.mismatch+
   guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
-  coord_fixed(ratio=90)+
-  annotate("text", x=75, y=0.8, label="D", size=7)
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="D", size=5)
   
 noiseplot.fail1<-noiseplot.fail+
   ylab(NULL)+
   xlab(NULL)+
-  coord_fixed(ratio=90)+
-  annotate("text", x=75, y=0.8, label="E", size=7)
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="E", size=5)
+
 
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=2), 
                          arrangeGrob(noiseplot.missing1, noiseplot.mismatch1, ncol=2),
@@ -690,3 +691,14 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=
                          sub=textGrob("% noise", 
                                       gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
 
+
+
+pdf("noise_simulation_outcomes.pdf", height=10, width=5)
+grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=2), 
+                         arrangeGrob(noiseplot.missing1, noiseplot.mismatch1, ncol=2),
+                         arrangeGrob(noiseplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("% noise", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+dev.off()
