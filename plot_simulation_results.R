@@ -1,4 +1,18 @@
-simulation.results<-read.csv(file="simresults/simulation.results.csv", header=TRUE)
+
+
+#read in all the sim data files- this was done in pieces to keep it computationally doable
+
+
+#get a list of file names:
+setwd("simresults/")
+file_list<-list.files()
+
+#loop through the files, merge 'em together
+simulation.results <- do.call("rbind",lapply(file_list,
+                                  FUN=function(files){read.csv(files, header=TRUE)}))
+
+setwd("..")
+
 #Encoding results
 #All scripted breaks found =1
 #extra breaks found = 2
