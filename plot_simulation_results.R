@@ -1,4 +1,4 @@
-simulation.results<-read.csv(file="simulation.results.csv", header=TRUE)
+simulation.results<-read.csv(file="simresults/simulation.results.csv", header=TRUE)
 #Encoding results
 #All scripted breaks found =1
 #extra breaks found = 2
