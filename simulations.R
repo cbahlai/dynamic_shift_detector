@@ -484,6 +484,11 @@ test.iter<-iterate.breakitdown(startyear, Nyears=31, startPop, noise=5, startK=2
                                changeK=40, changeR=20, nIter, numLoops)
 #add these results to the data frame
 simulation.results<-rbind(simulation.results, test.iter)
+simulation.results<-rbind(simulation.results, test.iter)
+test.iter<-iterate.breakitdown(startyear, Nyears=33, startPop, noise=5, startK=2000, startR=2, 
+                               changeK=40, changeR=20, nIter, numLoops)
+#add these results to the data frame
+simulation.results<-rbind(simulation.results, test.iter)
 
 # Stop the clock
 proc.time() - ptm
