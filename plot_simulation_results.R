@@ -205,7 +205,7 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=
 
 
 
-pdf("noise_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/noise_simulation_outcomes.pdf", height=10, width=5)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=2), 
                          arrangeGrob(noiseplot.missing1, noiseplot.mismatch1, ncol=2),
                          arrangeGrob(noiseplot.fail1, ncol=1, widths=0.6), ncol=1,
@@ -368,7 +368,7 @@ grid.arrange(arrangeGrob(arrangeGrob(changeKplot.correct1, changeKplot.extra1, n
 
 
 
-pdf("changeK_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/changeK_simulation_outcomes.pdf", height=10, width=5)
 grid.arrange(arrangeGrob(arrangeGrob(changeKplot.correct1, changeKplot.extra1, ncol=2), 
                          arrangeGrob(changeKplot.missing1, changeKplot.mismatch1, ncol=2),
                          arrangeGrob(changeKplot.fail1, ncol=1, widths=0.6), ncol=1,
@@ -531,7 +531,7 @@ grid.arrange(arrangeGrob(arrangeGrob(changeRplot.correct1, changeRplot.extra1, n
 
 
 
-pdf("changeR_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/changeR_simulation_outcomes.pdf", height=10, width=5)
 grid.arrange(arrangeGrob(arrangeGrob(changeRplot.correct1, changeRplot.extra1, ncol=2), 
                          arrangeGrob(changeRplot.missing1, changeRplot.mismatch1, ncol=2),
                          arrangeGrob(changeRplot.fail1, ncol=1, widths=0.6), ncol=1,
@@ -688,7 +688,7 @@ grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, nco
 
 
 
-pdf("Nyears_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/Nyears_simulation_outcomes.pdf", height=10, width=5)
 grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, ncol=2), 
                          arrangeGrob(Nyearsplot.missing1, Nyearsplot.mismatch1, ncol=2),
                          arrangeGrob(Nyearsplot.fail1, ncol=1, widths=0.6), ncol=1,
