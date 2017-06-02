@@ -484,9 +484,9 @@ test.iter<-iterate.breakitdown(startyear, Nyears=31, startPop, noise=5, startK=2
                                changeK=40, changeR=20, nIter, numLoops)
 #add these results to the data frame
 simulation.results<-rbind(simulation.results, test.iter)
-simulation.results<-rbind(simulation.results, test.iter)
+
 test.iter<-iterate.breakitdown(startyear, Nyears=33, startPop, noise=5, startK=2000, startR=2, 
-                               changeK=40, changeR=20, nIter, numLoops)
+                               changeK=40, changeR=20, nIter=1, numLoops)
 #add these results to the data frame
 simulation.results<-rbind(simulation.results, test.iter)
 
@@ -495,5 +495,5 @@ proc.time() - ptm
 
 #save the simulation results in case we screw something up in the 
 #data manipulation stage
-write.csv(simulation.results, file="simulation.results1.csv")
+write.csv(simulation.results, file="simulation.results2.csv")
 
