@@ -94,8 +94,8 @@ harmonia.year.timeseries<-ggplot(harmonia.year, aes(year, Nt, colour=phase, cex=
   geom_line(data=harmonia.year, aes(x=year, y=Nt, group=phasea), size=1)+
   geom_line(size=1)+
   xlab("\nYear")+
-  ylab("\nHectares occupied\n")+
-  theme_bw()+
+  ylab("\nAverage adults per trap\n")+
+  theme_bw(base_size = 10)+
   coord_equal(ratio=10)+
   geom_vline(xintercept=c(2000.5, 2005.5), colour="blue", linetype="longdash")+ 
   theme(legend.key = element_blank())+
@@ -126,8 +126,7 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   geom_point(size=4)+
   scale_color_manual(values = pal)+
   xlab("\nN(t)")+ylab("\nN(t+1)\n")+
-  theme_bw()+ 
-  theme(legend.key = element_blank())+
+  theme_bw(base_size = 16)+ 
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
@@ -135,6 +134,14 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   coord_equal(ratio=1)+
   xlim(-0.1,1)+ylim(-0.1,1)+
   geom_text(aes(label=year), hjust=-0.3, vjust=1, color="black", size=3)+
-  theme(axis.text=axis.text.theme, 
-        axis.title=axis.title.theme, legend.title=axis.title.theme, legend.text=axis.text.theme)
+  theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
+        legend.title=axis.title.theme, legend.text=axis.text.theme)
+
 harmonia.year.ricker
+harmonia.ricker.nolegend<-harmonia.year.ricker+ theme(legend.position = "none")
+harmonia.ricker.nolegend
+
+pdf("figs/harmonia_fit.pdf", height=10, width=7)
+grid.arrange(arrangeGrob(harmonia.year.timeseries, harmonia.ricker.nolegend, 
+                                     heights=c(0.4, 0.6)))
+dev.off()
