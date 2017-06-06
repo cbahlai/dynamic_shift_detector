@@ -118,7 +118,7 @@ harmonia.year1<-addNt1(harmonia.year)
 phase.a<-function(x){x*exp(1.27*(1- x/0.33))}
 phase.b<-function(x){x*exp(2.22*(1- x/0.46))}
 phase.c<-function(x){x*exp(1.50*(1- x/0.29))}
-
+phase.d<-function(x){x*exp(1.55*(1- x/0.42))}
 
 
 
@@ -131,8 +131,10 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
+  stat_function(fun=phase.d, colour="black", size=1, linetype="longdash")+
   coord_equal(ratio=1)+
-  geom_text(hjust=1.3, vjust=0, color="black")+
+  xlim(-0.1,1)+ylim(-0.1,1)+
+  geom_text(aes(label=year), hjust=-0.3, vjust=1, color="black", size=3)+
   theme(axis.text=axis.text.theme, 
         axis.title=axis.title.theme, legend.title=axis.title.theme, legend.text=axis.text.theme)
 harmonia.year.ricker
