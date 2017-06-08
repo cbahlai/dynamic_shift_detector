@@ -78,9 +78,9 @@ monarch.timeseries<-ggplot(monarch, aes(year, Nt, colour=phase, cex=1))+
   xlab("\nYear")+
   ylab("\nHectares occupied\n")+
   theme_bw()+
-  coord_equal(ratio=0.75)+
+  coord_equal(ratio=0.5)+
   geom_vline(xintercept=c(2003.5, 2008.5), colour="blue", linetype="longdash")+ 
-  theme(legend.key = element_blank())+
+  theme(legend.key = element_blank(), plot.margin=unit(c(15,0,0,0), "mm"))+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)
 
@@ -114,7 +114,18 @@ monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
   coord_equal(ratio=1)+
-  geom_text(hjust=1.3, vjust=0, color="black")+
+  xlim(-2,19)+ylim(-2,19)+
+  geom_text(hjust=1.3, vjust=0, color="black", size=3)+
   theme(axis.text=axis.text.theme, 
         axis.title=axis.title.theme, legend.title=axis.title.theme, legend.text=axis.text.theme)
 monarch.ricker
+
+
+monarch.ricker.nolegend<-monarch.ricker+ 
+  theme(legend.position = "none", plot.margin=unit(c(0,30,10,0), "mm"))
+monarch.ricker.nolegend
+
+pdf("figs/monarch_fit.pdf", height=10, width=7)
+grid.arrange(arrangeGrob(monarch.timeseries, monarch.ricker.nolegend, 
+                         heights=c(1, 1)))
+dev.off()
