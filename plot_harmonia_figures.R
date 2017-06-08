@@ -98,7 +98,8 @@ harmonia.year.timeseries<-ggplot(harmonia.year, aes(year, Nt, colour=phase, cex=
   theme_bw(base_size = 10)+
   coord_equal(ratio=10)+
   geom_vline(xintercept=c(2000.5, 2005.5), colour="blue", linetype="longdash")+ 
-  theme(legend.key = element_blank())+
+  geom_vline(xintercept=2013.5, colour="black", linetype="longdash", size=1)+
+  theme(legend.key = element_blank(),plot.margin=unit(c(15,0,0,0), "mm"))+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)
 
@@ -138,10 +139,11 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
         legend.title=axis.title.theme, legend.text=axis.text.theme)
 
 harmonia.year.ricker
-harmonia.ricker.nolegend<-harmonia.year.ricker+ theme(legend.position = "none")
+harmonia.ricker.nolegend<-harmonia.year.ricker+ 
+  theme(legend.position = "none", plot.margin=unit(c(0,30,10,0), "mm"))
 harmonia.ricker.nolegend
 
 pdf("figs/harmonia_fit.pdf", height=10, width=7)
 grid.arrange(arrangeGrob(harmonia.year.timeseries, harmonia.ricker.nolegend, 
-                                     heights=c(0.4, 0.6)))
+                                     heights=c(1, 1)))
 dev.off()
