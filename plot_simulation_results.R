@@ -78,7 +78,7 @@ noise.experiment.correct<-summarize.results[which(summarize.results$changeK==40 
                                                     summarize.results$Nyears==25),]
 noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -99,7 +99,7 @@ noise.experiment.extra<-summarize.results[which(summarize.results$changeK==40 &
 
 noiseplot.extra<-ggplot(noise.experiment.extra, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -119,7 +119,7 @@ noise.experiment.missing<-summarize.results[which(summarize.results$changeK==40 
 
 noiseplot.missing<-ggplot(noise.experiment.missing, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -139,7 +139,7 @@ noise.experiment.mismatch<-summarize.results[which(summarize.results$changeK==40
 
 noiseplot.mismatch<-ggplot(noise.experiment.mismatch, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -159,7 +159,7 @@ noise.experiment.fail<-summarize.results[which(summarize.results$changeK==40 &
 
 noiseplot.fail<-ggplot(noise.experiment.fail, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -241,7 +241,7 @@ changeK.experiment.correct<-summarize.results[which(summarize.results$noise==5 &
                                                       summarize.results$Nyears==25),]
 changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -262,7 +262,7 @@ changeK.experiment.extra<-summarize.results[which(summarize.results$noise==5 &
 
 changeKplot.extra<-ggplot(changeK.experiment.extra, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -282,7 +282,7 @@ changeK.experiment.missing<-summarize.results[which(summarize.results$noise==5 &
 
 changeKplot.missing<-ggplot(changeK.experiment.missing, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -302,7 +302,7 @@ changeK.experiment.mismatch<-summarize.results[which(summarize.results$noise==5 
 
 changeKplot.mismatch<-ggplot(changeK.experiment.mismatch, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -322,7 +322,7 @@ changeK.experiment.fail<-summarize.results[which(summarize.results$noise==5 &
 
 changeKplot.fail<-ggplot(changeK.experiment.fail, aes(changeK, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -404,7 +404,7 @@ changeR.experiment.correct<-summarize.results[which(summarize.results$noise==5 &
                                                       summarize.results$Nyears==25),]
 changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -425,7 +425,7 @@ changeR.experiment.extra<-summarize.results[which(summarize.results$noise==5 &
 
 changeRplot.extra<-ggplot(changeR.experiment.extra, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -445,7 +445,7 @@ changeR.experiment.missing<-summarize.results[which(summarize.results$noise==5 &
 
 changeRplot.missing<-ggplot(changeR.experiment.missing, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -465,7 +465,7 @@ changeR.experiment.mismatch<-summarize.results[which(summarize.results$noise==5 
 
 changeRplot.mismatch<-ggplot(changeR.experiment.mismatch, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -485,7 +485,7 @@ changeR.experiment.fail<-summarize.results[which(summarize.results$noise==5 &
 
 changeRplot.fail<-ggplot(changeR.experiment.fail, aes(changeR, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -565,14 +565,14 @@ Nyears.experiment.correct<-summarize.results[which(summarize.results$noise==5 &
                                                      summarize.results$victory==1),]
 Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("Series length")+
   ylab("proportion of outcomes")+
-  xlim(22,33)+ylim(-0.2,1.1)
+  xlim(24,35)+ylim(-0.2,1.1)
 
 Nyearsplot.correct
 
@@ -585,14 +585,14 @@ Nyears.experiment.extra<-summarize.results[which(summarize.results$noise==5 &
 
 Nyearsplot.extra<-ggplot(Nyears.experiment.extra, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.nozero)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("Series length ")+
   ylab("proportion of outcomes")+
-  xlim(22,33)+ylim(-0.2,1.1)
+  xlim(24,35)+ylim(-0.2,1.1)
 
 Nyearsplot.extra
 
@@ -604,14 +604,14 @@ Nyears.experiment.missing<-summarize.results[which(summarize.results$noise==5 &
 
 Nyearsplot.missing<-ggplot(Nyears.experiment.missing, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.notwo)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("Series length")+
   ylab("proportion of outcomes")+
-  xlim(22,33)+ylim(-0.2,1.1)
+  xlim(24,35)+ylim(-0.2,1.1)
 
 Nyearsplot.missing
 
@@ -623,14 +623,14 @@ Nyears.experiment.mismatch<-summarize.results[which(summarize.results$noise==5 &
 
 Nyearsplot.mismatch<-ggplot(Nyears.experiment.mismatch, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal.noone)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("Series length ")+
   ylab("proportion of outcomes")+
-  xlim(22,33)+ylim(-0.2,1.1)
+  xlim(24,35)+ylim(-0.2,1.1)
 
 Nyearsplot.mismatch
 
@@ -642,14 +642,14 @@ Nyears.experiment.fail<-summarize.results[which(summarize.results$noise==5 &
 
 Nyearsplot.fail<-ggplot(Nyears.experiment.fail, aes(Nyears, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="loess", se=TRUE)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
   xlab("Series length ")+
   ylab("proportion of outcomes")+
-  xlim(22,33)+ylim(-0.2,1.1)
+  xlim(24,35)+ylim(-0.2,1.1)
 
 Nyearsplot.fail
 
@@ -662,34 +662,34 @@ Nyearsplot.correct1<-Nyearsplot.correct+
   ylab(NULL)+
   xlab(NULL)+
   coord_fixed(ratio=10)+
-  annotate("text", x=32.2, y=1.03, label="A", size=5)
+  annotate("text", x=34.2, y=1.03, label="A", size=5)
 
 Nyearsplot.extra1<-Nyearsplot.extra+
   guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
   coord_fixed(ratio=10)+
-  annotate("text", x=32.2, y=1.03, label="B", size=5)
+  annotate("text", x=34.2, y=1.03, label="B", size=5)
 
 Nyearsplot.missing1<-Nyearsplot.missing+
   guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
   coord_fixed(ratio=10)+
-  annotate("text", x=32.2, y=1.03, label="C", size=5)
+  annotate("text", x=34.2, y=1.03, label="C", size=5)
 
 Nyearsplot.mismatch1<-Nyearsplot.mismatch+
   guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
   coord_fixed(ratio=10)+
-  annotate("text", x=32.2, y=1.03, label="D", size=5)
+  annotate("text", x=34.2, y=1.03, label="D", size=5)
 
 Nyearsplot.fail1<-Nyearsplot.fail+
   ylab(NULL)+
   xlab(NULL)+
   coord_fixed(ratio=10)+
-  annotate("text", x=32.2, y=1.03, label="E", size=5)
+  annotate("text", x=34.2, y=1.03, label="E", size=5)
 
 
 grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, ncol=2), 
