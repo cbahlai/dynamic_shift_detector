@@ -712,3 +712,179 @@ grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, nco
                                       gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
 dev.off()
 
+
+###############
+# Outcome by incoming data experiment
+
+#now we're looking at the data in the oposite way- so, we have an outcome, what is the 
+# probability of error of that outcome
+summarize.results.breaksout<-count(simulation.results,
+                         c("Nyears", "noise", "nbreaksin","nbreaksout",
+                            "changeK", "changeR"))
+
+#cut out scenarios changing k and R abecause this wouldn't be 'known' from this side
+
+breaksout.results<-summarize.results.breaksout[which(summarize.results.breaksout$Nyears==25 & 
+                                                       summarize.results.breaksout$changeK==40 & 
+                                                       summarize.results.breaksout$changeR==20 & 
+                                                       summarize.results.breaksout$nbreaksout<4),]
+breaksout.tot.tests<-ddply(breaksout.results,
+                                   c("Nyears", "noise", "nbreaksout",
+                                     "changeK", "changeR"), summarise,
+                           tot.tests=sum(freq))
+
+
+#count the number of times a unique scenario was attemped (should be pretty uniform but 
+# there are someetimes cases where the fit failed) (for a denominator!)
+
+
+summarize.results.breaksout.1<-merge(breaksout.results, breaksout.tot.tests)
+
+
+summarize.results.breaksout.1$proportion<-summarize.results.breaksout.1$freq/summarize.results.breaksout.1$tot.tests
+
+# Scenario- 0 breaks observed
+breaksout.results.0<-summarize.results.breaksout.1[which(summarize.results.breaksout.1$nbreaksout==0),]
+
+
+#plot by outcome
+pal<-c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")
+
+noiseplot.breaksout.0<-ggplot(breaksout.results.0, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Actual number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+noiseplot.breaksout.0
+
+# Scenario- 1 breaks observed
+breaksout.results.1<-summarize.results.breaksout.1[which(summarize.results.breaksout.1$nbreaksout==1),]
+
+
+#plot by outcome
+pal<-c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")
+
+noiseplot.breaksout.1<-ggplot(breaksout.results.1, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Actual number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+noiseplot.breaksout.1
+
+# Scenario- 2 breaks observed
+breaksout.results.2<-summarize.results.breaksout.1[which(summarize.results.breaksout.1$nbreaksout==2),]
+
+
+#plot by outcome
+pal<-c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")
+
+noiseplot.breaksout.2<-ggplot(breaksout.results.2, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Actual number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+noiseplot.breaksout.2
+
+# Scenario- 3 breaks observed
+breaksout.results.3<-summarize.results.breaksout.1[which(summarize.results.breaksout.1$nbreaksout==3),]
+
+
+#plot by outcome
+pal<-c("#ffffb2", "#fecc5c", "#fd8d3c", "#e31a1c")
+
+noiseplot.breaksout.3<-ggplot(breaksout.results.3, aes(noise, proportion, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(colour="black", pch=21, size=3)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Actual number\nof breaks"))+
+  theme(legend.key=element_blank())+
+  xlab("% noise")+
+  ylab("proportion of outcomes")+
+  xlim(0,90)+ylim(-0.2,1.1)
+
+noiseplot.breaksout.3
+
+
+#stack plots together
+library(gridExtra)
+library(grid)
+
+noiseplot.breaksout.01<-noiseplot.breaksout.0+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="A", size=5)
+
+noiseplot.breaksout.11<-noiseplot.breaksout.1+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="B", size=5)
+
+noiseplot.breaksout.21<-noiseplot.breaksout.2+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="C", size=5)
+
+noiseplot.breaksout.31<-noiseplot.breaksout.3+
+  guides(fill=FALSE)+
+  ylab(NULL)+
+  xlab(NULL)+
+  coord_fixed(ratio=80)+
+  annotate("text", x=85, y=1.03, label="D", size=5)
+
+#pull legend out of plot
+g_legend <- function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+
+leg<-g_legend(noiseplot.breaksout.3)
+
+#create a blank grob to hold space where the legend would go next to D
+blank <- grid.rect(gp=gpar(col="white"))
+
+grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout.11, leg, ncol=3, widths=c(30,30,40)), 
+                         arrangeGrob(noiseplot.breaksout.21, noiseplot.breaksout.31, blank,  ncol=3, widths=c(30,30,40)),
+                         ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("% noise", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+
+
+
+pdf("figs/observed_outcomes.pdf", height=5, width=5)
+grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout.11, leg, ncol=3, widths=c(35,35,30)), 
+                         arrangeGrob(noiseplot.breaksout.21, noiseplot.breaksout.31, blank,  ncol=3, widths=c(35,35,30)),
+                         ncol=1,
+                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")), 
+                         sub=textGrob("% noise", 
+                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+
+dev.off()
