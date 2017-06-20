@@ -89,10 +89,11 @@ pal<-wes_palette("GrandBudapest", 3)
 axis.text.theme<-element_text(size=14)
 axis.title.theme<-element_text(face="bold", size=16)
 harmonia.year.timeseries<-ggplot(harmonia.year, aes(year, Nt, colour=phase, cex=1))+
-  geom_point(size=4)+
   scale_color_manual(values = pal)+
   geom_line(data=harmonia.year, aes(x=year, y=Nt, group=phasea), size=1)+
   geom_line(size=1)+
+  geom_point(size=3)+
+  geom_point(colour="black", pch=21, size=3)+
   xlab("\nYear")+
   ylab("\nAverage adults per trap\n")+
   theme_bw(base_size = 10)+
@@ -124,7 +125,6 @@ phase.d<-function(x){x*exp(1.55*(1- x/0.42))}
 
 
 harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=year))+
-  geom_point(size=4)+
   scale_color_manual(values = pal)+
   xlab("\nN(t)")+ylab("\nN(t+1)\n")+
   theme_bw(base_size = 16)+ 
@@ -132,6 +132,8 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
   stat_function(fun=phase.d, colour="black", size=1, linetype="longdash")+
+  geom_point(size=3)+
+  geom_point(colour="black", pch=21, size=3)+
   coord_equal(ratio=1)+
   xlim(-0.1,1)+ylim(-0.1,1)+
   geom_text(aes(label=year), hjust=-0.3, vjust=1, color="black", size=3)+
