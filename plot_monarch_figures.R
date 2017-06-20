@@ -71,10 +71,11 @@ pal<-wes_palette("GrandBudapest", 3)
 axis.text.theme<-element_text(size=14)
 axis.title.theme<-element_text(face="bold", size=16)
 monarch.timeseries<-ggplot(monarch, aes(year, Nt, colour=phase, cex=1))+
-  geom_point(size=4)+
   scale_color_manual(values = pal)+
   geom_line(data=monarch, aes(x=year, y=Nt, group=phasea), size=1)+
   geom_line(size=1)+
+  geom_point(size=3)+
+  geom_point(colour="black", pch=21, size=3)+
   xlab("\nYear")+
   ylab("\nHectares occupied\n")+
   theme_bw()+
@@ -105,7 +106,6 @@ phase.c<-function(x){x*exp(1.49*(1- x/2.94))}
 
 
 monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
-  geom_point(size=4)+
   scale_color_manual(values = pal)+
   xlab("\nN(t)")+ylab("\nN(t+1)\n")+
   theme_bw()+ 
@@ -113,6 +113,8 @@ monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
+  geom_point(size=3)+
+  geom_point(colour="black", pch=21, size=3)+
   coord_equal(ratio=1)+
   xlim(-2,19)+ylim(-2,19)+
   geom_text(hjust=1.3, vjust=0, color="black", size=3)+
