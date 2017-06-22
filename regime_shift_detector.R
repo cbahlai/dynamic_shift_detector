@@ -75,27 +75,6 @@ rickerfit<-function (data){
 #then smash them into a function that figures out what the best model is
 
 
-#I'm also wondering what would happen if we solved for r while holding k constant
-# and vice versa. This would provide an 'instantaneous' r and k  that we could also
-# look at to see if there's support for changes
-# if the Ricker model takes the form Nt1~ Nt*exp(r*(1- Nt/k)), let's solve for each
-# r and k, then use the k or r values for the no break model to create a vector for 
-# each parameter over time
-
-r.est<-function(data){
-  k<-rickerfit(data)[4]# fit model without breakpints to get the estimated overall k
-  r<- (log(data$Nt1/data$Nt))/(1-(data$Nt/k)) #solve for r
-  return(r)
-}
-
-
-k.est<-function(data){
-  r<-rickerfit(data)[2]# fit model without breakpints to get the estimated overall r
-  k<- data$Nt/(1-(log(data$Nt1/data$Nt)/r)) #solve for k
-  return (k)
-}
-
-
 # Okay, so now we want a generalized model so it can handle N break point cases
 # this is a bit more complex because it'll require some recursion from within the function
 # and because there will be N break cases, we won't be able to plan a 2 dimensional data frame 
