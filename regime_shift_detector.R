@@ -299,7 +299,35 @@ bestmodel<-function(data){
   return(out.frame)
 }
 
+#adapt this function to provide specs of any fit information, as output in the format of the bestfit function
 
+modelspecification<-function(specs, data){
+  modelspecs<-specs #get the particulars of the best model
+  out.frame<-data.frame(matrix(vector(), 0, 7,
+                               dimnames=list(c(), 
+                                             c("Year1", "Year2", "AIC", "r", "rse", "k", "kse"))),
+                        stringsAsFactors=F)#Create a place to put our data
+  breakvector<-unlist(modelspecs$Breaks[1])#pull out a vector of the max year in each fit
+  
+  if (modelspecs$Nbreaks[1]==0){ #if there's no breaks
+    fit<-rickerfit(data)
+    output<-c(min(data$year), max(data$year), fit) #fit whole data series + output results
+    out.frame<-rbind(out.frame, output)
+    
+  } else {
+    for (i in 1:(length(breakvector))){ #for all breakpoints, including the end of the time series, in order
+      part1<-data[which(data$year<breakvector[i]+1),] #create subsets at the breakpoint
+      part2<-data[which(data$year>breakvector[i]),]
+      fit1<-rickerfit(part1) #fit first segment
+      output<-c(min(part1$year), max(part1$year), fit1)#save results of fitting segment in vector
+      out.frame<-rbind(out.frame, output)#put output for segment in a data frame
+      data<-part2 #update data to cull out already fitted segments 
+    }
+    
+  } 
+  colnames(out.frame)<- c("Year1", "Year2", "AIC", "r", "rse", "k", "kse")
+  return(out.frame)
+}
 
 
 #looks like that works! Okay! put it all together like we did for the 2 break model
