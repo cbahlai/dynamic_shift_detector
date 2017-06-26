@@ -41,3 +41,7 @@ RSdetector(harmonia.year)
 harmonia.2013<-harmonia.year[which(harmonia.year$year<2014),]
 RSdetector(harmonia.2013)
 
+#estimate year to year sampling error to compare to simulation results
+harmonia.year.for.error<-ddply(harmonia, "year", summarize,
+                     sum=sum(ADULTS), avg=mean(ADULTS), sd=sd(ADULTS), n=length(ADULTS), sem=sd/sqrt(n), perc.err=100*sem/avg )
+mean(harmonia.year.for.error$perc.err)
