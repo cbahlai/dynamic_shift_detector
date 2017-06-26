@@ -101,6 +101,7 @@ monarch1<-addNt1(monarch)
 phase.a<-function(x){x*exp(0.92*(1- x/10.13))}
 phase.b<-function(x){x*exp(1.57*(1- x/5.65))}
 phase.c<-function(x){x*exp(1.49*(1- x/2.94))}
+phase.d<-function(x){x*exp(0.8*(1- x/4.1))}
 
 
 
@@ -113,6 +114,7 @@ monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
+  stat_function(fun=phase.d, colour="black", size=1, linetype="longdash")+
   geom_point(size=3)+
   geom_point(colour="black", pch=21, size=3)+
   coord_equal(ratio=1)+
