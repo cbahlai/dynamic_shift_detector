@@ -871,7 +871,7 @@ blank <- grid.rect(gp=gpar(col="white"))
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout.11, leg, ncol=3, widths=c(30,30,40)), 
                          arrangeGrob(noiseplot.breaksout.21, noiseplot.breaksout.31, blank,  ncol=3, widths=c(30,30,40)),
                          ncol=1,
-                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                         left=textGrob("\n                  Proportion of input scenarios", rot=90,
                                        gp=gpar(fontsize=16, fontface="bold")), 
                          sub=textGrob("% noise", 
                                       gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
@@ -882,7 +882,7 @@ pdf("figs/observed_outcomes.pdf", height=5, width=5)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout.11, leg, ncol=3, widths=c(35,35,30)), 
                          arrangeGrob(noiseplot.breaksout.21, noiseplot.breaksout.31, blank,  ncol=3, widths=c(35,35,30)),
                          ncol=1,
-                         left=textGrob("\n                  Proportion of outcomes", rot=90,
+                         left=textGrob("\n                  Proportion of input scenarios", rot=90,
                                        gp=gpar(fontsize=16, fontface="bold")), 
                          sub=textGrob("% noise", 
                                       gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
