@@ -8,15 +8,27 @@ In this repo, we develop a novel break-point analysis tool for population time s
 
 **monarch_example.R** - applies the regime shift detector analysis to monarch overwintering data from Mexico
 
-**plot_monarch_figures.R** - plots output from monarch example
+**plot_monarch_figures.R** - plots output from monarch example, places outputs in **figs folder**
+
+**harmonia_example.R** - applies the regime shift detector analysis toharmonia ladybeetle population data from Kellogg Biological Station. Includes data cleaning/manipulation code after Bahlai et al 2015.
+
+**plot_harmona_figures.R** - plots output from harmonia example, places outputs in **figs folder**
 
 **simulations.R**- a set of functions that creates time series data using secified parameters, and then a set of funtions to test if the parameters input match the ones detected by the regime shift detector, and the code that creates simulations under a variety of conditions, runs it through the comparison functions, and tallies the outputs, outputs a CSV file to the **'simresults' folder**
 
-**plot simulation results.R** - takes the simulation outputs and creates plots based on varying one input at a time to see the RSdetector's performance under differing conditions- outputs figures as PDF vector graphis to the **'figs' folder**
+**plot_simulation_results.R** - takes the simulation outputs and creates plots based on varying one input at a time to see the RSdetector's performance under differing conditions- outputs figures as PDF vector graphis to the **'figs' folder**
+
+**casestudydata folder** contains data for Harmonia case study. Monarch study data are proprietary
+
+**simresults folder** contains simpulation outpu CSVs, in sets of ~50 iterations of each case at a time
+
+**figs folder** PDF versions of all figs produced be scripts are held in this folder
 
 **tests folder** contains a version of the RSdetector code and test data used in development
 
 **writing folder** contains bits of writing, abstracts, etc, relevant to presentations and publications on this project
+
+
 
 
 
