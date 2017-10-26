@@ -6,7 +6,7 @@
 #first, harmonia population data
 #pre-process data as it was used in analysis
 #read in raw data
-harmonia<-read.csv(file="casestudydata/kbs_harmonia94-15.csv", header=T)
+harmonia<-read.csv(file="casestudydata/kbs_harmonia94-17.csv", header=T)
 library(lubridate)
 
 harmonia$newdate<-mdy(harmonia$DATE)
@@ -15,9 +15,9 @@ harmonia$year<-year(harmonia$newdate)
 #extract day of year
 harmonia$doy<-yday(harmonia$newdate)
 
-#because sampling periods varied year to year, sometimes with long tails, so let's cull the data at the end of July
+#because sampling periods varied year to year, sometimes with long tails,  let's cull the data at Aug 10
 
-harmonia<-harmonia[which(harmonia$doy<240),]
+harmonia<-harmonia[which(harmonia$doy<222),]
 
 #also get rid of nulls
 harmonia<-harmonia[complete.cases(harmonia),]

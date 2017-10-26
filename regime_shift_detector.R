@@ -259,11 +259,11 @@ equivalentfit<-function(data){
 
 bestfit<-function(data){
   breakset<-equivalentfit(data) #get set of eqivalent models
-  fewest.parameters<-min(breakset$Nbreaks) #choose model with fewest break points
-  out.frame<-breakset[which(breakset$Nbreaks==fewest.parameters),] #pull models with fewest parameters
+  best.fit<-min(breakset$AICc) #choose model with lowest AICc
+  out.frame<-breakset[which(breakset$AICc==best.fit),] #pull models with numerically lowest AIC
   if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
-    AICbest<-min(out.frame$AICc) #find best AIC in the set
-    out.frame<-out.frame[which(out.frame$AICc==AICbest),] #only bring forward the model with the best AIC
+    fewest.parameters<-min(out.frame$Nbreaks) #find the fewest parameters for models with identical AICcs
+    out.frame<-out.frame[which(out.frame$Nbreaks==fewest.parameters),] #only bring forward the model with the best AIC
   }
   return(out.frame)
 }
@@ -344,7 +344,7 @@ RSdetector<-function(data){ #use raw time series data
   writeLines(paste("Here is the set of best performing models"))
   print(equivalentfit(data1))
   #output model with best performance
-  writeLines(paste("Here is the best model- the one with the fewest parameters and/or lowest AICc"))
+  writeLines(paste("Here is the best model- the one with the lowest AICc, or fewest parameters, in case of a tie"))
   print(bestfit(data1))
   # output regression parameters of best model
   writeLines(paste("Here is the set of regression parameters"))
