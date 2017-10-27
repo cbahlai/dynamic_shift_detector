@@ -6,7 +6,7 @@
 #first, monarch population data
 #pre-process data as it was used in analysis
 #read in raw data
-monarch<-read.csv(file="C:/Users/cbahl/Dropbox/Zipkin/monarchOW.csv", header=T)
+monarch<-read.csv(file="C:/Users/cbahlai/Dropbox/Old_gigs/Zipkin/MonarchOW.csv", header=T)
 
 #data requires some light cleaning. We want year to be a continuous variable
 #and data starts in 1994- take the earlier year in the range given- replace
@@ -36,7 +36,7 @@ for (i in 1:(length(monarch$year))) {
   if(monarch$year[i]<2004){
     phase = c(phase, "A")
   }
-  else if (monarch$year[i]>2003& monarch$year[i]<2009){
+  else if (monarch$year[i]>2003& monarch$year[i]<2019){#dummy code if we need to add another break
     phase = c(phase, "B")
   }
   else {
@@ -51,10 +51,10 @@ for (i in 1:(length(monarch$year))) {
   if(monarch$year[i]<2004.1){
     phasea = c(phasea, "A")
   }
-  else if (monarch$year[i]>2000& monarch$year[i]<2009.1){
+  else if (monarch$year[i]>2000& monarch$year[i]<2019.1){#dummy code if we need to add another break
     phasea = c(phasea, "B")
   }
-  else if (monarch$year[i]>2008.9){
+  else {
     phasea = c(phasea, "C")
   }
 }
@@ -80,7 +80,7 @@ monarch.timeseries<-ggplot(monarch, aes(year, Nt, colour=phase, cex=1))+
   ylab("\nHectares occupied\n")+
   theme_bw()+
   coord_equal(ratio=0.5)+
-  geom_vline(xintercept=c(2003.5, 2008.5), colour="blue", linetype="longdash")+ 
+  geom_vline(xintercept=c(2003.5), colour="blue", linetype="longdash")+ 
   theme(legend.key = element_blank(), plot.margin=unit(c(15,0,0,0), "mm"))+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)
@@ -98,12 +98,8 @@ monarch1<-addNt1(monarch)
 # Generate Ricker model figure
 #
 ######################################
-phase.a<-function(x){x*exp(0.92*(1- x/10.13))}
-phase.b<-function(x){x*exp(1.57*(1- x/5.65))}
-phase.c<-function(x){x*exp(1.49*(1- x/2.94))}
-phase.d<-function(x){x*exp(0.8*(1- x/4.1))}
-
-
+phase.a<-function(x){x*exp(0.99*(1- x/10.11))}
+phase.b<-function(x){x*exp(0.84*(1- x/4.12))}
 
 
 monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
@@ -113,8 +109,6 @@ monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
   theme(legend.key = element_blank())+
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
-  stat_function(fun=phase.c, colour=pal[3], size=1)+
-  stat_function(fun=phase.d, colour="black", size=1, linetype="longdash")+
   geom_point(size=3)+
   geom_point(colour="black", pch=21, size=3)+
   coord_equal(ratio=1)+

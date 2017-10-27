@@ -99,7 +99,6 @@ harmonia.year.timeseries<-ggplot(harmonia.year, aes(year, Nt, colour=phase, cex=
   theme_bw(base_size = 10)+
   coord_equal(ratio=10)+
   geom_vline(xintercept=c(2000.5, 2005.5), colour="blue", linetype="longdash")+ 
-  geom_vline(xintercept=2013.5, colour="black", linetype="longdash", size=1)+
   theme(legend.key = element_blank(),plot.margin=unit(c(15,0,0,0), "mm"))+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)
@@ -117,10 +116,10 @@ harmonia.year1<-addNt1(harmonia.year)
 # Generate Ricker model figure
 #
 ######################################
-phase.a<-function(x){x*exp(1.27*(1- x/0.33))}
-phase.b<-function(x){x*exp(2.22*(1- x/0.46))}
-phase.c<-function(x){x*exp(1.50*(1- x/0.29))}
-phase.d<-function(x){x*exp(1.55*(1- x/0.42))}
+phase.a<-function(x){x*exp(1.31*(1- x/0.31))}
+phase.b<-function(x){x*exp(2.28*(1- x/0.42))}
+phase.c<-function(x){x*exp(1.55*(1- x/0.27))}
+
 
 
 
@@ -131,7 +130,6 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
-  stat_function(fun=phase.d, colour="black", size=1, linetype="longdash")+
   geom_point(size=3)+
   geom_point(colour="black", pch=21, size=3)+
   coord_equal(ratio=1)+
