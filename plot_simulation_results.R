@@ -686,15 +686,25 @@ Nyearsplot.mismatch1<-Nyearsplot.mismatch+
   annotate("text", x=34.2, y=1.03, label="D", size=5)
 
 Nyearsplot.fail1<-Nyearsplot.fail+
+  guides(fill=FALSE)+
   ylab(NULL)+
   xlab(NULL)+
   coord_fixed(ratio=10)+
   annotate("text", x=34.2, y=1.03, label="E", size=5)
 
+#pull legend out of plot
+g_legend <- function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)}
+
+leg<-g_legend(Nyearsplot.correct)
+
 
 grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, ncol=2), 
                          arrangeGrob(Nyearsplot.missing1, Nyearsplot.mismatch1, ncol=2),
-                         arrangeGrob(Nyearsplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         arrangeGrob(Nyearsplot.fail1, leg,  ncol=2), ncol=1,
                          left=textGrob("\n                  Proportion of outcomes", rot=90,
                                        gp=gpar(fontsize=16, fontface="bold")), 
                          sub=textGrob("Series length ", 
@@ -705,7 +715,7 @@ grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, nco
 pdf("figs/Nyears_simulation_outcomes.pdf", height=10, width=5)
 grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, ncol=2), 
                          arrangeGrob(Nyearsplot.missing1, Nyearsplot.mismatch1, ncol=2),
-                         arrangeGrob(Nyearsplot.fail1, ncol=1, widths=0.6), ncol=1,
+                         arrangeGrob(Nyearsplot.fail1, leg,  ncol=2), ncol=1,
                          left=textGrob("\n                  Proportion of outcomes", rot=90,
                                        gp=gpar(fontsize=16, fontface="bold")), 
                          sub=textGrob("Series length ", 
