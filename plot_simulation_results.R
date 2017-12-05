@@ -738,16 +738,14 @@ breaksout.results<-summarize.results.breaksout[which(summarize.results.breaksout
                                                        summarize.results.breaksout$changeK==40 & 
                                                        summarize.results.breaksout$changeR==20 & 
                                                        summarize.results.breaksout$nbreaksout<4),]
+#compute frequency of results of that type
 breaksout.tot.tests<-ddply(breaksout.results,
                                    c("Nyears", "noise", "nbreaksout",
                                      "changeK", "changeR"), summarise,
                            tot.tests=sum(freq))
 
 
-#count the number of times a unique scenario was attemped (should be pretty uniform but 
-# there are someetimes cases where the fit failed) (for a denominator!)
-
-
+#merge in (for denominator)
 summarize.results.breaksout.1<-merge(breaksout.results, breaksout.tot.tests)
 
 
