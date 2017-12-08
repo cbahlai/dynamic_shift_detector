@@ -11,7 +11,7 @@ monarch<-read.csv(file="C:/Users/cbahlai/Dropbox/Old_gigs/Zipkin/MonarchOW.csv",
 #data requires some light cleaning. We want year to be a continuous variable
 #and data starts in 1994- take the earlier year in the range given- replace
 
-monarch$Year<-1994:2016
+monarch$Year<-1995:2017
 colnames(monarch)[1]<-"year"
 colnames(monarch)[2]<-"Nt"
 
@@ -33,10 +33,10 @@ library(wesanderson)
 
 phase = c()
 for (i in 1:(length(monarch$year))) {
-  if(monarch$year[i]<2004){
+  if(monarch$year[i]<2003.1){
     phase = c(phase, "A")
   }
-  else if (monarch$year[i]>2003& monarch$year[i]<2019){#dummy code if we need to add another break
+  else if (monarch$year[i]>2002.9& monarch$year[i]<2019){#dummy code if we need to add another break
     phase = c(phase, "B")
   }
   else {
@@ -48,10 +48,10 @@ monarch$phase<-phase
 #phases for the lines that are to join time series points
 phasea = c()
 for (i in 1:(length(monarch$year))) {
-  if(monarch$year[i]<2004.1){
+  if(monarch$year[i]<2002.1){
     phasea = c(phasea, "A")
   }
-  else if (monarch$year[i]>2000& monarch$year[i]<2019.1){#dummy code if we need to add another break
+  else if (monarch$year[i]>2002& monarch$year[i]<2019.1){#dummy code if we need to add another break
     phasea = c(phasea, "B")
   }
   else {
@@ -102,7 +102,7 @@ phase.a<-function(x){x*exp(0.99*(1- x/10.11))}
 phase.b<-function(x){x*exp(0.84*(1- x/4.12))}
 
 
-monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
+monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phasea, label=year))+
   scale_color_manual(values = pal)+
   xlab("\nN(t)")+ylab("\nN(t+1)\n")+
   theme_bw()+ 
