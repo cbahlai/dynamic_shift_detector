@@ -102,7 +102,7 @@ phase.a<-function(x){x*exp(0.99*(1- x/10.11))}
 phase.b<-function(x){x*exp(0.84*(1- x/4.12))}
 
 
-monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phasea, label=year))+
+monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
   scale_color_manual(values = pal)+
   xlab("\nN(t)")+ylab("\nN(t+1)\n")+
   theme_bw()+ 
