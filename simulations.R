@@ -51,10 +51,8 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   #create a vector for noise for each year- it will be random, normally distributed error
   noisevector<-c()# make an empty vector
   for (i in 1:(length(year))){
-    vec<-c(-1,1)
-    posneg<-sample(vec, 1, replace = TRUE)#randomly choose positive or negative error
-    randomnoise<-rnorm(1, mean=noise, sd=sqrt(noise))#choose a random noise normally destributed around noise
-    instant.buzz<-1+(posneg*randomnoise)/100 #generate an instantaneous buzz :)
+    randomnoise<-rnorm(1, mean=0, sd=noise)#choose a random value with a sd of our % noise
+    instant.buzz<-1+(randomnoise)/100 #generate an instantaneous buzz :)
     noisevector<-c(noisevector, instant.buzz) #add that to the vector
   }
   
