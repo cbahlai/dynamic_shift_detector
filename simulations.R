@@ -164,6 +164,65 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   
 }
 
+#let's create another function to detect if the shift set is found in the best model set instead
+
+detect.fake.shifts.2<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR){
+  #create simulated data based on input parameters
+  test<-fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
+  #run the data thtrough the script that finds the best model
+  #and pull out a list of the list of break point combinations with equivalent fit
+  breaksfound<-equivalentfit(addNt1(test))$Breaks
+  #also want to output number of breaks input (deal with output in conditionals)
+  nbreaksin<-length(breaks)
+  #so, for each equivalent break point combination, we want to check if it matches the breaks in
+  for (in in 1:length(breaksfound)){
+    #need to deal with the case that no breaks are found
+    #model will find a 'break' at the end of the sequence, leading to a of length 1
+    if (length(breaksfound)==1){
+      #first, if we found no breaks
+      if (nbreaksin == 0){  #if there's no breaks in the sim data, great!
+        victory<-1
+        nbreaksout<-0
+      }else{ #if we found no breaks, but there was breaks to find
+        victory<-0
+        nbreaksout<-0
+      }
+      
+    }else{ # test if we found the right breaks
+      #cull out the 'break' at the end of the data
+      breaksfound<-breaksfound[-length(breaksfound)]
+      #and for output purposes
+      nbreaksout<-length(breaksfound)
+      #obviously- if the breaks are all found, bam, the breaks are all found
+      if(all(breaksfound %in% breaks)){
+        victory<-1
+      }else{
+        if(any(breaksfound %in% breaks)){ #if we find some breaks
+          #to deal with a data type issue, encode partial matches numerically
+          #extra breaks found = 2
+          #missing breaks (when more than one break in sim data) =3
+          #right number of breaks but not all match =4
+          if(length(breaksfound)>length(breaks)){
+            victory<-2 
+          }else if(length(breaksfound)<length(breaks)){
+            victory<-3
+          }else if(length(breaksfound)==length(breaks)){
+            victory<-4
+          }
+        }else{
+          victory<-0
+        }
+      }
+    }
+  }
+  
+  
+  #output needed information
+  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory))
+  return(testconditions)
+  
+}
+
 #create a function that compiles sucesses and failures for iterations of fitting the model
 # on simulated data produced under given conditions
 
