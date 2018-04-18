@@ -59,7 +59,7 @@ rickerfit<-function (data){
               summary(ricker.model)$coefficients[2,1], # k
               summary(ricker.model)$coefficients[2,2]) # se for k
   }else{
-    output<-NULL
+    output<-c(NA, NA, NA, NA, NA)
   }
   
   options(warn=0)#turn warnings back on
