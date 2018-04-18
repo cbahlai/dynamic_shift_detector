@@ -157,81 +157,51 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
       }
     }
   }
-  
-  #output needed information
-  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory))
-  return(testconditions)
-  
-}
-
-#let's create another function to detect if the shift set is found in the best model set instead
-
-detect.fake.shifts.2<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR){
-  #create simulated data based on input parameters
-  test<-fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
-  #run the data thtrough the script that finds the best model
-  #and pull out a list of the list of break point combinations with equivalent fit
-  breaksfound<-equivalentfit(addNt1(test))$Breaks
-  #also want to output number of breaks input (deal with output in conditionals)
-  nbreaksin<-length(breaks)
-  #so, for each equivalent break point combination, we want to check if it matches the breaks in
-  for (in in 1:length(breaksfound)){
-    #need to deal with the case that no breaks are found
-    #model will find a 'break' at the end of the sequence, leading to a of length 1
-    if (length(breaksfound)==1){
-      #first, if we found no breaks
-      if (nbreaksin == 0){  #if there's no breaks in the sim data, great!
-        victory<-1
-        nbreaksout<-0
-      }else{ #if we found no breaks, but there was breaks to find
-        victory<-0
-        nbreaksout<-0
-      }
-      
-    }else{ # test if we found the right breaks
-      #cull out the 'break' at the end of the data
-      breaksfound<-breaksfound[-length(breaksfound)]
-      #and for output purposes
-      nbreaksout<-length(breaksfound)
-      #obviously- if the breaks are all found, bam, the breaks are all found
-      if(all(breaksfound %in% breaks)){
-        victory<-1
-      }else{
-        if(any(breaksfound %in% breaks)){ #if we find some breaks
-          #to deal with a data type issue, encode partial matches numerically
-          #extra breaks found = 2
-          #missing breaks (when more than one break in sim data) =3
-          #right number of breaks but not all match =4
-          if(length(breaksfound)>length(breaks)){
-            victory<-2 
-          }else if(length(breaksfound)<length(breaks)){
-            victory<-3
-          }else if(length(breaksfound)==length(breaks)){
-            victory<-4
-          }
+  #if the best model isn't the input model, see if the input model is in the set of equivalent models
+  if (victory!=1){
+    breaksfound<-equivalentfit(addNt1(test))$Breaks #pull out a vector of the breaks 
+    equivalentfits<-length(breaksfound)
+    #create a place to hold test results
+    inthere<-c()
+    for(i in 1:equivalentfits){
+      breaksfound_i<-unlist(breaksfound[i])[-length(unlist(breaksfound[i]))]#pull out breaks for that model, minus end of series break
+      if(length(breaksfound_i)==length(breaks)){
+        if(all(breaksfound_i == breaks)){
+          inthere_i<-1
         }else{
-          victory<-0
+          inthere_i<-0
         }
+      
+      }else{
+        inthere_i<-0
       }
+      inthere<-c(inthere, inthere_i)
     }
+    if(any(inthere>0)){
+      inSet<-1
+    }else{
+      inSet<-0
+    }
+  }else { #we already know the best model is in the equivalent model set
+    inSet<-1
   }
-  
-  
+
   #output needed information
-  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory))
+  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory, inSet))
   return(testconditions)
   
 }
+
 
 #create a function that compiles sucesses and failures for iterations of fitting the model
 # on simulated data produced under given conditions
 
 break.it.down<-function(startyear, Nyears, startPop, noise, 
                         startK, startR, breaks, changeK, changeR, nIter){
-  out.frame<-data.frame(matrix(vector(), 0, 10,
+  out.frame<-data.frame(matrix(vector(), 0, 11,
                                dimnames=list(c(), 
                                              c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
-                                               "startK", "startR", "changeK", "changeR", "victory"))),
+                                               "startK", "startR", "changeK", "changeR", "victory", "inSet"))),
                         stringsAsFactors=FALSE)#Create a place to put our data
   for (i in 1:nIter){
     test<-detect.fake.shifts(startyear, Nyears, startPop, noise, startK, 
@@ -239,7 +209,7 @@ break.it.down<-function(startyear, Nyears, startPop, noise,
     out.frame<-rbind(out.frame, test)#put output for segment in a data frame
   }
   colnames(out.frame)<- c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
-                          "startK", "startR", "changeK", "changeR", "victory")
+                          "startK", "startR", "changeK", "changeR", "victory", "inSet")
   return(out.frame)
   
 }
@@ -311,10 +281,10 @@ iterate.breakitdown<-function(startyear, Nyears, startPop,
   #create a sequence of all posible breaks
   possibleBreaks<-seq(minbreak, maxbreak)
   #Create a place to put our data
-  results.matrix<-data.frame(matrix(vector(), 0, 10, 
+  results.matrix<-data.frame(matrix(vector(), 0, 11, 
                                     dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
                                                          "startK", "startR", "changeK", "changeR", 
-                                                         "victory"))),
+                                                         "victory", "inSet"))),
                              stringsAsFactors=F)
   
    while (numLoops>0){
@@ -351,11 +321,11 @@ iterate.breakitdown<-function(startyear, Nyears, startPop,
 #rerun from this point and alter parts here to fiddle with simulations
 
 #first, create a frame to put the data in as we change the scenarios
-simulation.results<-data.frame(matrix(vector(), 0, 10, 
-                                  dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
-                                                       "startK", "startR", "changeK", "changeR", 
-                                                       "victory"))),
-                           stringsAsFactors=F)#Create a place to put our data
+simulation.results<-data.frame(matrix(vector(), 0, 11, 
+                                      dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
+                                                           "startK", "startR", "changeK", "changeR", 
+                                                           "victory", "inSet"))),
+                               stringsAsFactors=F)#Create a place to put our data
 
 #create base simulation
 #we will be holding these values completely constant for comparisons' sake 
