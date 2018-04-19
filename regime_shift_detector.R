@@ -46,7 +46,7 @@ library(minpack.lm)
 rickerfit<-function (data){
   #create an initial estimate of k to aide model convergence
   kest<-mean(data$Nt)
-  #supress warnings about failed convergence in odball fits- these models won't be favoured by AIC anyway
+  #supress warnings about failed convergence in oddball fits- these models won't be favoured by AIC anyway
   options(warn=-1)
   #fit the model
   ricker.model<-tryCatch(nlsLM(Nt1~ Nt*exp(r*(1- Nt/k)), start=list(r=1.5, k=kest), data=data), error=function(e) NULL)
@@ -59,7 +59,7 @@ rickerfit<-function (data){
               summary(ricker.model)$coefficients[2,1], # k
               summary(ricker.model)$coefficients[2,2]) # se for k
   }else{
-    output<-c(Inf, NA, NA, NA, NA)#if the model fails to converge, give it an infinitely high AIC
+    output<-c(100000000, 0, 0, 0, 0)#if the model fails to converge, give it an an arbitrarily high but finite AIC
   }
   
   options(warn=0)#turn warnings back on
@@ -235,7 +235,7 @@ AICtally<-function(data){ #create a function that adds up the AICs in the list
 
 #see if AICtally outputs will stic to nbreaker outputs- and create a function that does this
 allfits<-function(data){
-  out<-as.data.frame(cbind(nbreaker(data), AICtally(data))) #stick outputf from two functions into a df
+  out<-as.data.frame(cbind(nbreaker(data), AICtally(data))) #stick output from two functions into a df
   return(out)
 }
 
@@ -261,10 +261,10 @@ bestfit<-function(data){
   breakset<-equivalentfit(data) #get set of eqivalent models
   best.fit<-min(breakset$AICc) #choose model with lowest AICc
   out.frame<-breakset[which(breakset$AICc==best.fit),] #pull models with numerically lowest AIC
-  if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
-    fewest.parameters<-min(out.frame$Nbreaks) #find the fewest parameters for models with identical AICcs
-    out.frame<-out.frame[which(out.frame$Nbreaks==fewest.parameters),] #only bring forward the model with the best AIC
-  }
+  # if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
+  #   fewest.parameters<-min(out.frame$Nbreaks) #find the fewest parameters for models with identical AICcs
+  #   out.frame<-out.frame[which(out.frame$Nbreaks==fewest.parameters),] #only bring forward the model with the best AIC
+  # }
   return(out.frame)
 }
 
@@ -279,7 +279,7 @@ bestmodel<-function(data){
                         stringsAsFactors=F)#Create a place to put our data
   breakvector<-unlist(modelspecs$Breaks[1])#pull out a vector of the max year in each fit
   
-  if (modelspecs$Nbreaks[1]==0){ #if there's no breaks
+  if (length(breakvector)<=1){ #if there's no breaks
     fit<-rickerfit(data)
     output<-c(min(data$year), max(data$year), fit) #fit whole data series + output results
     out.frame<-rbind(out.frame, output)
