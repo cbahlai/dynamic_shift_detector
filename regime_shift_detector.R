@@ -59,7 +59,7 @@ rickerfit<-function (data){
               summary(ricker.model)$coefficients[2,1], # k
               summary(ricker.model)$coefficients[2,2]) # se for k
   }else{
-    output<-c(NA, NA, NA, NA, NA)
+    output<-c(Inf, NA, NA, NA, NA)#if the model fails to converge, give it an infinitely high AIC
   }
   
   options(warn=0)#turn warnings back on
