@@ -326,6 +326,11 @@ simulation.results<-data.frame(matrix(vector(), 0, 11,
                                                            "startK", "startR", "changeK", "changeR", 
                                                            "victory", "inSet"))),
                                stringsAsFactors=F)#Create a place to put our data
+test.iter<-data.frame(matrix(vector(), 0, 11, 
+                                      dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
+                                                           "startK", "startR", "changeK", "changeR", 
+                                                           "victory", "inSet"))),
+                               stringsAsFactors=F)#Create a place to put our data
 
 #create base simulation
 #we will be holding these values completely constant for comparisons' sake 
