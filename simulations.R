@@ -530,5 +530,5 @@ proc.time() - ptm
 
 #save the simulation results in case we screw something up in the 
 #data manipulation stage
-write.csv(simulation.results, file="simresults/simresults1.csv")
+write.csv(simulation.results, file="simresults/simresults2.csv")
 
