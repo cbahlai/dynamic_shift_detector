@@ -219,7 +219,7 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=
 
 
 
-pdf("figs/noise_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/noise_simulation_outcomes.pdf", height=10, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct1, noiseplot.extra1, ncol=2), 
                          arrangeGrob(noiseplot.missing1, noiseplot.mismatch1, ncol=2),
                          arrangeGrob(noiseplot.fail1, ncol=1, widths=0.6), ncol=1,
@@ -382,7 +382,7 @@ grid.arrange(arrangeGrob(arrangeGrob(changeKplot.correct1, changeKplot.extra1, n
 
 
 
-pdf("figs/changeK_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/changeK_simulation_outcomes.pdf", height=10, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(changeKplot.correct1, changeKplot.extra1, ncol=2), 
                          arrangeGrob(changeKplot.missing1, changeKplot.mismatch1, ncol=2),
                          arrangeGrob(changeKplot.fail1, ncol=1, widths=0.6), ncol=1,
@@ -545,7 +545,7 @@ grid.arrange(arrangeGrob(arrangeGrob(changeRplot.correct1, changeRplot.extra1, n
 
 
 
-pdf("figs/changeR_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/changeR_simulation_outcomes.pdf", height=10, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(changeRplot.correct1, changeRplot.extra1, ncol=2), 
                          arrangeGrob(changeRplot.missing1, changeRplot.mismatch1, ncol=2),
                          arrangeGrob(changeRplot.fail1, ncol=1, widths=0.6), ncol=1,
@@ -712,7 +712,7 @@ grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, nco
 
 
 
-pdf("figs/Nyears_simulation_outcomes.pdf", height=10, width=5)
+pdf("figs/Nyears_simulation_outcomes.pdf", height=10, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(Nyearsplot.correct1, Nyearsplot.extra1, ncol=2), 
                          arrangeGrob(Nyearsplot.missing1, Nyearsplot.mismatch1, ncol=2),
                          arrangeGrob(Nyearsplot.fail1, leg,  ncol=2), ncol=1,
@@ -886,13 +886,13 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout
 
 
 
-pdf("figs/observed_outcomes.pdf", height=5, width=5)
+pdf("figs/observed_outcomes.pdf", height=7, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout.11, leg, ncol=3, widths=c(35,35,30)), 
                          arrangeGrob(noiseplot.breaksout.21, noiseplot.breaksout.31, blank,  ncol=3, widths=c(35,35,30)),
                          ncol=1,
-                         left=textGrob("\n                  Proportion of input scenarios", rot=90,
+                         left=textGrob("\n                              Proportion of input scenarios", rot=90,
                                        gp=gpar(fontsize=16, fontface="bold")), 
-                         sub=textGrob("% noise", 
-                                      gp=gpar(fontsize=16, fontface="bold"), vjust=-2)))
+                         sub=textGrob("% noise                     ", 
+                                      gp=gpar(fontsize=16), vjust=-6)))
 
 dev.off()
