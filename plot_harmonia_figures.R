@@ -97,11 +97,13 @@ harmonia.year.timeseries<-ggplot(harmonia.year, aes(year, Nt, colour=phase, cex=
   xlab("\nYear")+
   ylab("\nAverage adults per trap\n")+
   theme_bw(base_size = 10)+
-  coord_equal(ratio=10)+
+  coord_equal(ratio=11)+
   geom_vline(xintercept=c(2000.5, 2005.5), colour="blue", linetype="longdash")+ 
   theme(legend.key = element_blank(),plot.margin=unit(c(15,0,0,0), "mm"))+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
-        legend.title=axis.title.theme, legend.text=axis.text.theme)
+        legend.title=axis.title.theme, legend.text=axis.text.theme)+
+  annotate("text", x=1993.8, y=0.67, label="A", size=6)
+
 
 harmonia.year.timeseries
 
@@ -136,14 +138,15 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   xlim(-0.1,1)+ylim(-0.1,1)+
   geom_text(aes(label=year), hjust=-0.3, vjust=1, color="black", size=3)+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
-        legend.title=axis.title.theme, legend.text=axis.text.theme)
+        legend.title=axis.title.theme, legend.text=axis.text.theme)+
+  annotate("text", x=-0.09, y=0.96, label="B", size=6)
 
 harmonia.year.ricker
 harmonia.ricker.nolegend<-harmonia.year.ricker+ 
   theme(legend.position = "none", plot.margin=unit(c(0,30,10,0), "mm"))
 harmonia.ricker.nolegend
 
-pdf("figs/harmonia_fit.pdf", height=10, width=7)
+pdf("figs/harmonia_fit.pdf", height=8, width=6)
 grid.arrange(arrangeGrob(harmonia.year.timeseries, harmonia.ricker.nolegend, 
                                      heights=c(1, 1)))
 dev.off()
