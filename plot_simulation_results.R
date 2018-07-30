@@ -886,7 +886,7 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout
 
 
 
-pdf("figs/observed_outcomes.pdf", height=7, width=7)
+pdf("figs/Figure2.pdf", height=7, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.breaksout.01, noiseplot.breaksout.11, leg, ncol=3, widths=c(35,35,30)), 
                          arrangeGrob(noiseplot.breaksout.21, noiseplot.breaksout.31, blank,  ncol=3, widths=c(35,35,30)),
                          ncol=1,

@@ -240,7 +240,7 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, changeKplot.correct.1,
 
 
 
-pdf("figs/set_accuracy.pdf", height=6, width=7)
+pdf("figs/Figure1.pdf", height=6, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, changeKplot.correct.1,  leg, ncol=3, widths=c(35,35,30)), 
                          arrangeGrob(changeRplot.correct.1, Nyearsplot.correct.1, blank,  ncol=3, widths=c(35,35,30)),
                          ncol=1,
