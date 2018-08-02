@@ -89,13 +89,13 @@ rickerfit<-function (data){
 breaks<-list() #create empty LIST for storing breaks
 fit<-list() #create empty LIST for storing associated AICs
 out.frame<-data.frame(matrix(vector(), 0, 2,
-                                  dimnames=list(c(), c("Breaks", "AICs"))),
-                           stringsAsFactors=F)
+                             dimnames=list(c(), c("Breaks", "AICs"))),
+                      stringsAsFactors=F)
 
 splitnfit<-function(data, breaks, fit, out.frame){ #need to include vectors for breaks and fit to re-feed into this function
   #first fit no break model, put it in the data frame
   fit.0<-rickerfit(data) #fit the model
-
+  
   out<-cbind(list(max(data$year)), list(fit.0[1])) #output vector with no breaks
   out.frame<-rbind(out.frame, out)
   
@@ -142,7 +142,7 @@ findbreakable<-function(data){ #create a function that finds if the last subset 
     breakable<-c(breakable, breakable.i)
   }
   return(breakable)
-
+  
 }
 
 
@@ -157,8 +157,8 @@ subsequentsplit<-function(fitdata, rawdata){
   breaklist<-newfitdata$Breaks #pull out our two operational objects out of data frame
   fitlist<-newfitdata$AICs
   result<-data.frame(matrix(vector(), 0, 2,
-                               dimnames=list(c(), c("Breaks", "AICs"))),
-                        stringsAsFactors=F)
+                            dimnames=list(c(), c("Breaks", "AICs"))),
+                     stringsAsFactors=F)
   if(nrow(newfitdata)>0){ #if there are subsets with still breakable data
     for(i in 1:nrow(newfitdata)){ #for each row in the new frame we need to break down
       breakvector<-unlist(breaklist[i]) #turn the list element back into a vector
@@ -170,10 +170,10 @@ subsequentsplit<-function(fitdata, rawdata){
       out<-splitnfit(testdata, breakvector, fitvector, out.frame)
       out<-out[-1,] #remove the no-break fit, we don't need that
       result<-rbind(result, out)
-      }
-    }else{ #if there is no more room for breaks in any of the fits
-    result<-result #leave result empty
     }
+  }else{ #if there is no more room for breaks in any of the fits
+    result<-result #leave result empty
+  }
   return(result)
 }
 
@@ -246,9 +246,9 @@ allfits<-function(data){
 
 equivalentfit<-function(data){
   breakset<-allfits(data) #generate matrix of fits by breakpoints
-  AICbest<-min(breakset$AICc) #find best AIC in the set
+  AICbest<-min(breakset$AICtot) #find best AIC in the set
   deltaAIC<-AICbest+2 # create rule for equivalent models
-  out.frame<-breakset[which(breakset$AICc<deltaAIC),] #cut out all data but equivalent models
+  out.frame<-breakset[which(breakset$AICtot<deltaAIC),] #cut out all data but equivalent models
   return(out.frame)
 }
 
@@ -259,10 +259,10 @@ equivalentfit<-function(data){
 
 bestfit<-function(data){
   breakset<-equivalentfit(data) #get set of eqivalent models
-  best.fit<-min(breakset$AICc) #choose model with lowest AICc
-  out.frame<-breakset[which(breakset$AICc==best.fit),] #pull models with numerically lowest AIC
+  best.fit<-min(breakset$AICtot) #choose model with lowest AICc
+  out.frame<-breakset[which(breakset$AICtot==best.fit),] #pull models with numerically lowest AIC
   # if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
-  #   fewest.parameters<-min(out.frame$Nbreaks) #find the fewest parameters for models with identical AICcs
+  #   fewest.parameters<-min(out.frame$Nbreaks) #find the fewest parameters for models with identical AICs
   #   out.frame<-out.frame[which(out.frame$Nbreaks==fewest.parameters),] #only bring forward the model with the best AIC
   # }
   return(out.frame)
@@ -293,7 +293,7 @@ bestmodel<-function(data){
       out.frame<-rbind(out.frame, output)#put output for segment in a data frame
       data<-part2 #update data to cull out already fitted segments 
     }
-  
+    
   } 
   colnames(out.frame)<- c("Year1", "Year2", "AIC", "r", "rse", "k", "kse")
   return(out.frame)
@@ -348,15 +348,11 @@ RSdetector<-function(data){ #use raw time series data
   print(bestfit(data1))
   # output regression parameters of best model
   writeLines(paste("Here is the set of regression parameters"))
-  writeLines(paste("Note AIC is used here for individual segments,\n decisions based on AICc for whole model"))
   print(bestmodel(data1))
 }
 
 
 
 #looks like we have a working model! Boom!
-
-
-
 
 
