@@ -336,8 +336,8 @@ test.iter<-data.frame(matrix(vector(), 0, 11,
 #we will be holding these values completely constant for comparisons' sake 
 startyear<-1
 startPop<-3000
-nIter<-1
-numLoops<-1
+nIter<-5
+numLoops<-10
 startK<-2000
 
 #we also want to keep track of how long this takes to run, so
@@ -420,5 +420,5 @@ proc.time() - ptm
 
 #save the simulation results in case we screw something up in the 
 #data manipulation stage
-write.csv(simulation.results, file="simresults/simresults.csv")
+write.csv(simulation.results, file="simresults/simresults50.csv")
 
