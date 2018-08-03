@@ -326,6 +326,7 @@ simulation.results<-data.frame(matrix(vector(), 0, 11,
                                                            "startK", "startR", "changeK", "changeR", 
                                                            "victory", "inSet"))),
                                stringsAsFactors=F)#Create a place to put our data
+clearsims<-simulation.results
 test.iter<-data.frame(matrix(vector(), 0, 11, 
                                       dimnames=list(c(), c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
                                                            "startK", "startR", "changeK", "changeR", 
@@ -373,6 +374,9 @@ for (i in 1:length(Nyearslist)){
   writeLines(paste("currently fitting", Nyearslist[i], " years"))
   #add these results to the data frame
   simulation.results<-rbind(simulation.results, test.iter)
+  #save the simulation results
+  write.csv(simulation.results, file=paste0("simresults/simresultsyears100_", Nyearslist[i],".csv"))
+  simulation.results<-clearsims
 }
 
 
@@ -408,9 +412,12 @@ for (j in 1:length(noiselist)){
       simulation.results<-rbind(simulation.results, test.iter)
     }
     writeLines(paste("finished startR ", startRlist[q]))
-    
-  }
+    write.csv(simulation.results, file=paste0("simresults/simresults100_", noiselist[j],startRlist[q],".csv"))
+    simulation.results<-clearsims
+    }
   writeLines(paste("finished noise ", noiselist[j]))
+  #save the simulation results
+  
 }
 
 
@@ -418,7 +425,5 @@ for (j in 1:length(noiselist)){
 # Stop the clock
 proc.time() - ptm
 
-#save the simulation results in case we screw something up in the 
-#data manipulation stage
-write.csv(simulation.results, file="simresults/simresults50.csv")
+
 
