@@ -371,26 +371,122 @@ for (i in 1:length(Nyearslist)){
                                  startR=startRlist[5], 
                                  changeK=changeKlist[5], changeR=changeRlist[3], 
                                  nIter, numLoops)
-  writeLines(paste("currently fitting", Nyearslist[i], " years"))
+  
   #add these results to the data frame
   simulation.results<-rbind(simulation.results, test.iter)
-  #save the simulation results
-  write.csv(simulation.results, file=paste0("simresults/simresultsyears100_", Nyearslist[i],".csv"))
-  simulation.results<-clearsims
+  writeLines(paste("finished", Nyearslist[i], " years"))
 }
 
 
 
-#### all other scenarios we want to do in interaction
-#with starting values of r, and noise
+#### starting values of r
 
+for(q in 1:length(startRlist)){
+  #next changeR on base scenario
+  for (i in 1:length(changeRlist)){
+    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
+                                   Nyears=Nyearslist[2],
+                                   startK=startK, noise=noiselist[2], 
+                                   startR=startRlist[q], 
+                                   changeK=changeKlist[5], changeR=changeRlist[i], 
+                                   nIter, numLoops)
+    #add these results to the data frame
+    writeLines(paste("finished changeR ", changeRlist[i]))
+    simulation.results<-rbind(simulation.results, test.iter)
+  }
+  
+  #next changeK on base scenario
+  for (i in 1:length(changeKlist)){
+    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
+                                   Nyears=Nyearslist[2],
+                                   startK=startK, noise=noiselist[2], 
+                                   startR=startRlist[q], 
+                                   changeK=changeKlist[i], changeR=changeRlist[3], 
+                                   nIter, numLoops)
+    writeLines(paste("finished changeK ", changeKlist[i]))
+    #add these results to the data frame
+    simulation.results<-rbind(simulation.results, test.iter)
+  }
+  writeLines(paste("finished startR ", startRlist[q]))
+  
+}
+
+
+#noise
 for (j in 1:length(noiselist)){
+  #next changeR on base scenario
+  for (i in 1:length(changeRlist)){
+    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
+                                   Nyears=Nyearslist[2],
+                                   startK=startK, noise=noiselist[j], 
+                                   startR=startRlist[5], 
+                                   changeK=changeKlist[5], changeR=changeRlist[i], 
+                                   nIter, numLoops)
+    #add these results to the data frame
+    writeLines(paste("finished changeR ", changeRlist[i]))
+    simulation.results<-rbind(simulation.results, test.iter)
+  }
+  
+  #next changeK on base scenario
+  for (i in 1:length(changeKlist)){
+    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
+                                   Nyears=Nyearslist[2],
+                                   startK=startK, noise=noiselist[j], 
+                                   startR=startRlist[5], 
+                                   changeK=changeKlist[i], changeR=changeRlist[3], 
+                                   nIter, numLoops)
+    writeLines(paste("finished changeK ", changeKlist[i]))
+    #add these results to the data frame
+    simulation.results<-rbind(simulation.results, test.iter)
+  }
+  
+  writeLines(paste("finished noise ", noiselist[j]))
+  #save the simulation results
+  
+}
+
+
+
+# Stop the clock
+proc.time() - ptm
+
+
+#okay, let's do this as one iteration on a complete set, repeated x times
+####################################################################
+### Start runnng here if it breaks
+
+simnumber<-5
+nIter<-1
+numLoops<-1
+simulation.results<-clearsims
+
+
+###### replace number before :simnuber with last sucessful sim number
+for (f in 2:simnumber){
+  ptm <- proc.time()
+  
+  #first number of years on base scenario
+  for (i in 1:length(Nyearslist)){
+    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
+                                   Nyears=Nyearslist[i],
+                                   startK=startK, noise=noiselist[2], 
+                                   startR=startRlist[5], 
+                                   changeK=changeKlist[5], changeR=changeRlist[3], 
+                                   nIter, numLoops)
+    
+    #add these results to the data frame
+    simulation.results<-rbind(simulation.results, test.iter)
+    writeLines(paste("finished", Nyearslist[i], " years"))
+  }
+  
+  #### starting values of r
+  
   for(q in 1:length(startRlist)){
     #next changeR on base scenario
     for (i in 1:length(changeRlist)){
       test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
                                      Nyears=Nyearslist[2],
-                                     startK=startK, noise=noiselist[j], 
+                                     startK=startK, noise=noiselist[2], 
                                      startR=startRlist[q], 
                                      changeK=changeKlist[5], changeR=changeRlist[i], 
                                      nIter, numLoops)
@@ -403,7 +499,7 @@ for (j in 1:length(noiselist)){
     for (i in 1:length(changeKlist)){
       test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
                                      Nyears=Nyearslist[2],
-                                     startK=startK, noise=noiselist[j], 
+                                     startK=startK, noise=noiselist[2], 
                                      startR=startRlist[q], 
                                      changeK=changeKlist[i], changeR=changeRlist[3], 
                                      nIter, numLoops)
@@ -412,18 +508,49 @@ for (j in 1:length(noiselist)){
       simulation.results<-rbind(simulation.results, test.iter)
     }
     writeLines(paste("finished startR ", startRlist[q]))
-    write.csv(simulation.results, file=paste0("simresults/simresults100_", noiselist[j],startRlist[q],".csv"))
-    simulation.results<-clearsims
-    }
-  writeLines(paste("finished noise ", noiselist[j]))
-  #save the simulation results
+    
+  }
   
+  
+  #noise
+  for (j in 1:length(noiselist)){
+    #next changeR on base scenario
+    for (i in 1:length(changeRlist)){
+      test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
+                                     Nyears=Nyearslist[2],
+                                     startK=startK, noise=noiselist[j], 
+                                     startR=startRlist[5], 
+                                     changeK=changeKlist[5], changeR=changeRlist[i], 
+                                     nIter, numLoops)
+      #add these results to the data frame
+      writeLines(paste("finished changeR ", changeRlist[i]))
+      simulation.results<-rbind(simulation.results, test.iter)
+    }
+    
+    #next changeK on base scenario
+    for (i in 1:length(changeKlist)){
+      test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
+                                     Nyears=Nyearslist[2],
+                                     startK=startK, noise=noiselist[j], 
+                                     startR=startRlist[5], 
+                                     changeK=changeKlist[i], changeR=changeRlist[3], 
+                                     nIter, numLoops)
+      writeLines(paste("finished changeK ", changeKlist[i]))
+      #add these results to the data frame
+      simulation.results<-rbind(simulation.results, test.iter)
+    }
+    
+    writeLines(paste("finished noise ", noiselist[j]))
+    #save the simulation results
+    
+  }
+  
+  write.csv(simulation.results, file=paste0("simresults/simresultsoneset_", f,".csv"))
+  simulation.results<-clearsims
+  
+  # Stop the clock
+  proc.time() - ptm
+  writeLines(paste(proc.time() - ptm))
 }
-
-
-
-# Stop the clock
-proc.time() - ptm
-
 
 
