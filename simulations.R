@@ -455,14 +455,14 @@ proc.time() - ptm
 ####################################################################
 ### Start runnng here if it breaks
 
-simnumber<-5
+simnumber<-1000
 nIter<-1
 numLoops<-1
 simulation.results<-clearsims
 
 
 ###### replace number before :simnuber with last sucessful sim number
-for (f in 2:simnumber){
+for (f in 601:simnumber){
   ptm <- proc.time()
   
   #first number of years on base scenario
