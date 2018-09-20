@@ -32,5 +32,13 @@ harmonia.year<-ddply(harmonia, "year", summarize,
 #now, we run it through the RS detector
 source("regime_shift_detector.R")
 
-RSdetector(harmonia.year)
+RSdetector(harmonia.year, "AIC")
+
+RSdetector(harmonia.year, "AICc")
+
+harmonia1<-addNt1(harmonia.year)
+
+breakweights(harmonia1, "AIC")
+
+breakweights(harmonia1, "AICc")
 
