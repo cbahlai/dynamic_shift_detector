@@ -1,12 +1,5 @@
 #script for creating simulated data under a variety of parameters
-#and then determining if RSdetector function correctly determines these parameters
-
-#to-do list 
-
-#create simulations to test robustness of picking up regime shifts at different break point spacings
-#Create simulations to test robustness of picking up regime shifts of different sizes
-#create simulations to test robustness of picking up regime shifts in different noise scenarios
-#and while we're at it, simulations to test how this all works given different lengths of time series
+#and then determining if breakweights function correctly determines these parameters
 
 #get the regime shift detector functions into memory
 source("regime_shift_detector.R")
@@ -111,83 +104,31 @@ fakedata(noise=5, changeK=25, changeR=25, breaks=list("1905", "1910"))
 #and compare the ones it finds to the ones the data was built with
 
 
-detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR){
+weight.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, 
+                             startR, breaks, changeK, changeR, criterion){
   #create simulated data based on input parameters
   test<-fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
-  #run the data thtrough the script that finds the best model
-  #and pull out a list of the breaks it found
-  breaksfound<-bestmodel(addNt1(test))$Year2
-  #also want to output number of breaks input (deal with output in conditionals)
-  nbreaksin<-length(breaks)
-  #need to deal with the case that no breaks are found
-  #model will find a 'break' at the end of the sequence, leading to a of length 1
-  if (length(breaksfound)==1){
-  #first, if we found no breaks
-    if (nbreaksin == 0){  #if there's no breaks in the sim data, great!
-      victory<-1
-      nbreaksout<-0
-    }else{ #if we found no breaks, but there was breaks to find
-      victory<-0
-      nbreaksout<-0
-    }
-    
-  }else{ # test if we found the right breaks
-    #cull out the 'break' at the end of the data
-    breaksfound<-breaksfound[-length(breaksfound)]
-    #and for output purposes
-    nbreaksout<-length(breaksfound)
-    #obviously- if the breaks are all found, bam, the breaks are all found
-    if(all(breaksfound %in% breaks)){
-      victory<-1
-    }else{
-      if(any(breaksfound %in% breaks)){ #if we find some breaks
-        #to deal with a data type issue, encode partial matches numerically
-        #extra breaks found = 2
-        #missing breaks (when more than one break in sim data) =3
-        #right number of breaks but not all match =4
-        if(length(breaksfound)>length(breaks)){
-          victory<-2 
-        }else if(length(breaksfound)<length(breaks)){
-          victory<-3
-        }else if(length(breaksfound)==length(breaks)){
-          victory<-4
-        }
-      }else{
-        victory<-0
-      }
-    }
+  endbreak<-startyear+Nyears-1 #add the end break to the break list so it's more comparable to output
+  breaksin<-c(unlist(breaks), endbreak) #and make it a vector
+  nbreaksin<-length(breaks)  
+  output<-breakweights(test, criterion)
+  rightbreaks<-output[which(output$breaksfound %in% breaksin),]
+  wrongbreaks<-output[!which(output$breaksfound %in% breaksin),]
+  wrongweight<-mean(wrongbreaks$correctedweights) #mean weight of incorrect breaks
+  #if there are no breaks, we need to set a zero weight 
+  if (!is.finite(wrongweight)){
+    wrongweight<-0
   }
-  #if the best model isn't the input model, see if the input model is in the set of equivalent models
-  if (victory!=1){
-    breaksfound<-equivalentfit(addNt1(test))$Breaks #pull out a vector of the breaks 
-    equivalentfits<-length(breaksfound)
-    #create a place to hold test results
-    inthere<-c()
-    for(i in 1:equivalentfits){
-      breaksfound_i<-unlist(breaksfound[i])[-length(unlist(breaksfound[i]))]#pull out breaks for that model, minus end of series break
-      if(length(breaksfound_i)==length(breaks)){
-        if(all(breaksfound_i == breaks)){
-          inthere_i<-1
-        }else{
-          inthere_i<-0
-        }
-      
-      }else{
-        inthere_i<-0
-      }
-      inthere<-c(inthere, inthere_i)
-    }
-    if(any(inthere>0)){
-      inSet<-1
-    }else{
-      inSet<-0
-    }
-  }else { #we already know the best model is in the equivalent model set
-    inSet<-1
+  #right breaks need two cases- for no breaks and any breaks scenarios
+  if(nbreaksin>0){
+    rightweight<-mean(rightbreaks$correctedweights) 
+    #mean weight of correct breaks minus end of series
+  }else{
+    rightweight<-12 #end of series break has a weight of 1 by definition
   }
-
+  
   #output needed information
-  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory, inSet, breaksfound))
+  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, startK, startR, changeK, changeR, rightweight, wrongweight))
   return(testconditions)
   
 }
