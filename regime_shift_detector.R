@@ -233,7 +233,7 @@ AICtally<-function(data){ #create a function that adds up the AICs in the list
 }
 
 
-#see if AICtally outputs will stic to nbreaker outputs- and create a function that does this
+#see if AICtally outputs will stick to nbreaker outputs- and create a function that does this
 allfits<-function(data){
   out<-as.data.frame(cbind(nbreaker(data), AICtally(data))) #stick output from two functions into a df
   return(out)
@@ -243,10 +243,19 @@ allfits<-function(data){
 
 
 #create a function that finds equivalent fits in n breakpoint data
+#add functionality for switching between AIC and AICc, with AIC as default
 
-equivalentfit<-function(data){
+equivalentfit<-function(data, criterion){
   breakset<-allfits(data) #generate matrix of fits by breakpoints
-  AICbest<-min(breakset$AICtot) #find best AIC in the set
+  if(missing(criterion)){ #set AIC as the default criterion
+    criterion<-"AIC"
+  }
+  if(criterion=="AIC"){
+    AICbest<-min(breakset$AICtot) #find best AIC in the set
+  }
+  if (criterion=="AICc"){
+    AICbest<-min(breakset$AICc) #find best AIC in the set
+  }
   deltaAIC<-AICbest+2 # create rule for equivalent models
   out.frame<-breakset[which(breakset$AICtot<deltaAIC),] #cut out all data but equivalent models
   return(out.frame)
@@ -257,8 +266,8 @@ equivalentfit<-function(data){
 #but equivalent fit is one thing- if there's equivalent fit and one of the model set has
 # fewer parameters, we obviously want to go with that. create a function that does that but this time for n breaks
 
-bestfit<-function(data){
-  breakset<-equivalentfit(data) #get set of eqivalent models
+bestfit<-function(data, criterion){
+  breakset<-equivalentfit(data, criterion) #get set of eqivalent models
   best.fit<-min(breakset$AICtot) #choose model with lowest AICc
   out.frame<-breakset[which(breakset$AICtot==best.fit),] #pull models with numerically lowest AIC
   # if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
@@ -271,8 +280,8 @@ bestfit<-function(data){
 
 #cool. looks like we can now adapt the model fitting function for these n breakpoint data
 
-bestmodel<-function(data){
-  modelspecs<-bestfit(data) #get the particulars of the best model
+bestmodel<-function(data, criterion){
+  modelspecs<-bestfit(data, criterion) #get the particulars of the best model
   out.frame<-data.frame(matrix(vector(), 0, 7,
                                dimnames=list(c(), 
                                              c("Year1", "Year2", "AIC", "r", "rse", "k", "kse"))),
@@ -332,7 +341,7 @@ modelspecification<-function(specs, data){
 
 #looks like that works! Okay! put it all together like we did for the 2 break model
 
-RSdetector<-function(data){ #use raw time series data
+RSdetector<-function(data, criterion){ #use raw time series data
   #plot the data
   plot(data)
   data1<-addNt1(data)
@@ -342,17 +351,43 @@ RSdetector<-function(data){ #use raw time series data
   print(allfits(data1))
   #output models with equivalent performance
   writeLines(paste("Here is the set of best performing models"))
-  print(equivalentfit(data1))
+  print(equivalentfit(data1, criterion))
   #output model with best performance
-  writeLines(paste("Here is the best model- the one with the lowest AICc, or fewest parameters, in case of a tie"))
-  print(bestfit(data1))
+  writeLines(paste("Here is the best model- the one with the lowest AIC/AICc, or fewest parameters, in case of a tie"))
+  print(bestfit(data1, criterion))
   # output regression parameters of best model
   writeLines(paste("Here is the set of regression parameters"))
-  print(bestmodel(data1))
+  print(bestmodel(data1, criterion))
 }
 
 
 
 #looks like we have a working model! Boom!
+
+#Okay, but what about 'break weights'- how 'strong' are the given breaks? Let's take some inspiration
+#from multimodel interference and calculate the weight of a given break that the model finds
+#first, we need to calculate the model weights for all of the fits
+
+allweights<-function(data, criterion){
+  breakset<-allfits(data) #generate matrix of fits by breakpoints
+  if(missing(criterion)){ #set AIC as the default criterion
+    criterion<-"AIC"
+  }
+  if(criterion=="AIC"){
+    AICbest<-min(breakset$AICtot) #find best AIC in the set
+    deltaAIC<-breakset$AICtot-AICbest
+    sumdeltaAIC<-sum(exp(-deltaAIC/2))
+  }
+  if (criterion=="AICc"){
+    AICbest<-min(breakset$AICc) #find best AIC in the set
+    deltaAIC<-breakset$AICc-AICbest
+    sumdeltaAIC<-sum(exp(-deltaAIC/2))
+  }
+  breakset$modelweights<-(exp(-deltaAIC/2))/sumdeltaAIC
+  
+  out.frame<-breakset[which(breakset$modelweights>0.01),] #cut out all models with weight less than 0.01
+  return(out.frame)
+}
+
 
 
