@@ -385,9 +385,28 @@ allweights<-function(data, criterion){
   }
   breakset$modelweights<-(exp(-deltaAIC/2))/sumdeltaAIC
   
-  out.frame<-breakset[which(breakset$modelweights>0.01),] #cut out all models with weight less than 0.01
+  out.frame<-breakset[which(breakset$modelweights>0.01),] #cut out all models with weight less than 0.01, just to speed things up
   return(out.frame)
 }
 
-
+#now we need a function that calculates parameter weights for the breaks
+breakweights<-function(data, criterion){
+  modelset<-allweights(data, criterion)#find all models with weights over 0.01
+  breaksfound<-sort(unique(unlist(modelset$Breaks))) #get a list of unique breaks, sort it in numerical order
+  breakweights<-c() #blank vector to put the breaks in
+  for(i in 1:length(breaksfound)){
+    weightcounter<-0
+    for (j in 1:length(modelset$modelweights)){
+      if(breaksfound[i] %in% unlist(modelset$Breaks[j])){
+        weightcounter<-weightcounter+modelset$modelweights[j] #add model weight of parameter where that break appears
+      }else{
+        weightcounter<-weightcounter+0
+      }
+    }
+    breakweights<-c(breakweights, weightcounter)
+  }
+  correctedweights<-breakweights/max(breakweights) #breakweights is based on best model set- correct to normalize by break at the end of time series
+  out.frame<-as.data.frame(cbind(breaksfound, breakweights, correctedweights))
+  return(out.frame)
+}
 
