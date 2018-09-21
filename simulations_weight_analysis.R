@@ -414,7 +414,7 @@ for (f in 1:simnumber){
     
   }
   
-  write.csv(simulation.results, file=paste0("simresults/simresultsweightsAIC_", f,".csv"))
+  write.csv(simulation.results, file=paste0("simresults/Break_weights_AIC/simresultsweightsAIC_", f,".csv"))
   simulation.results<-clearsims
   
   # Stop the clock
