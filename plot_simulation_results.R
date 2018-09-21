@@ -72,10 +72,10 @@ pal.notwo<-c("#e31a1c")
 
 #start with successes
 
-noise.experiment.correct<-summarize.results[which(summarize.results$changeK==40 & 
-                                                    summarize.results$changeR==20 &
+noise.experiment.correct<-summarize.results[which(summarize.results$changeK==25 & 
+                                                    summarize.results$changeR==25 &
                                                     summarize.results$victory==1 &
-                                                    summarize.results$Nyears==25),]
+                                                    summarize.results$Nyears==20),]
 noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, proportion, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=TRUE, formula=y ~ poly(x, 3), span=0.1)+
