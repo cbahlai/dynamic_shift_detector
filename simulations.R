@@ -105,7 +105,7 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   
   return(simdata)
 }
-fakedata(noise=5, changeK=50, changeR=10, breaks=list("1905", "1910"))
+fakedata(noise=5, changeK=25, changeR=25, breaks=list("1905", "1910"))
 
 #now we need to create a function that will take the simulated data, find the best break combination
 #and compare the ones it finds to the ones the data was built with
@@ -187,7 +187,7 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   }
 
   #output needed information
-  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory, inSet))
+  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory, inSet, breaksfound))
   return(testconditions)
   
 }
