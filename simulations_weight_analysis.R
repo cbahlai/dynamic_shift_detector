@@ -103,6 +103,7 @@ fakedata(noise=5, changeK=25, changeR=25, breaks=list("1905", "1910"))
 #now we need to create a function that will take the simulated data, find the best break combination
 #and compare the ones it finds to the ones the data was built with
 
+'%ni%' <- Negate('%in%')
 
 weight.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, 
                              startR, breaks, changeK, changeR, criterion){
@@ -111,20 +112,23 @@ weight.fake.shifts<-function(startyear, Nyears, startPop, noise, startK,
   endbreak<-startyear+Nyears-1 #add the end break to the break list so it's more comparable to output
   breaksin<-c(unlist(breaks), endbreak) #and make it a vector
   nbreaksin<-length(breaks)  
-  output<-breakweights(test, criterion)
+  output<-breakweights(addNt1(test), criterion)
+  print(output)
   rightbreaks<-output[which(output$breaksfound %in% breaksin),]
-  wrongbreaks<-output[!which(output$breaksfound %in% breaksin),]
-  wrongweight<-mean(wrongbreaks$correctedweights) #mean weight of incorrect breaks
-  #if there are no breaks, we need to set a zero weight 
-  if (!is.finite(wrongweight)){
+  wrongbreaks<-output[which(output$breaksfound %ni% breaksin),]
+  wrongweight<-mean(as.numeric(wrongbreaks$correctedweights)) #mean weight of incorrect breaks
+  #if there are no wrong breaks, we need to set a zero weight 
+  if (is.nan(wrongweight)){
     wrongweight<-0
   }
   #right breaks need two cases- for no breaks and any breaks scenarios
   if(nbreaksin>0){
-    rightweight<-mean(rightbreaks$correctedweights) 
+    weights<-rightbreaks$correctedweights[1:(length(rightbreaks$correctedweights)-1)]
+    rightweight<-mean(weights) 
+    print(weights)
     #mean weight of correct breaks minus end of series
   }else{
-    rightweight<-12 #end of series break has a weight of 1 by definition
+    rightweight<-1 #end of series break has a weight of 1 by definition
   }
   
   #output needed information
