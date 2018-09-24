@@ -105,18 +105,18 @@ fakedata<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, c
   
   return(simdata)
 }
-fakedata(noise=5, changeK=25, changeR=25, breaks=list("1905", "1910"))
+test<-fakedata(noise=5, changeK=25, changeR=25, breaks=list("1905", "1910"))
 
 #now we need to create a function that will take the simulated data, find the best break combination
 #and compare the ones it finds to the ones the data was built with
 
 
-detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR){
+detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR, criterion){
   #create simulated data based on input parameters
   test<-fakedata(startyear, Nyears, startPop, noise, startK, startR, breaks, changeK, changeR)
   #run the data thtrough the script that finds the best model
   #and pull out a list of the breaks it found
-  breaksfound<-bestmodel(addNt1(test))$Year2
+  breaksfound<-bestmodel(addNt1(test), criterion)$Year2
   #also want to output number of breaks input (deal with output in conditionals)
   nbreaksin<-length(breaks)
   #need to deal with the case that no breaks are found
@@ -159,7 +159,7 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   }
   #if the best model isn't the input model, see if the input model is in the set of equivalent models
   if (victory!=1){
-    breaksfound<-equivalentfit(addNt1(test))$Breaks #pull out a vector of the breaks 
+    breaksfound<-equivalentfit(addNt1(test), criterion)$Breaks #pull out a vector of the breaks 
     equivalentfits<-length(breaksfound)
     #create a place to hold test results
     inthere<-c()
@@ -187,7 +187,7 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
   }
 
   #output needed information
-  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory, inSet, breaksfound))
+  testconditions<-unlist(c(Nyears, startPop, noise, nbreaksin, nbreaksout, startK, startR, changeK, changeR, victory, inSet))
   return(testconditions)
   
 }
@@ -197,7 +197,7 @@ detect.fake.shifts<-function(startyear, Nyears, startPop, noise, startK, startR,
 # on simulated data produced under given conditions
 
 break.it.down<-function(startyear, Nyears, startPop, noise, 
-                        startK, startR, breaks, changeK, changeR, nIter){
+                        startK, startR, breaks, changeK, changeR, nIter, criterion){
   out.frame<-data.frame(matrix(vector(), 0, 11,
                                dimnames=list(c(), 
                                              c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
@@ -205,7 +205,7 @@ break.it.down<-function(startyear, Nyears, startPop, noise,
                         stringsAsFactors=FALSE)#Create a place to put our data
   for (i in 1:nIter){
     test<-detect.fake.shifts(startyear, Nyears, startPop, noise, startK, 
-                             startR, breaks, changeK, changeR)
+                             startR, breaks, changeK, changeR, criterion)
     out.frame<-rbind(out.frame, test)#put output for segment in a data frame
   }
   colnames(out.frame)<- c("Nyears", "startPop", "noise", "nbreaksin","nbreaksout",
@@ -231,6 +231,7 @@ startR<-2 #also reasonable r
 changeK<-50# start with big, easily detected shifts
 changeR<-0 # as with changeK
 nIter<-5 # keep this low while we build the code
+criterion="AIC"
 
 # create some script that randomly chooses the breaks, given certain rules
 # recall that the model assumes breaks cannot occur less than three years apart 
@@ -272,7 +273,7 @@ breaklist<-function(possibleBreaks, howmany){ #we'll cap it at 3 breaks for the 
 
 iterate.breakitdown<-function(startyear, Nyears, startPop, 
                               noise, startK, startR, 
-                              changeK, changeR, nIter, numLoops){
+                              changeK, changeR, nIter, numLoops, criterion){
   #figure out possible breaks
   #minumum break must be four years in or later
   minbreak<-startyear+4
@@ -295,16 +296,16 @@ iterate.breakitdown<-function(startyear, Nyears, startPop,
     breaks3<-breaklist(possibleBreaks, 3)
     result.matrix0<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
                                   noise=noise, startK=startK, startR=startR, 
-                                  breaks=breaks0, changeK=changeK, changeR=changeR, nIter=nIter)
+                                  breaks=breaks0, changeK=changeK, changeR=changeR, nIter=nIter, criterion=criterion)
     result.matrix1<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
                                   noise=noise, startK=startK, startR=startR, 
-                                  breaks=breaks1, changeK=changeK, changeR=changeR, nIter=nIter)
+                                  breaks=breaks1, changeK=changeK, changeR=changeR, nIter=nIter, criterion=criterion)
     result.matrix2<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
                                   noise=noise, startK=startK, startR=startR, 
-                                  breaks=breaks2, changeK=changeK, changeR=changeR, nIter=nIter)
+                                  breaks=breaks2, changeK=changeK, changeR=changeR, nIter=nIter, criterion=criterion)
     result.matrix3<-break.it.down(startyear=startyear, Nyears=Nyears, startPop=startPop, 
                                   noise=noise, startK=startK, startR=startR, 
-                                  breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter)
+                                  breaks=breaks3, changeK=changeK, changeR=changeR, nIter=nIter, criterion=criterion)
     
     results.matrix<-rbind(results.matrix, result.matrix0, result.matrix1, result.matrix2, result.matrix3)
     numLoops<-numLoops-1
@@ -337,20 +338,19 @@ test.iter<-data.frame(matrix(vector(), 0, 11,
 #we will be holding these values completely constant for comparisons' sake 
 startyear<-1
 startPop<-3000
-nIter<-5
-numLoops<-10
+nIter<-1
+numLoops<-1
 startK<-2000
 
-#we also want to keep track of how long this takes to run, so
-# Start the clock!
-ptm <- proc.time()
+
 
 #things we want to vary
 Nyearslist<-c(15,20,25,30)
-noiselist<-c(1,5,10,15,20)
+noiselist<-c(1,2,5,10,15)
 startRlist<-c(-0.5, 0.5, 1, 1.5, 2)
 changeRlist<-c(0,10,25,50,75)
 changeKlist<-c(0,10,25,50,75)
+criterion="AIC"
 
 ##############
 #base scenario
@@ -360,109 +360,24 @@ test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
                                startK=startK, noise=noiselist[2], 
                                startR=startRlist[5], 
                                changeK=changeKlist[5], changeR=changeRlist[3], 
-                               nIter, numLoops)
+                               nIter, numLoops, criterion)
 
 
-#first number of years on base scenario
-for (i in 1:length(Nyearslist)){
-  test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
-                                 Nyears=Nyearslist[i],
-                                 startK=startK, noise=noiselist[2], 
-                                 startR=startRlist[5], 
-                                 changeK=changeKlist[5], changeR=changeRlist[3], 
-                                 nIter, numLoops)
-  
-  #add these results to the data frame
-  simulation.results<-rbind(simulation.results, test.iter)
-  writeLines(paste("finished", Nyearslist[i], " years"))
-}
-
-
-
-#### starting values of r
-
-for(q in 1:length(startRlist)){
-  #next changeR on base scenario
-  for (i in 1:length(changeRlist)){
-    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
-                                   Nyears=Nyearslist[2],
-                                   startK=startK, noise=noiselist[2], 
-                                   startR=startRlist[q], 
-                                   changeK=changeKlist[5], changeR=changeRlist[i], 
-                                   nIter, numLoops)
-    #add these results to the data frame
-    writeLines(paste("finished changeR ", changeRlist[i]))
-    simulation.results<-rbind(simulation.results, test.iter)
-  }
-  
-  #next changeK on base scenario
-  for (i in 1:length(changeKlist)){
-    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
-                                   Nyears=Nyearslist[2],
-                                   startK=startK, noise=noiselist[2], 
-                                   startR=startRlist[q], 
-                                   changeK=changeKlist[i], changeR=changeRlist[3], 
-                                   nIter, numLoops)
-    writeLines(paste("finished changeK ", changeKlist[i]))
-    #add these results to the data frame
-    simulation.results<-rbind(simulation.results, test.iter)
-  }
-  writeLines(paste("finished startR ", startRlist[q]))
-  
-}
-
-
-#noise
-for (j in 1:length(noiselist)){
-  #next changeR on base scenario
-  for (i in 1:length(changeRlist)){
-    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
-                                   Nyears=Nyearslist[2],
-                                   startK=startK, noise=noiselist[j], 
-                                   startR=startRlist[5], 
-                                   changeK=changeKlist[5], changeR=changeRlist[i], 
-                                   nIter, numLoops)
-    #add these results to the data frame
-    writeLines(paste("finished changeR ", changeRlist[i]))
-    simulation.results<-rbind(simulation.results, test.iter)
-  }
-  
-  #next changeK on base scenario
-  for (i in 1:length(changeKlist)){
-    test.iter<-iterate.breakitdown(startyear=startyear, startPop=startPop,
-                                   Nyears=Nyearslist[2],
-                                   startK=startK, noise=noiselist[j], 
-                                   startR=startRlist[5], 
-                                   changeK=changeKlist[i], changeR=changeRlist[3], 
-                                   nIter, numLoops)
-    writeLines(paste("finished changeK ", changeKlist[i]))
-    #add these results to the data frame
-    simulation.results<-rbind(simulation.results, test.iter)
-  }
-  
-  writeLines(paste("finished noise ", noiselist[j]))
-  #save the simulation results
-  
-}
-
-
-
-# Stop the clock
-proc.time() - ptm
 
 
 #okay, let's do this as one iteration on a complete set, repeated x times
 ####################################################################
 ### Start runnng here if it breaks
 
-simnumber<-1000
+simnumber<-250
 nIter<-1
 numLoops<-1
 simulation.results<-clearsims
+criterion="AIC"
 
 
 ###### replace number before :simnuber with last sucessful sim number
-for (f in 601:simnumber){
+for (f in 1:simnumber){
   ptm <- proc.time()
   
   #first number of years on base scenario
@@ -472,7 +387,7 @@ for (f in 601:simnumber){
                                    startK=startK, noise=noiselist[2], 
                                    startR=startRlist[5], 
                                    changeK=changeKlist[5], changeR=changeRlist[3], 
-                                   nIter, numLoops)
+                                   nIter, numLoops, criterion)
     
     #add these results to the data frame
     simulation.results<-rbind(simulation.results, test.iter)
@@ -489,7 +404,7 @@ for (f in 601:simnumber){
                                      startK=startK, noise=noiselist[2], 
                                      startR=startRlist[q], 
                                      changeK=changeKlist[5], changeR=changeRlist[i], 
-                                     nIter, numLoops)
+                                     nIter, numLoops, criterion)
       #add these results to the data frame
       writeLines(paste("finished changeR ", changeRlist[i]))
       simulation.results<-rbind(simulation.results, test.iter)
@@ -502,7 +417,7 @@ for (f in 601:simnumber){
                                      startK=startK, noise=noiselist[2], 
                                      startR=startRlist[q], 
                                      changeK=changeKlist[i], changeR=changeRlist[3], 
-                                     nIter, numLoops)
+                                     nIter, numLoops, criterion)
       writeLines(paste("finished changeK ", changeKlist[i]))
       #add these results to the data frame
       simulation.results<-rbind(simulation.results, test.iter)
@@ -521,7 +436,7 @@ for (f in 601:simnumber){
                                      startK=startK, noise=noiselist[j], 
                                      startR=startRlist[5], 
                                      changeK=changeKlist[5], changeR=changeRlist[i], 
-                                     nIter, numLoops)
+                                     nIter, numLoops, criterion)
       #add these results to the data frame
       writeLines(paste("finished changeR ", changeRlist[i]))
       simulation.results<-rbind(simulation.results, test.iter)
@@ -534,7 +449,7 @@ for (f in 601:simnumber){
                                      startK=startK, noise=noiselist[j], 
                                      startR=startRlist[5], 
                                      changeK=changeKlist[i], changeR=changeRlist[3], 
-                                     nIter, numLoops)
+                                     nIter, numLoops, criterion)
       writeLines(paste("finished changeK ", changeKlist[i]))
       #add these results to the data frame
       simulation.results<-rbind(simulation.results, test.iter)
@@ -545,7 +460,7 @@ for (f in 601:simnumber){
     
   }
   
-  write.csv(simulation.results, file=paste0("simresults/simresultsoneset_", f,".csv"))
+  write.csv(simulation.results, file=paste0("simresults/Best_model_AIC/simresultsbestmodelAIC_", f,".csv"))
   simulation.results<-clearsims
   
   # Stop the clock
