@@ -328,11 +328,11 @@ simnumber<-250
 nIter<-1
 numLoops<-1
 simulation.results<-clearsims
-criterion="AIC"
+criterion="AICc"
 
 
 ###### replace number before :simnuber with last sucessful sim number
-for (f in 101:simnumber){
+for (f in 1:simnumber){
   ptm <- proc.time()
   
   #first number of years on base scenario
@@ -415,7 +415,7 @@ for (f in 101:simnumber){
     
   }
   
-  write.csv(simulation.results, file=paste0("simresults/Break_weights_AIC/simresultsweightsAIC_", f,".csv"))
+  write.csv(simulation.results, file=paste0("simresults/Break_weights_AICc/simresultsweightsAICc_", f,".csv"))
   simulation.results<-clearsims
   
   # Stop the clock
