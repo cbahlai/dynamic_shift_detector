@@ -350,7 +350,7 @@ noiselist<-c(1,2,5,10,15)
 startRlist<-c(-0.5, 0.5, 1, 1.5, 2)
 changeRlist<-c(0,10,25,50,75)
 changeKlist<-c(0,10,25,50,75)
-criterion="AIC"
+criterion="AICc"
 
 ##############
 #base scenario
@@ -373,7 +373,7 @@ simnumber<-250
 nIter<-1
 numLoops<-1
 simulation.results<-clearsims
-criterion="AIC"
+criterion="AICc"
 
 
 ###### replace number before :simnuber with last sucessful sim number
@@ -460,7 +460,7 @@ for (f in 1:simnumber){
     
   }
   
-  write.csv(simulation.results, file=paste0("simresults/Best_model_AIC/simresultsbestmodelAIC_", f,".csv"))
+  write.csv(simulation.results, file=paste0("simresults/Best_model_AICc/simresultsbestmodelAICc_", f,".csv"))
   simulation.results<-clearsims
   
   # Stop the clock
