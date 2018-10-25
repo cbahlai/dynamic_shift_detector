@@ -4,14 +4,14 @@
 
 
 #get a list of file names:
-setwd("simresults/")
+setwd("simresults/Best_model_AIC")
 file_list<-list.files()
 
 #loop through the files, merge 'em together
 simulation.results <- do.call("rbind",lapply(file_list,
                                   FUN=function(files){read.csv(files, header=TRUE)}))
 
-setwd("..")
+setwd("../..")
 
 #Encoding results
 #All scripted breaks found =1
