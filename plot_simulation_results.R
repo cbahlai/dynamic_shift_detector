@@ -32,6 +32,11 @@ setwd("../..")
 
 simulation.results$victory<-as.factor(simulation.results$victory)
 
+#let's cull out the 15 year scenarios with 3 breaks- this usually violates the constraints of the 
+#model and thus isn't an honest test
+simulation.results<-simulation.results[-which(simulation.results$Nyears=="15" & 
+                                               simulation.results$nbreaksin=="3"),]
+
 
 #now we need to take th data produced and summarize it for plotting
 library(plyr)
@@ -54,6 +59,8 @@ colnames(tot.tests)[colnames(tot.tests) == 'freq']<-'total.tests'
 summarize.results<-merge(summarize.results, tot.tests)
 
 summarize.results$proportion<-summarize.results$freq/summarize.results$total
+
+
 
 #all right, let's get plotting!
 library(ggplot2)
