@@ -31,7 +31,7 @@ setwd("../..")
 
 
 simulation.results$victory<-as.factor(simulation.results$victory)
-simulation.results$inSet<-as.factor(simulation.results$inSet)
+
 
 #let's cull out the 15 year scenarios with 3 breaks- this usually violates the constraints of the 
 #model and thus isn't an honest test
@@ -50,21 +50,22 @@ summarize.results<-count(simulation.results,
                          c("Nyears", "startPop", "noise", "nbreaksin",
                            "startK", "startR", "changeK", "changeR", "victory"))
 
-#count number of times a the model was in the equivalent model set
-summarize.results.set<-count(simulation.results,
-                         c("Nyears", "startPop", "noise", "nbreaksin",
-                           "startK", "startR", "changeK", "changeR", "inSet"))
+
 
 #for this we only care about the proportion of times we were right
 summarize.results.right<-summarize.results[which(summarize.results$victory==1),]
-summarize.results.set.right<-summarize.results.set[which(summarize.results.set$inSet==1),]
+summarize.results.set.right<-summarize.results[which(summarize.results$victory==2),]
 #get rid of columns with only one value
 summarize.results.right$victory<-NULL
-summarize.results.set.right$inSet<-NULL
+summarize.results.set.right$victory<-NULL
 #rename the freq column so we don't have naming issues with a merge
 colnames(summarize.results.right)[colnames(summarize.results.right) == 'freq']<-'victory'
-colnames(summarize.results.set.right)[colnames(summarize.results.set.right) == 'freq']<-'inSet'
-summarize.results<-merge(summarize.results.right, summarize.results.set.right)
+colnames(summarize.results.set.right)[colnames(summarize.results.set.right) == 'freq']<-'extrabrk'
+summarize.results<-merge(summarize.results.right, summarize.results.set.right, all.x=T)
+#get rid of the NAs for outcome 2
+summarize.results$extrabrk[is.na(summarize.results$extrabrk)]<-0
+#add two outcomes together- the straight up correct, and the correct plus found an extra
+summarize.results$allfound<-summarize.results$victory+summarize.results$extrabrk
 
 #count the number of times a unique scenario was attemped (should be pretty uniform but 
 # there are someetimes cases where the fit failed) (for a denominator!)
@@ -78,7 +79,7 @@ colnames(tot.tests)[colnames(tot.tests) == 'freq']<-'total.tests'
 summarize.results<-merge(summarize.results, tot.tests)
 
 summarize.results$prop.top<-summarize.results$victory/summarize.results$total.tests
-summarize.results$prop.set<-summarize.results$inSet/summarize.results$total.tests
+summarize.results$allfound.top<-summarize.results$allfound/summarize.results$total.tests
 
 #all right, let's get plotting!
 library(ggplot2)
@@ -105,8 +106,8 @@ noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, prop.top, fill=as
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(noise, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(noise, prop.set), colour="black", pch=22, size=3)+
+  geom_smooth(aes(noise, allfound.top), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(noise, allfound.top), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -130,8 +131,8 @@ startr.correct<-ggplot(startr.experiment.correct, aes(startR, prop.top, fill=as.
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(startR, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(startR, prop.set), colour="black", pch=22, size=3)+
+  geom_smooth(aes(startR, allfound.top), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(startR, allfound.top), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -156,8 +157,8 @@ changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, prop.top, f
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(changeK, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(changeK, prop.set), colour="black", pch=22, size=3)+
+  geom_smooth(aes(changeK, allfound.top), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(changeK, allfound.top), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -182,8 +183,8 @@ changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, prop.top, f
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(changeR, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(changeR, prop.set), colour="black", pch=22, size=3)+
+  geom_smooth(aes(changeR, allfound.top), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(changeR, allfound.top), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -207,9 +208,9 @@ Nyears.experiment.correct<-summarize.results[which(summarize.results$noise==2 &
 Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, prop.top, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="lm", se=F, color="grey")+
-  geom_smooth(aes(Nyears, prop.set), method="lm", se=F, color="grey")+
+  geom_smooth(aes(Nyears, allfound.top), method="lm", se=F, color="grey")+
   geom_point(colour="black", pch=21, size=3)+
-  geom_point(aes(Nyears, prop.set), colour="black", pch=22, size=3)+
+  geom_point(aes(Nyears, allfound.top), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -281,7 +282,7 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg,
 
 
 
-pdf("figs/AIC_model_sets.pdf", height=8, width=7)
+pdf("figs/AIC_top_model.pdf", height=8, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg, ncol=3, widths=c(35,35,20)), 
                          arrangeGrob(changeKplot.correct.1, changeRplot.correct.1,  blank, ncol=3, widths=c(35,35,20)),
                          arrangeGrob(Nyearsplot.correct.1, blank, blank, ncol=3, widths=c(35,35,20)),
