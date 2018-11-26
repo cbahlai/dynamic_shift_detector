@@ -67,12 +67,12 @@ noise.experiment.correct<-summarize.results[which(summarize.results$changeK==75 
                                                     summarize.results$changeR==25 & 
                                                     summarize.results$startR==2 &
                                                     summarize.results$Nyears==20),]
-noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, rightweight, fill=as.factor(nbreaksin)))+
+noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, rightmin, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(noise, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(noise, wrongweight), colour="black", pch=25, size=3)+
+  geom_smooth(aes(noise, wrongmax), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(noise, wrongmax), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -92,12 +92,12 @@ startr.experiment.correct<-summarize.results[which(summarize.results$changeK==75
                                                     summarize.results$changeR==25 & 
                                                     summarize.results$noise==2 &
                                                     summarize.results$Nyears==20),]
-startr.correct<-ggplot(startr.experiment.correct, aes(startR, rightweight, fill=as.factor(nbreaksin)))+
+startr.correct<-ggplot(startr.experiment.correct, aes(startR, rightmin, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(startR, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(startR, wrongweight), colour="black", pch=25, size=3)+
+  geom_smooth(aes(startR, wrongmax), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(startR, wrongmax), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -118,12 +118,12 @@ changeK.experiment.correct<-summarize.results[which(summarize.results$noise==5 &
                                                       summarize.results$changeR==25 &
                                                       summarize.results$startR==2 &
                                                       summarize.results$Nyears==20),]
-changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, rightweight, fill=as.factor(nbreaksin)))+
+changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, rightmin, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(changeK, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(changeK, wrongweight), colour="black", pch=25, size=3)+
+  geom_smooth(aes(changeK, wrongmax), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(changeK, wrongmax), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -144,12 +144,12 @@ changeR.experiment.correct<-summarize.results[which(summarize.results$noise==5 &
                                                       summarize.results$changeK==75 &
                                                       summarize.results$startR==2 &
                                                       summarize.results$Nyears==20),]
-changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, rightweight, fill=as.factor(nbreaksin)))+
+changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, rightmin, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(changeR, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(changeR, wrongweight), colour="black", pch=25, size=3)+
+  geom_smooth(aes(changeR, wrongmax), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(changeR, wrongmax), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -170,12 +170,12 @@ Nyears.experiment.correct<-summarize.results[which(summarize.results$noise==2 &
                                                      summarize.results$changeK==75 &
                                                      summarize.results$startR==2 &
                                                      summarize.results$changeR==25),]
-Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, rightweight, fill=as.factor(nbreaksin)))+
+Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, rightmin, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="lm", se=F, color="grey")+
-  geom_smooth(aes(Nyears, wrongweight), method="lm", se=F, color="grey")+
+  geom_smooth(aes(Nyears, wrongmax), method="lm", se=F, color="grey")+
   geom_point(colour="black", pch=21, size=3)+
-  geom_point(aes(Nyears, wrongweight), colour="black", pch=24, size=3)+
+  geom_point(aes(Nyears, wrongmax), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -247,7 +247,7 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg,
 
 
 
-pdf("figs/AIC_average_breaks.pdf", height=8, width=7)
+pdf("figs/AIC_worst_breaks.pdf", height=8, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg, ncol=3, widths=c(35,35,20)), 
                          arrangeGrob(changeKplot.correct.1, changeRplot.correct.1,  blank, ncol=3, widths=c(35,35,20)),
                          arrangeGrob(Nyearsplot.correct.1, blank, blank, ncol=3, widths=c(35,35,20)),
