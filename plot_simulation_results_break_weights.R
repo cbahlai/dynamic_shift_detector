@@ -35,23 +35,16 @@ summarize.results<-ddply(simulation.results,
                          rightweight=mean(rightweight), wrongweight=mean(wrongweight),
                          rightmin=mean(rightmin), wrongmax=mean(wrongmax))
 
+#now, because zero break scenerios have been defined as 1 when they're correct, they're giving a
+#misleading trend, so let's just take them out of the plot
+#they're not helping to interpret anything
 
+#define a vector to keep it concise
+vec<-summarize.results$nbreaksin
 
+summarize.results$rightweight<-ifelse(vec==0, NA, summarize.results$rightweight)
+summarize.results$rightmin<-ifelse(vec==0, NA, summarize.results$rightmin)
 
-
-#count the number of times a unique scenario was attemped (should be pretty uniform but 
-# there are someetimes cases where the fit failed) (for a denominator!)
-
-tot.tests<-count(simulation.results,
-                 c("Nyears", "startPop", "noise", "nbreaksin",
-                   "startK", "startR", "changeK", "changeR"))
-#rename the freq column so we don't have naming issues with a merge
-colnames(tot.tests)[colnames(tot.tests) == 'freq']<-'total.tests'
-
-summarize.results<-merge(summarize.results, tot.tests)
-
-summarize.results$prop.top<-summarize.results$victory/summarize.results$total.tests
-summarize.results$allfound.top<-summarize.results$allfound/summarize.results$total.tests
 
 #all right, let's get plotting!
 library(ggplot2)
@@ -74,12 +67,12 @@ noise.experiment.correct<-summarize.results[which(summarize.results$changeK==75 
                                                     summarize.results$changeR==25 & 
                                                     summarize.results$startR==2 &
                                                     summarize.results$Nyears==20),]
-noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, prop.top, fill=as.factor(nbreaksin)))+
+noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, rightweight, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(noise, allfound.top), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(noise, allfound.top), colour="black", pch=24, size=3)+
+  geom_smooth(aes(noise, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_point(aes(noise, wrongweight), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
