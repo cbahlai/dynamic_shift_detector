@@ -33,24 +33,11 @@ summarize.results<-ddply(simulation.results,
                          c("Nyears", "startPop", "noise", "nbreaksin",
                            "startK", "startR", "changeK", "changeR"), summarize,
                          rightweight=mean(rightweight), wrongweight=mean(wrongweight),
-                         rightmin=min(rightmin), wrongmax=max(wrongmax))
+                         rightmin=mean(rightmin), wrongmax=mean(wrongmax))
 
 
 
-#for this we only care about the proportion of times we were right
-summarize.results.right<-summarize.results[which(summarize.results$victory==1),]
-summarize.results.set.right<-summarize.results[which(summarize.results$victory==2),]
-#get rid of columns with only one value
-summarize.results.right$victory<-NULL
-summarize.results.set.right$victory<-NULL
-#rename the freq column so we don't have naming issues with a merge
-colnames(summarize.results.right)[colnames(summarize.results.right) == 'freq']<-'victory'
-colnames(summarize.results.set.right)[colnames(summarize.results.set.right) == 'freq']<-'extrabrk'
-summarize.results<-merge(summarize.results.right, summarize.results.set.right, all.x=T)
-#get rid of the NAs for outcome 2
-summarize.results$extrabrk[is.na(summarize.results$extrabrk)]<-0
-#add two outcomes together- the straight up correct, and the correct plus found an extra
-summarize.results$allfound<-summarize.results$victory+summarize.results$extrabrk
+
 
 #count the number of times a unique scenario was attemped (should be pretty uniform but 
 # there are someetimes cases where the fit failed) (for a denominator!)
