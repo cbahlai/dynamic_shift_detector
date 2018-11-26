@@ -252,12 +252,14 @@ equivalentfit<-function(data, criterion){
   }
   if(criterion=="AIC"){
     AICbest<-min(breakset$AICtot) #find best AIC in the set
+    deltaAIC<-AICbest+2 # create rule for equivalent models
+    out.frame<-breakset[which(breakset$AICtot<deltaAIC),] #cut out all data but equivalent models
   }
   if (criterion=="AICc"){
     AICbest<-min(breakset$AICc) #find best AIC in the set
+    deltaAIC<-AICbest+2 # create rule for equivalent models
+    out.frame<-breakset[which(breakset$AICc<deltaAIC),] #cut out all data but equivalent models
   }
-  deltaAIC<-AICbest+2 # create rule for equivalent models
-  out.frame<-breakset[which(breakset$AICtot<deltaAIC),] #cut out all data but equivalent models
   return(out.frame)
 }
 
