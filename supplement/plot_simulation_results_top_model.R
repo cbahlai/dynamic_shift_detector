@@ -282,7 +282,7 @@ grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg,
 
 
 
-pdf("figs/AIC_top_model.pdf", height=8, width=7)
+pdf("figs/Supplement/AIC_top_model.pdf", height=8, width=7)
 grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg, ncol=3, widths=c(35,35,20)), 
                          arrangeGrob(changeKplot.correct.1, changeRplot.correct.1,  blank, ncol=3, widths=c(35,35,20)),
                          arrangeGrob(Nyearsplot.correct.1, blank, blank, ncol=3, widths=c(35,35,20)),
