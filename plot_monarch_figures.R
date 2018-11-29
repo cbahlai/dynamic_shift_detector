@@ -81,8 +81,7 @@ monarch.timeseries<-ggplot(monarch, aes(year, Nt, colour=phase, cex=1))+
   theme_bw()+
   coord_equal(ratio=0.45)+
   geom_vline(xintercept=c(2003.5, 2008.5), colour="blue", linetype="longdash")+ 
-  geom_vline(xintercept=c(1998.5), colour="grey62", linetype="longdash")+
-  geom_vline(xintercept=c(1999.5, 2007.5), colour="grey62", linetype="dotted")+ 
+  geom_vline(xintercept=c(2006.5), colour="grey62", linetype="longdash")+
   theme(legend.key = element_blank(), plot.margin=unit(c(15,0,0,0), "mm"))+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)+
