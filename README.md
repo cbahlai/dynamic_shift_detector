@@ -10,7 +10,7 @@ In this repo, we develop a novel break-point analysis tool for population time s
 
 **plot_monarch_figures.R** - plots output from monarch example, places outputs in **figs folder**
 
-**harmonia_example.R** - applies the regime shift detector analysis toharmonia ladybeetle population data from Kellogg Biological Station. Includes data cleaning/manipulation code after Bahlai et al 2015.
+**harmonia_example.R** - applies the regime shift detector analysis to harmonia ladybeetle population data from Kellogg Biological Station. Includes data cleaning/manipulation code after Bahlai et al 2015.
 
 **plot_harmona_figures.R** - plots output from harmonia example, places outputs in **figs folder**
 
@@ -20,7 +20,7 @@ In this repo, we develop a novel break-point analysis tool for population time s
 
 **casestudydata folder** contains data for Harmonia case study. Monarch study data are proprietary
 
-**simresults folder** contains simpulation outpu CSVs, in sets of ~50 iterations of each case at a time
+**simresults folder** contains simpulation output CSVs, in sets of one iteration of each case per file
 
 **figs folder** PDF versions of all figs produced be scripts are held in this folder
 
