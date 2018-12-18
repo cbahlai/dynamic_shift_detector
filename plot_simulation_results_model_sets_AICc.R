@@ -106,7 +106,7 @@ noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, prop.top, fill=as
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   geom_smooth(aes(noise, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(noise, prop.set), colour="black", pch=22, size=3)+
+  geom_point(aes(noise, prop.set), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -131,7 +131,7 @@ startr.correct<-ggplot(startr.experiment.correct, aes(startR, prop.top, fill=as.
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   geom_smooth(aes(startR, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(startR, prop.set), colour="black", pch=22, size=3)+
+  geom_point(aes(startR, prop.set), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -157,7 +157,7 @@ changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, prop.top, f
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   geom_smooth(aes(changeK, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(changeK, prop.set), colour="black", pch=22, size=3)+
+  geom_point(aes(changeK, prop.set), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -183,7 +183,7 @@ changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, prop.top, f
   geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
   geom_point(colour="black", pch=21, size=3)+
   geom_smooth(aes(changeR, prop.set), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(aes(changeR, prop.set), colour="black", pch=22, size=3)+
+  geom_point(aes(changeR, prop.set), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -209,7 +209,7 @@ Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, prop.top, fill
   geom_smooth(method="lm", se=F, color="grey")+
   geom_smooth(aes(Nyears, prop.set), method="lm", se=F, color="grey")+
   geom_point(colour="black", pch=21, size=3)+
-  geom_point(aes(Nyears, prop.set), colour="black", pch=22, size=3)+
+  geom_point(aes(Nyears, prop.set), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
