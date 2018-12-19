@@ -269,13 +269,20 @@ equivalentfit<-function(data, criterion){
 # fewer parameters, we obviously want to go with that. create a function that does that but this time for n breaks
 
 bestfit<-function(data, criterion){
+  if(missing(criterion)){ #set AIC as the default criterion
+    criterion<-"AIC"
+  }
+
   breakset<-equivalentfit(data, criterion) #get set of eqivalent models
-  best.fit<-min(breakset$AICtot) #choose model with lowest AICc
-  out.frame<-breakset[which(breakset$AICtot==best.fit),] #pull models with numerically lowest AIC
-  # if(length(out.frame$Nbreaks>1)){ #if there is more than one model with the same # of parameters
-  #   fewest.parameters<-min(out.frame$Nbreaks) #find the fewest parameters for models with identical AICs
-  #   out.frame<-out.frame[which(out.frame$Nbreaks==fewest.parameters),] #only bring forward the model with the best AIC
-  # }
+  if(criterion=="AIC"){
+    AICbest<-min(breakset$AICtot) #find best AIC in the set
+    out.frame<-breakset[which(breakset$AICtot==AICbest),] #pull models with numerically lowest AIC
+  }
+  if (criterion=="AICc"){
+    AICbest<-min(breakset$AICc) #find best AIC in the set
+    out.frame<-breakset[which(breakset$AICc==AICbest),] #pull models with numerically lowest AIC
+  }
+  
   return(out.frame)
 }
 
