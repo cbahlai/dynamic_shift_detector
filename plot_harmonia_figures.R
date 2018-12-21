@@ -146,7 +146,7 @@ harmonia.ricker.nolegend<-harmonia.year.ricker+
   theme(legend.position = "none", plot.margin=unit(c(0,30,10,0), "mm"))
 harmonia.ricker.nolegend
 
-pdf("figs/Figure3.pdf", height=8, width=6)
+pdf("figs/Figure_5_Harmonia.pdf", height=8, width=6)
 grid.arrange(arrangeGrob(harmonia.year.timeseries, harmonia.ricker.nolegend, 
                                      heights=c(1, 1)))
 dev.off()
