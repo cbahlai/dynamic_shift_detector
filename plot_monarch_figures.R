@@ -129,7 +129,7 @@ monarch.ricker.nolegend<-monarch.ricker+
   theme(legend.position = "none", plot.margin=unit(c(0,30,10,0), "mm"))
 monarch.ricker.nolegend
 
-pdf("figs/Figure_6_monarch.pdf", height=8, width=6)
+pdf("figs/Figure_4_monarch.pdf", height=8, width=6)
 grid.arrange(arrangeGrob(monarch.timeseries, monarch.ricker.nolegend, 
                          heights=c(1, 1)))
 dev.off()
