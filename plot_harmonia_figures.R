@@ -136,7 +136,7 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   geom_point(colour="black", pch=21, size=3)+
   coord_equal(ratio=1)+
   xlim(-0.1,1)+ylim(-0.1,1)+
-  geom_text(aes(label=year), hjust=-0.3, vjust=1, color="black", size=3)+
+  #geom_text(aes(label=year), hjust=-0.3, vjust=1, color="black", size=3)+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)+
   annotate("text", x=-0.09, y=0.96, label="B", size=6)

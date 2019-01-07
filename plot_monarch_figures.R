@@ -116,7 +116,7 @@ monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
   geom_point(colour="black", pch=21, size=3)+
   coord_equal(ratio=1)+
   xlim(-2,19)+ylim(-2,19)+
-  geom_text(hjust=1.3, vjust=0, color="black", size=3)+
+  #geom_text(hjust=1.3, vjust=0, color="black", size=3)+
   theme(axis.text=axis.text.theme, 
         axis.title=axis.title.theme, legend.title=axis.title.theme, legend.text=axis.text.theme)+
   annotate("text", x=-1.6, y=18.3, label="B", size=6)
