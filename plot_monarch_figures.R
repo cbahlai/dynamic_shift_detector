@@ -27,7 +27,7 @@ library(wesanderson)
 #for bug icons, run rphylopic
 library(rphylopic)
 
-monimg<-image_data("281ee51c-f772-4ebc-b58c-469122406a78", size = "64")[[1]]
+monimg<-image_data("281ee51c-f772-4ebc-b58c-469122406a78", size = "256")[[1]]
 
 
 
@@ -89,7 +89,7 @@ monarch.timeseries<-ggplot(monarch, aes(year, Nt, colour=phase, cex=1))+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)+
   annotate("text", x=1993.9, y=17, label="A", size=6)+
-  add_phylopic(monimg, 1, x=2016, y=15, ysize=4, color="black")
+  add_phylopic(monimg, 1, x=2016.4, y=15.5, ysize=4, color="black")
 
 monarch.timeseries
 

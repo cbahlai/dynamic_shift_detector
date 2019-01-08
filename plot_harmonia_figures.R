@@ -45,7 +45,7 @@ library(wesanderson)
 #for bug icons, run rphylopic
 library(rphylopic)
 
-harimg<-image_data("984448b7-2ada-4e49-aaf1-3dcb7b056532", size = "64")[[1]]
+harimg<-image_data("984448b7-2ada-4e49-aaf1-3dcb7b056532", size = "256")[[1]]
 
 
 
@@ -108,7 +108,7 @@ harmonia.year.timeseries<-ggplot(harmonia.year, aes(year, Nt, colour=phase, cex=
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)+
   annotate("text", x=1993.8, y=0.67, label="A", size=6)+
-  add_phylopic(harimg, 1, x=2016, y=0.65, ysize=1.6, color="black")
+  add_phylopic(harimg, 1, x=2016.7, y=0.65, ysize=1.8, color="black")
 
 
 harmonia.year.timeseries
