@@ -24,8 +24,10 @@ library(gridExtra)
 # for graphics, we will use the color palette GrandBudapest
 # from Karthik Ram's wesanderson package
 library(wesanderson)
+#for bug icons, run rphylopic
+library(rphylopic)
 
-
+monimg<-image_data("281ee51c-f772-4ebc-b58c-469122406a78", size = "64")[[1]]
 
 
 
@@ -82,10 +84,12 @@ monarch.timeseries<-ggplot(monarch, aes(year, Nt, colour=phase, cex=1))+
   coord_equal(ratio=0.45)+
   geom_vline(xintercept=c(2003.5, 2008.5), colour="blue", linetype="longdash")+ 
   geom_vline(xintercept=c(2006.5), colour="grey62", linetype="longdash")+
-  theme(legend.key = element_blank(), plot.margin=unit(c(15,0,0,0), "mm"))+
+  theme(legend.key = element_blank(), plot.margin=unit(c(15,0,0,0), "mm"),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)+
-  annotate("text", x=1993.9, y=17, label="A", size=6)
+  annotate("text", x=1993.9, y=17, label="A", size=6)+
+  add_phylopic(monimg, 1, x=2016, y=15, ysize=4, color="black")
 
 monarch.timeseries
 
@@ -108,7 +112,8 @@ monarch.ricker<-ggplot(monarch1, aes(Nt, Nt1, colour=phase, label=year))+
   scale_color_manual(values = pal)+
   xlab("\nN(t)")+ylab("\nN(t+1)\n")+
   theme_bw()+ 
-  theme(legend.key = element_blank())+
+  theme(legend.key = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+

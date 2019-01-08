@@ -42,6 +42,10 @@ library(gridExtra)
 # for graphics, we will use the color palette GrandBudapest
 # from Karthik Ram's wesanderson package
 library(wesanderson)
+#for bug icons, run rphylopic
+library(rphylopic)
+
+harimg<-image_data("984448b7-2ada-4e49-aaf1-3dcb7b056532", size = "64")[[1]]
 
 
 
@@ -99,10 +103,12 @@ harmonia.year.timeseries<-ggplot(harmonia.year, aes(year, Nt, colour=phase, cex=
   theme_bw(base_size = 10)+
   coord_equal(ratio=11)+
   geom_vline(xintercept=c(2000.5, 2005.5), colour="blue", linetype="longdash")+ 
-  theme(legend.key = element_blank(),plot.margin=unit(c(15,0,0,0), "mm"))+
+  theme(legend.key = element_blank(), plot.margin=unit(c(15,0,0,0), "mm"),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   theme(axis.text=axis.text.theme, axis.title=axis.title.theme, 
         legend.title=axis.title.theme, legend.text=axis.text.theme)+
-  annotate("text", x=1993.8, y=0.67, label="A", size=6)
+  annotate("text", x=1993.8, y=0.67, label="A", size=6)+
+  add_phylopic(harimg, 1, x=2016, y=0.65, ysize=1.6, color="black")
 
 
 harmonia.year.timeseries
@@ -129,6 +135,8 @@ harmonia.year.ricker<-ggplot(harmonia.year1, aes(Nt, Nt1, colour=phase, label=ye
   scale_color_manual(values = pal)+
   xlab("\nN(t)")+ylab("\nN(t+1)\n")+
   theme_bw(base_size = 16)+ 
+  theme(legend.key = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   stat_function(fun=phase.a, colour=pal[1], size=1)+
   stat_function(fun=phase.b, colour=pal[2], size=1)+
   stat_function(fun=phase.c, colour=pal[3], size=1)+
