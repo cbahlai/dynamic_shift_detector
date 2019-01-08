@@ -69,9 +69,9 @@ noise.experiment.correct<-summarize.results[which(summarize.results$changeK==75 
                                                     summarize.results$Nyears==20),]
 noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, rightweight, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(noise, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
+  geom_point(colour="black", pch=21, size=3, show.legend=F)+
+  geom_smooth(aes(noise, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
   geom_point(aes(noise, wrongweight), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -94,9 +94,9 @@ startr.experiment.correct<-summarize.results[which(summarize.results$changeK==75
                                                     summarize.results$Nyears==20),]
 startr.correct<-ggplot(startr.experiment.correct, aes(startR, rightweight, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(startR, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
+  geom_point(colour="black", pch=21, size=3, show.legend=F)+
+  geom_smooth(aes(startR, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
   geom_point(aes(startR, wrongweight), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -120,9 +120,9 @@ changeK.experiment.correct<-summarize.results[which(summarize.results$noise==5 &
                                                       summarize.results$Nyears==20),]
 changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, rightweight, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(changeK, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
+  geom_point(colour="black", pch=21, size=3, show.legend=F)+
+  geom_smooth(aes(changeK, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
   geom_point(aes(changeK, wrongweight), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -146,9 +146,9 @@ changeR.experiment.correct<-summarize.results[which(summarize.results$noise==5 &
                                                       summarize.results$Nyears==20),]
 changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, rightweight, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
-  geom_point(colour="black", pch=21, size=3)+
-  geom_smooth(aes(changeR, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1)+
+  geom_smooth(method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
+  geom_point(colour="black", pch=21, size=3, show.legend=F)+
+  geom_smooth(aes(changeR, wrongweight), method="gam", se=F, color="grey", formula=y ~ poly(x, 3), span=0.1, show.legend=F)+
   geom_point(aes(changeR, wrongweight), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
@@ -172,9 +172,9 @@ Nyears.experiment.correct<-summarize.results[which(summarize.results$noise==2 &
                                                      summarize.results$changeR==25),]
 Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, rightweight, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
-  geom_smooth(method="lm", se=F, color="grey")+
-  geom_smooth(aes(Nyears, wrongweight), method="lm", se=F, color="grey")+
-  geom_point(colour="black", pch=21, size=3)+
+  geom_smooth(method="lm", se=F, color="grey", show.legend=F)+
+  geom_smooth(aes(Nyears, wrongweight), method="lm", se=F, color="grey", show.legend=F)+
+  geom_point(colour="black", pch=21, size=3, show.legend=F)+
   geom_point(aes(Nyears, wrongweight), colour="black", pch=24, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
