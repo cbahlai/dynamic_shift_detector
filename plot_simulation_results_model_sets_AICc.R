@@ -230,35 +230,35 @@ noiseplot.correct.1<-noiseplot.correct+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=15)+
-  annotate("text", x=2, y=1.08, label="A", size=5)
+  ggtitle(label="A")
 
 startr.correct.1<-startr.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=1.5)+
-  annotate("text", x=0.7, y=1.08, label="B", size=5)
+  ggtitle(label="B")
 
 changeKplot.correct.1<-changeKplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=75)+
-  annotate("text", x=8, y=1.08, label="C", size=5)
+  ggtitle(label="C")
 
 changeRplot.correct.1<-changeRplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=75)+
-  annotate("text", x=8, y=1.08, label="D", size=5)
+  ggtitle(label="D")
 
 Nyearsplot.correct.1<-Nyearsplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=17)+
-  annotate("text", x=16, y=1.08, label="E", size=5)
+  ggtitle(label="E")
 
 #pull legend out of plot
 g_legend <- function(a.gplot){
@@ -272,21 +272,21 @@ leg<-g_legend(changeRplot.correct)
 #create a blank grob to hold space where the legend would go next to D
 blank <- grid.rect(gp=gpar(col="white"))
 
-grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg, ncol=3, widths=c(35,35,30)), 
-                         arrangeGrob(changeKplot.correct.1, changeRplot.correct.1,  blank, ncol=3, widths=c(35,35,30)),
-                         arrangeGrob(Nyearsplot.correct.1, blank, blank, ncol=3, widths=c(35,35,30)),
-                         ncol=1,
-                         left=textGrob("\n                  Proportion of outcomes", rot=90,
-                                       gp=gpar(fontsize=16, fontface="bold"))))
+grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1, 
+                         changeKplot.correct.1, changeRplot.correct.1,
+                         Nyearsplot.correct.1, leg, 
+                         ncol=6, widths=c(35,35,35,35,35,30)), 
+             left=textGrob("\n                  Proportion of outcomes", rot=90,
+                                       gp=gpar(fontsize=16, fontface="bold")))
 
 
 
-pdf("figs/Figure_1_AICc_model_sets.pdf", height=8, width=7)
-grid.arrange(arrangeGrob(arrangeGrob(noiseplot.correct.1, startr.correct.1, leg, ncol=3, widths=c(35,35,20)), 
-                         arrangeGrob(changeKplot.correct.1, changeRplot.correct.1,  blank, ncol=3, widths=c(35,35,20)),
-                         arrangeGrob(Nyearsplot.correct.1, blank, blank, ncol=3, widths=c(35,35,20)),
-                         ncol=1,
-                         left=textGrob("\n                  Proportion of outcomes", rot=90,
-                                       gp=gpar(fontsize=16, fontface="bold"))))
+pdf("figs/Figure_1_AICc_model_sets.pdf", height=6, width=11)
+grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1, 
+                         changeKplot.correct.1, changeRplot.correct.1,
+                         Nyearsplot.correct.1, leg, 
+                         ncol=6, widths=c(35,35,35,35,35,30)), 
+             left=textGrob("\n        Proportion of outcomes", rot=90,
+                           gp=gpar(fontsize=16, fontface="bold")))
 
 dev.off()
