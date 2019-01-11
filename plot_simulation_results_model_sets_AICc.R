@@ -112,7 +112,7 @@ noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, prop.top, fill=as
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("proportion of outcomes")+
-  xlim(0,15)+ylim(-0.2,1.1)
+  xlim(0,15)+ylim(0.4,1.1)
 
 noiseplot.correct
 
@@ -137,7 +137,7 @@ startr.correct<-ggplot(startr.experiment.correct, aes(startR, prop.top, fill=as.
   theme(legend.key=element_blank())+
   xlab("r starting value")+
   ylab("proportion of outcomes")+
-  xlim(0.5, 2)+ylim(-0.2,1.1)
+  xlim(0.5, 2)+ylim(0.4,1.1)
 
 startr.correct
 
@@ -163,7 +163,7 @@ changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, prop.top, f
   theme(legend.key=element_blank())+
   xlab("% change in K")+
   ylab("proportion of outcomes")+
-  xlim(0,75)+ylim(-0.2,1.1)
+  xlim(0,75)+ylim(0.4,1.1)
 
 changeKplot.correct
 
@@ -189,7 +189,7 @@ changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, prop.top, f
   theme(legend.key=element_blank())+
   xlab("% change in r")+
   ylab("proportion of outcomes")+
-  xlim(0,75)+ylim(-0.2,1.1)
+  xlim(0,75)+ylim(0.4,1.1)
 
 changeRplot.correct
 
@@ -215,7 +215,7 @@ Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, prop.top, fill
   theme(legend.key=element_blank())+
   xlab("Series length")+
   ylab("proportion of outcomes")+
-  xlim(14,31)+ylim(-0.2,1.1)
+  xlim(14,31)+ylim(0.4,1.1)
 
 Nyearsplot.correct
 
@@ -229,35 +229,35 @@ noiseplot.correct.1<-noiseplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=15)+
+  coord_fixed(ratio=30)+
   ggtitle(label="A")
 
 startr.correct.1<-startr.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=1.5)+
+  coord_fixed(ratio=3)+
   ggtitle(label="B")
 
 changeKplot.correct.1<-changeKplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=75)+
+  coord_fixed(ratio=150)+
   ggtitle(label="C")
 
 changeRplot.correct.1<-changeRplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=75)+
+  coord_fixed(ratio=150)+
   ggtitle(label="D")
 
 Nyearsplot.correct.1<-Nyearsplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=17)+
+  coord_fixed(ratio=34)+
   ggtitle(label="E")
 
 #pull legend out of plot
