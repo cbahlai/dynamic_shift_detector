@@ -15,10 +15,12 @@ setwd("../..")
 
 
 #let's cull out the 15 year scenarios with 3 breaks- this usually violates the constraints of the 
-#model and thus isn't an honest test
+#model and thus isn't an honest test- let's also get rid of it for 20, and 2 break scenarios for 20, as these often fail
 simulation.results<-simulation.results[-which(simulation.results$Nyears=="15" & 
                                                 simulation.results$nbreaksin=="3"),]
-#also, the nevative starting values for r don't work well...Ricker model works best for a population
+simulation.results<-simulation.results[-which(simulation.results$Nyears=="15" & 
+                                                simulation.results$nbreaksin=="2"),]
+#also, the negative starting values for r don't work well...Ricker model works best for a population
 #that is K limited, so this results in nonsensical output for this particular implimentation
 simulation.results<-simulation.results[-which(simulation.results$startR=="-0.5"),]
 
@@ -185,6 +187,17 @@ Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, rightweight, f
 
 Nyearsplot.correct
 
+
+
+plot.for.leg<-ggplot(changeR.experiment.correct, aes(changeR, rightweight, fill=as.factor(nbreaksin)))+
+  scale_fill_manual(values=pal)+
+  geom_point(colour="black", pch=22, size=3, show.legend=T)+
+  theme_bw(base_size = 12)+
+  guides(fill=guide_legend(title="Number\nof breaks"))
+
+plot.for.leg
+
+
 # need to stack together noiseplot.correct, changeKplot.correct, changeRplot.correct, Nyearsplot.correct
 
 #stack plots together
@@ -196,35 +209,40 @@ noiseplot.correct.1<-noiseplot.correct+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=15)+
-  ggtitle(label="A")
+  ggtitle(label="A")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 startr.correct.1<-startr.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=1.5)+
-  ggtitle(label="B")
+  ggtitle(label="B")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 changeKplot.correct.1<-changeKplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=75)+
-  ggtitle(label="C")
+  ggtitle(label="C")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 changeRplot.correct.1<-changeRplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=75)+
-  ggtitle(label="D")
+  ggtitle(label="D")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 Nyearsplot.correct.1<-Nyearsplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=17)+
-  ggtitle(label="E")
+  ggtitle(label="E")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 #pull legend out of plot
 g_legend <- function(a.gplot){
@@ -233,7 +251,7 @@ g_legend <- function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 
-leg<-g_legend(changeRplot.correct)
+leg<-g_legend(plot.for.leg)
 
 #create a blank grob to hold space where the legend would go next to D
 blank <- grid.rect(gp=gpar(col="white"))

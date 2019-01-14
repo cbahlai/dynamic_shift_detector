@@ -34,9 +34,11 @@ simulation.results$victory<-as.factor(simulation.results$victory)
 simulation.results$inSet<-as.factor(simulation.results$inSet)
 
 #let's cull out the 15 year scenarios with 3 breaks- this usually violates the constraints of the 
-#model and thus isn't an honest test
+#model and thus isn't an honest test- let's also get rid of it for 20, and 2 break scenarios for 20, as these often fail
 simulation.results<-simulation.results[-which(simulation.results$Nyears=="15" & 
                                                 simulation.results$nbreaksin=="3"),]
+simulation.results<-simulation.results[-which(simulation.results$Nyears=="15" & 
+                                                simulation.results$nbreaksin=="2"),]
 #also, the nevative starting values for r don't work well...Ricker model works best for a population
 #that is K limited, so this results in nonsensical output for this particular implimentation
 simulation.results<-simulation.results[-which(simulation.results$startR=="-0.5"),]
@@ -230,35 +232,40 @@ noiseplot.correct.1<-noiseplot.correct+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=30)+
-  ggtitle(label="A")
+  ggtitle(label="A")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 startr.correct.1<-startr.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=3)+
-  ggtitle(label="B")
+  ggtitle(label="B")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 changeKplot.correct.1<-changeKplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=150)+
-  ggtitle(label="C")
+  ggtitle(label="C")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 changeRplot.correct.1<-changeRplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=150)+
-  ggtitle(label="D")
+  ggtitle(label="D")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 Nyearsplot.correct.1<-Nyearsplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
   coord_fixed(ratio=34)+
-  ggtitle(label="E")
+  ggtitle(label="E")+
+  theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
 #pull legend out of plot
 g_legend <- function(a.gplot){
@@ -286,7 +293,7 @@ grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1,
                          changeKplot.correct.1, changeRplot.correct.1,
                          Nyearsplot.correct.1, leg, 
                          ncol=6, widths=c(35,35,35,35,35,30)), 
-             left=textGrob("\n        Proportion of outcomes", rot=90,
-                           gp=gpar(fontsize=16, fontface="bold")))
+             left=textGrob("        Proportion of outcomes in which top\n model(s) contain all true breaks", rot=90,
+                           gp=gpar(fontsize=12, fontface="bold")))
 
 dev.off()
