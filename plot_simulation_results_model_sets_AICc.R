@@ -293,7 +293,7 @@ grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1,
                          changeKplot.correct.1, changeRplot.correct.1,
                          Nyearsplot.correct.1, leg, 
                          ncol=6, widths=c(35,35,35,35,35,30)), 
-             left=textGrob("        Proportion of outcomes in which top\n model(s) contain all true breaks", rot=90,
+             left=textGrob("        Proportion of outcomes in which top\n model(s) contain true scenario", rot=90,
                            gp=gpar(fontsize=12, fontface="bold")))
 
 dev.off()
