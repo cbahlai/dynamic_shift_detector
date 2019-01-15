@@ -288,7 +288,7 @@ grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1,
 
 
 
-pdf("figs/Figure_1_AICc_model_sets.pdf", height=6, width=11)
+pdf("figs/Figure_1_AICc_model_sets.pdf", height=3.4, width=11)
 grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1, 
                          changeKplot.correct.1, changeRplot.correct.1,
                          Nyearsplot.correct.1, leg, 

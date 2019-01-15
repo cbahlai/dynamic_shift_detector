@@ -177,7 +177,7 @@ Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, rightweight, f
   geom_smooth(method="lm", se=F, color="grey", show.legend=F)+
   geom_smooth(aes(Nyears, wrongweight), method="lm", se=F, color="grey", show.legend=F)+
   geom_point(colour="black", pch=23, size=3, show.legend=F)+
-  geom_point(aes(Nyears, wrongweight), colour="black", pch=24, size=3)+
+  geom_point(aes(Nyears, wrongweight), colour="black", pch=25, size=3)+
   theme_bw(base_size = 12)+
   guides(fill=guide_legend(title="Number\nof breaks"))+
   theme(legend.key=element_blank())+
@@ -187,15 +187,30 @@ Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, rightweight, f
 
 Nyearsplot.correct
 
+#dummy up a data series for the shape legend
 
+veccat<-c("true","erroneous", "true", "true")
+veccat<-factor(veccat, levels=c("true", "erroneous"))
+vecx<-c(20, 40, 66, 50)
+vecy<-c(0.5, 0.5, 0.8, 0.4)
+dummy<-as.data.frame(cbind(veccat,vecx,vecy))
+shapepal<-c(23, 25)
 
-plot.for.leg<-ggplot(changeR.experiment.correct, aes(changeR, rightweight, fill=as.factor(nbreaksin)))+
+plot.for.leg1<-ggplot(changeR.experiment.correct, aes(changeR, rightweight, fill=as.factor(nbreaksin)))+
   scale_fill_manual(values=pal)+
   geom_point(colour="black", pch=22, size=3, show.legend=T)+
-  theme_bw(base_size = 12)+
-  guides(fill=guide_legend(title="Number\nof breaks"))
+  guides(fill=guide_legend(title="Number\nof breaks"))+
+  theme_bw(base_size = 12)
 
-plot.for.leg
+plot.for.leg1
+
+plot.for.leg2<-ggplot(data=dummy, aes(vecx, vecy, shape=as.factor(veccat)))+
+  scale_shape_manual(values=shapepal, labels=c("true", "erroneous"))+
+  geom_point(color="black", fill="black", size=3, show.legend=T)+
+  theme_bw(base_size = 12)+
+  guides(shape=guide_legend(title="Type\nof break"))
+
+plot.for.leg2
 
 
 # need to stack together noiseplot.correct, changeKplot.correct, changeRplot.correct, Nyearsplot.correct
@@ -251,7 +266,8 @@ g_legend <- function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 
-leg<-g_legend(plot.for.leg)
+leg1<-g_legend(plot.for.leg1)
+leg2<-g_legend(plot.for.leg2)
 
 #create a blank grob to hold space where the legend would go next to D
 blank <- grid.rect(gp=gpar(col="white"))
@@ -265,10 +281,11 @@ grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1,
 
 
 
-pdf("figs/Figure_2_AICc_average_breaks.pdf", height=6, width=11)
+pdf("figs/Figure_2_AICc_average_breaks.pdf", height=3.4, width=11)
 grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1, 
                          changeKplot.correct.1, changeRplot.correct.1,
-                         Nyearsplot.correct.1, leg, 
+                         Nyearsplot.correct.1, arrangeGrob(blank, leg1, leg2,
+                                                           ncol=1, heights=c(0.2,0.4,0.4)), 
                          ncol=6, widths=c(35,35,35,35,35,30)), 
              left=textGrob("\n  Break weight", rot=90,
                            gp=gpar(fontsize=16, fontface="bold")))
