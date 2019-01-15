@@ -114,7 +114,7 @@ noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, prop.top, fill=as
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("proportion of outcomes")+
-  xlim(0,15)+ylim(0.4,1.1)
+  xlim(0,15)+ylim(0.4,1.0)
 
 noiseplot.correct
 
@@ -139,7 +139,7 @@ startr.correct<-ggplot(startr.experiment.correct, aes(startR, prop.top, fill=as.
   theme(legend.key=element_blank())+
   xlab("r starting value")+
   ylab("proportion of outcomes")+
-  xlim(0.5, 2)+ylim(0.4,1.1)
+  xlim(0.5, 2)+ylim(0.4,1.0)
 
 startr.correct
 
@@ -165,7 +165,7 @@ changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, prop.top, f
   theme(legend.key=element_blank())+
   xlab("% change in K")+
   ylab("proportion of outcomes")+
-  xlim(0,75)+ylim(0.4,1.1)
+  xlim(0,75)+ylim(0.4,1.0)
 
 changeKplot.correct
 
@@ -191,7 +191,7 @@ changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, prop.top, f
   theme(legend.key=element_blank())+
   xlab("% change in r")+
   ylab("proportion of outcomes")+
-  xlim(0,75)+ylim(0.4,1.1)
+  xlim(0,75)+ylim(0.4,1.0)
 
 changeRplot.correct
 
@@ -217,7 +217,7 @@ Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, prop.top, fill
   theme(legend.key=element_blank())+
   xlab("Series length")+
   ylab("proportion of outcomes")+
-  xlim(14,31)+ylim(0.4,1.1)
+  xlim(14,31)+ylim(0.4,1.0)
 
 Nyearsplot.correct
 
@@ -292,7 +292,7 @@ pdf("figs/Figure_1_AICc_model_sets.pdf", height=3.4, width=11)
 grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1, 
                          changeKplot.correct.1, changeRplot.correct.1,
                          Nyearsplot.correct.1, leg, 
-                         ncol=6, widths=c(35,35,35,35,35,30)), 
+                         ncol=6, widths=c(35,35,35,35,35,20)), 
              left=textGrob("        Proportion of outcomes in which top\n model(s) contain true scenario", rot=90,
                            gp=gpar(fontsize=12, fontface="bold")))
 

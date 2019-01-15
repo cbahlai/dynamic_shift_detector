@@ -80,7 +80,7 @@ noiseplot.correct<-ggplot(noise.experiment.correct, aes(noise, rightweight, fill
   theme(legend.key=element_blank())+
   xlab("% noise")+
   ylab("break weight")+
-  xlim(0,15)+ylim(-0.2,1.1)
+  xlim(0,15)+ylim(0,1)
 
 noiseplot.correct
 
@@ -105,7 +105,7 @@ startr.correct<-ggplot(startr.experiment.correct, aes(startR, rightweight, fill=
   theme(legend.key=element_blank())+
   xlab("r starting value")+
   ylab("break weight")+
-  xlim(0.5, 2)+ylim(-0.2,1.1)
+  xlim(0.5, 2)+ylim(0,1)
 
 startr.correct
 
@@ -131,7 +131,7 @@ changeKplot.correct<-ggplot(changeK.experiment.correct, aes(changeK, rightweight
   theme(legend.key=element_blank())+
   xlab("% change in K")+
   ylab("break weight")+
-  xlim(0,75)+ylim(-0.2,1.1)
+  xlim(0,75)+ylim(0,1)
 
 changeKplot.correct
 
@@ -157,7 +157,7 @@ changeRplot.correct<-ggplot(changeR.experiment.correct, aes(changeR, rightweight
   theme(legend.key=element_blank())+
   xlab("% change in r")+
   ylab("break weight")+
-  xlim(0,75)+ylim(-0.2,1.1)
+  xlim(0,75)+ylim(0,1)
 
 changeRplot.correct
 
@@ -183,7 +183,7 @@ Nyearsplot.correct<-ggplot(Nyears.experiment.correct, aes(Nyears, rightweight, f
   theme(legend.key=element_blank())+
   xlab("Series length")+
   ylab("break weight")+
-  xlim(14,31)+ylim(-0.2,1.1)
+  xlim(14,31)+ylim(0,1)
 
 Nyearsplot.correct
 
@@ -223,7 +223,7 @@ noiseplot.correct.1<-noiseplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=15)+
+  coord_fixed(ratio=20)+
   ggtitle(label="A")+
   theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
@@ -231,7 +231,7 @@ startr.correct.1<-startr.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=1.5)+
+  coord_fixed(ratio=2)+
   ggtitle(label="B")+
   theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
@@ -239,7 +239,7 @@ changeKplot.correct.1<-changeKplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=75)+
+  coord_fixed(ratio=100)+
   ggtitle(label="C")+
   theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
@@ -247,7 +247,7 @@ changeRplot.correct.1<-changeRplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=75)+
+  coord_fixed(ratio=100)+
   ggtitle(label="D")+
   theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
@@ -255,7 +255,7 @@ Nyearsplot.correct.1<-Nyearsplot.correct+
   guides(fill=FALSE)+
   ylab(NULL)+
   #xlab(NULL)+
-  coord_fixed(ratio=17)+
+  coord_fixed(ratio=22.67)+
   ggtitle(label="E")+
   theme(plot.title = element_text(size = 12, margin = margin(t = 10, b = -1)))
 
@@ -275,18 +275,18 @@ blank <- grid.rect(gp=gpar(col="white"))
 grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1, 
                          changeKplot.correct.1, changeRplot.correct.1,
                          Nyearsplot.correct.1, leg, 
-                         ncol=6, widths=c(35,35,35,35,35,30)), 
+                         ncol=6, widths=c(35,35,35,35,35,20)), 
              left=textGrob("\n                  Break weight", rot=90,
                            gp=gpar(fontsize=16, fontface="bold")))
 
 
 
-pdf("figs/Figure_2_AICc_average_breaks.pdf", height=3.4, width=11)
+pdf("figs/Figure_2_AICc_average_breaks.pdf", height=3.4, width=12)
 grid.arrange(arrangeGrob(noiseplot.correct.1, startr.correct.1, 
                          changeKplot.correct.1, changeRplot.correct.1,
-                         Nyearsplot.correct.1, arrangeGrob(blank, leg1, leg2,
-                                                           ncol=1, heights=c(0.2,0.4,0.4)), 
-                         ncol=6, widths=c(35,35,35,35,35,30)), 
+                         Nyearsplot.correct.1, arrangeGrob(leg1, leg2,
+                                                           ncol=2, widths=c(0.5,0.5)), 
+                         ncol=6, widths=c(35,35,35,35,35,40)), 
              left=textGrob("\n  Break weight", rot=90,
                            gp=gpar(fontsize=16, fontface="bold")))
 
