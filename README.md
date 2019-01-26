@@ -2,7 +2,7 @@
 
 ## Authors/developers: Christie A. Bahlai [@cbahlai](https://github.com/cbahlai) and Elise F. Zipkin [@ezipkin](https://github.com/ezipkin)
 
-In this repo, we develop a novel break-point analysis tool for population time series data, building on the methods developed by Bahlai et al 2015, Ecological Applications. The tool uses the Ricker model as the data-generating process for a dynamic regime, iterates through all break point combinations, and uses information-theoretic decision tools (i.e. Akaike's Information Criteron) to determine best fits. In this repository we develop the tool, simulate data under a variety of conditions to demonstrate the tool, and apply the tool to two case studies: overwintering populations of monarch butterflies and invasions of multicolored Asian ladybeetle. This tool is scripted entirely in R.
+In this repository, we develop a novel break-point analysis tool for population time series data, building on the methods developed by Bahlai et al 2015, Ecological Applications. The tool uses the Ricker model as the data-generating process for a dynamic regime, iterates through all break point combinations, and uses information-theoretic decision tools (i.e. Akaike's Information Criteron) to determine best fits. In this repository we develop the tool, simulate data under a variety of conditions to demonstrate the tool, and apply the tool to two case studies: overwintering populations of monarch butterflies and invasions of multicolored Asian ladybeetle. This tool is scripted entirely in R.
 
 ## File navigation
 
