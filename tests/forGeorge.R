@@ -2,7 +2,7 @@
 
 #bring in sprat data
 
-sprat<-read.csv(file="C:/Users/cbahlai/Dropbox/Old_gigs/Zipkin/sprat.csv", header=T)
+sprat<-read.csv(file="tests/sprat.csv", header=T)
 
 
 #okay, let's see if it'll work
