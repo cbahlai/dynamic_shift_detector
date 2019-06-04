@@ -75,7 +75,6 @@ axis.title.theme<-element_text(face="bold", size=16)
 monarch.timeseries<-ggplot(monarch, aes(year, Nt, colour=phase, cex=1))+
   scale_color_manual(values = pal)+
   geom_line(data=monarch, aes(x=year, y=Nt, group=phasea), size=1)+
-  geom_line(size=1)+
   geom_point(size=3)+
   geom_point(colour="black", pch=21, size=3)+
   xlab("\nYear")+
