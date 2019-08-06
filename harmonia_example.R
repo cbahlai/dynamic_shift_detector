@@ -30,11 +30,11 @@ harmonia.year<-ddply(harmonia, "year", summarize,
                      avg=sum(ADULTS)/length(ADULTS))
 
 #now, we run it through the RS detector
-source("regime_shift_detector.R")
+source("dynamic_shift_detector.R")
 
-RSdetector(harmonia.year, "AIC")
+DSdetector(harmonia.year, "AIC")
 
-RSdetector(harmonia.year, "AICc")
+DSdetector(harmonia.year, "AICc")
 
 harmonia1<-addNt1(harmonia.year)
 

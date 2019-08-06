@@ -6,11 +6,11 @@ monarch<-read.csv(file="C:/Users/cbahlai/Dropbox/Old_gigs/Zipkin/MonarchOW.csv",
 
 
 #okay, let's see if it'll work
-source("regime_shift_detector.R")
+source("dynamic_shift_detector.R")
 
-RSdetector(monarch, criterion="AIC")
+DSdetector(monarch, criterion="AIC")
 
-RSdetector(monarch, criterion="AICc")
+DSdetector(monarch, criterion="AICc")
 
 monarch1<-addNt1(monarch)
 

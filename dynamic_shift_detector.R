@@ -350,7 +350,7 @@ modelspecification<-function(specs, data){
 
 #looks like that works! Okay! put it all together like we did for the 2 break model
 
-RSdetector<-function(data, criterion){ #use raw time series data
+DSdetector<-function(data, criterion){ #use raw time series data
   #plot the data
   plot(data)
   data1<-addNt1(data)

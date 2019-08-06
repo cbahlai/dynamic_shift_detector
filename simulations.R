@@ -1,5 +1,5 @@
 #script for creating simulated data under a variety of parameters
-#and then determining if RSdetector function correctly determines these parameters
+#and then determining if DSdetector function correctly determines these parameters
 
 #to-do list 
 
@@ -9,7 +9,7 @@
 #and while we're at it, simulations to test how this all works given different lengths of time series
 
 #get the regime shift detector functions into memory
-source("regime_shift_detector.R")
+source("dynamic_shift_detector.R")
 
 #create a function that will make fake data based on specified parameters
 #assume change, noise is given in percent (0-100) scale, as is change to r, k
