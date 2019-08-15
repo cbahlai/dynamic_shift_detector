@@ -1,4 +1,4 @@
-# The Monarch Regime project
+# The Dynamic Shift Detector project
 
 ## Authors/developers: Christie A. Bahlai [@cbahlai](https://github.com/cbahlai) and Elise F. Zipkin [@ezipkin](https://github.com/ezipkin)
 
