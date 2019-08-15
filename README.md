@@ -37,7 +37,5 @@ In this repository, we develop a novel break-point analysis tool for population 
 
 
 
-*by regime, I mean the set of dynamic rules, or constants, in an equation describing how populations of an organism change throught time. I am not referring to authoritarian government and/or the rules imposed by them. Nature (and the things people do to nature) is the government of butterflies.*
-
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
