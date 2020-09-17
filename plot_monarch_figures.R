@@ -7,6 +7,7 @@
 #pre-process data as it was used in analysis
 #read in raw data
 monarch<-read.csv(file="C:/Users/cbahlai/Dropbox/Old_gigs/Zipkin/MonarchOW.csv", header=T)
+#note that data in this file labeled 1995 are from the winter 1994-1995 survey, 1996 is the 1995-1996 survey and so on
 
 #data requires some light cleaning. We want year to be a continuous variable
 #and data starts in 1994- take the earlier year in the range given- replace
